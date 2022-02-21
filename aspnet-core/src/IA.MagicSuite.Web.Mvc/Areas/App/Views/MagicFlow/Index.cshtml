@@ -2,9 +2,11 @@
 @*@using IA.MagicSuite.Web.Areas.App.Models.MagicApps*@
 @using IA.MagicSuite.Web.Areas.App.Startup
 @*@model MagicAppsViewModel*@
-@*@{
-    //ViewBag.CurrentPageName = AppPageNames.Common.MagicApps;
-}*@
+@{
+//ViewBag.CurrentPageName = AppPageNames.Common.MagicApps;
+//_iamBuilderLayoutTemplate.cshtml
+//Layout = "~/Areas/App/Views/Layout/_iamBuilderLayoutTemplate.cshtml";
+}
 
 @section Scripts
 {
@@ -19,6 +21,7 @@
         }
     </script>
     <script abp-src="/view-resources/Areas/App/Views/MagicFlow/Index.js" asp-append-version="true"></script>
+    @*<script src="~/view-resources/Areas/App/Views/MagicFlow/Index.js"></script>*@
 }
 
 <div class="content d-flex flex-column flex-column-fluid">

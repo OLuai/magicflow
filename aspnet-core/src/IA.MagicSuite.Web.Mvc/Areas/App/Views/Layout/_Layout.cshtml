@@ -119,15 +119,21 @@
     <script abp-src="/view-resources/Areas/App/Views/_Bundles/app-layout-libs.js" asp-append-version="true"></script>
     <script abp-src="/view-resources/Areas/App/Views/_Bundles/@theme.BaseSettings.Theme.ToLowerInvariant()-scripts.bundle.js" asp-append-version="true"></script>
 
+    <script src="~/lib/iaMagic/dxLib/js/dx.all.js"></script>
+    <script src="~/lib/iaMagic/iamLib/ia-common.js"></script>
+    <script src="~/lib/iaMagic/iamLib/ia-quickform.js"></script>
+
     <!-- Dynamic scripts of ABP system (They are created on runtime and can not be bundled) -->
     <script src="@(ApplicationPath)AbpServiceProxies/GetAll?v=@(AppTimes.StartupTime.Ticks)" type="text/javascript"></script>
 
     @if (GetScriptsResponsePerUserConfiguration.IsEnabled)
     {
-<script src="@(ApplicationPath)AbpScripts/GetScripts?v=@(await CachedUniqueKeyPerUser.GetKeyAsync(GetScriptsResponsePerUserCache.CacheName))" type="text/javascript"></script> }
-            else
-            {
-<script src="@(ApplicationPath)AbpScripts/GetScripts?v=@(AppTimes.StartupTime.Ticks)" type="text/javascript"></script>}
+<script src="@(ApplicationPath)AbpScripts/GetScripts?v=@(await CachedUniqueKeyPerUser.GetKeyAsync(GetScriptsResponsePerUserCache.CacheName))" type="text/javascript"></script>
+ }
+else
+{
+<script src="@(ApplicationPath)AbpScripts/GetScripts?v=@(AppTimes.StartupTime.Ticks)" type="text/javascript"></script>
+}
 
     <script type="text/javascript">
         abp.localization.currentCulture = $.extend({}, abp.localization.currentCulture, { displayNameEnglish: '@CultureInfo.CurrentUICulture.EnglishName' });
@@ -142,15 +148,18 @@
     <script abp-src="/view-resources/Areas/App/Views/Layout/_Layout.js" asp-append-version="true"></script>
     @if (await SettingManager.GetSettingValueAsync<bool>(AppSettings.UserManagement.IsQuickThemeSelectEnabled))
     {
-<script src="@(ApplicationPath)view-resources/Areas/App/Views/Layout/_ThemeSelectionPanel.js" asp-append-version="true"></script>}
+<script src="@(ApplicationPath)view-resources/Areas/App/Views/Layout/_ThemeSelectionPanel.js" asp-append-version="true"></script>
+}
 
     @if (isChatEnabled)
     {
 <script src="@(ApplicationPath)view-resources/Areas/App/Views/Layout/_ChatBar.js" asp-append-version="true"></script>
-                <script src="@(ApplicationPath)Common/Scripts/Chat/chat.signalr.js" asp-append-version="true"></script>}
+                <script src="@(ApplicationPath)Common/Scripts/Chat/chat.signalr.js" asp-append-version="true"></script>
+}
     @if (await SettingManager.GetSettingValueAsync<bool>(AppSettings.UserManagement.SessionTimeOut.IsEnabled) && AbpSession.UserId.HasValue)
     {
-<script src="@(ApplicationPath)view-resources/Areas/App/Views/_Bundles/InactivityController.min.js" asp-append-version="true"></script>}
+<script src="@(ApplicationPath)view-resources/Areas/App/Views/_Bundles/InactivityController.min.js" asp-append-version="true"></script>
+}
     <script src="~@ScriptPaths.JQuery_Validation_Localization" asp-append-version="true"></script>
     <script src="~@ScriptPaths.Bootstrap_Select_Localization" asp-append-version="true"></script>
     <script src="~@ScriptPaths.JQuery_Timeago_Localization" asp-append-version="true"></script>
@@ -158,7 +167,8 @@
 
     @if (theme.BaseSettings.Menu.SearchActive)
     {
-<script src="~/view-resources/Areas/App/Views/Layout/_MenuSearchBar.min.js" asp-append-version="true"></script>}
+<script src="~/view-resources/Areas/App/Views/Layout/_MenuSearchBar.min.js" asp-append-version="true"></script>
+}
 
     <!--end::Base Scripts -->
     <!--begin::Page Snippets -->
