@@ -1,0 +1,243 @@
+﻿@using System.Threading.Tasks
+@using IA.MagicSuite.Web.Areas.App.Startup;
+
+@{
+    Layout = "~/Areas/App/Views/Layout/_iamMagicFlowLayout.cshtml";
+    ViewBag.CurrentPageName = AppPageNames.Common.Dashboard;
+}
+
+@section Styles{
+
+    <style type="text/css" media="screen">
+
+
+        .scroll-wrapper {
+            overflow-x: auto;
+            overflow-y: auto;
+            width: 840px;
+        }
+        /*Set the row height to the viewport*/
+        .row-height {
+            height: 85vh;
+        }
+
+        /*Set up the columns with a 100% height, body color and overflow scroll*/
+
+        .left {
+            height: 100%;
+            width: 300px;
+            overflow-y: auto;
+        }
+
+        .right {
+            height: 100%;
+            overflow-y: auto;
+            width: 300px;
+        }
+
+        .mid {
+            height: 100%;
+        }
+
+
+        .iamAceEditor {
+            /*width: inherit !important;*/
+            height: 100%;
+            width: 100%;
+        }
+
+        .ia-flow-icon-size-lg {
+            font-size: 2.25rem;
+        }
+
+        .flow-switch-case {
+            background-color: #ccc5c230;
+        }
+
+        .active-case {
+            background-color: #ccc5c2;
+        }
+    </style>
+
+    <style>
+
+        .min-width-property-grid {
+            min-width: 350px;
+            min-height: 450px;
+        }
+
+        .toolbar-label,
+        .toolbar-label > b {
+            font-size: 17px;
+        }
+
+        #iamDesignerContent {
+            margin: 5px;
+        }
+
+        #iamContentFormLayout {
+            border-bottom: 1px dotted gray;
+        }
+
+        #draggable {
+            width: 24px;
+            height: 24px;
+            padding: 0.5em;
+            z-index: 10000;
+        }
+
+        #iamfloating_edit_caption {
+            width: 200px;
+            display: none;
+            /*position:absolute;*/
+            /*float:left;*/
+        }
+
+        .iamHFD_active_CSS {
+            border: 1px dashed green;
+        }
+
+        .iamHFD_drag_over_CSS {
+            border: 2px dashed orange;
+        }
+
+        .controle-picker-list {
+            display: flex;
+            flex-flow: row wrap;
+            list-style: none;
+            padding-left: 0;
+            background-color: #ededed;
+        }
+
+            .controle-picker-list li {
+                display: flex;
+                flex: 0 0 98px;
+                float: left;
+                margin: 3px;
+                /*width: 20%;*/
+            }
+
+            .controle-picker-list a {
+                background-color: #808080;
+                border: 1px solid #fff;
+                color: white;
+                display: block;
+                flex: 1 1 auto;
+                font-size: 12px;
+                line-height: 1.4;
+                min-height: 100px;
+                padding: 10px;
+                text-align: center;
+                user-select: none;
+            }
+
+                .controle-picker-list a:hover {
+                    background-color: #1e86ea;
+                    color: #fff;
+                    cursor: pointer;
+                    text-decoration: none;
+                }
+
+                .controle-picker-list a.active {
+                    background-color: #009E49;
+                    color: #fff;
+                    cursor: pointer;
+                    text-decoration: none;
+                }
+
+            .controle-picker-list .fa {
+                font-size: 24px;
+                margin-bottom: 10px;
+                margin-top: 5px;
+            }
+
+            .controle-picker-list .name-class {
+                display: block;
+                text-align: center;
+                word-wrap: break-word;
+            }
+
+
+        .emulator__item {
+            display: block; /*inline-block;*/
+            margin: 0 auto 0 auto;
+            border-radius: 15px;
+            border: 8px solid #333333;
+            box-sizing: content-box;
+            border-top: 30px solid #333333;
+            border-bottom: 20px solid #333333;
+            overflow-x: hidden;
+            transform-origin: left bottom;
+            will-change: transform;
+            padding: 4px;
+        }
+
+        .desktop__item {
+            padding: 3px;
+        }
+
+        .flex-column-fluidp {
+            -ms-flex: inherit;
+            -webkit-flex: inherit;
+            flex: inherit;
+        }
+    </style>
+
+}
+
+@section Scripts{
+    <script src="~/view-resources/Areas/App/Views/MagicFlow/ia-flow.js"></script>
+    <script src="~/view-resources/Areas/App/Views/MagicFlow/ia-flow-builder.js"></script>
+
+}
+
+
+
+<style id="iamDynamicActiveFormCSS"></style>
+
+<!-- Div de génération des éléments dynamiques du designer devant être présentés à l'utilisateur en popup-->
+<div id="iamToolsDynamicContentPopup">
+    <!-- Div conteneur dans lequel seront insérés les éléments dynamiques-->
+    <div id="iamToolsDynamicContent"></div>
+</div>
+
+<div class="content d-flex flex-column flex-column-fluid p-0">
+
+    <div class="d-flex flew-row justify-content-between row-height p-0" id="iamFlowMainDivContainer">
+        <div class="left">
+            <div class="card card-custom gutter-b" id="iamActionsFlowColDiv">
+                <div class="card-body">
+                    <div class="card-custom gutter-b" style="position:-webkit-sticky;position:sticky;top:20px;">
+                        <div class="accordion accordion-solid accordion-toggle-plus" id="toolboxActionTypeIA">
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="mid mx-6">
+            <div class="card card-custom gutter-b row-height scroll-wrapper" id="iamFlowColDiv">
+                <div class="card-body" style="width: fit-content; min-width:840px;">
+                    <div id="flow-container" class="flow-container" style="width: 100%;height: 100%;">
+                        <div class="init-drop-zone" style="height: 100%; border: 2px dashed #7F7F91 !important"></div>
+                        <div class="hidden-zone" style="height:2vw; background-color: #00FF34;display:none;">
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="right scroll" id="iamPropertyGridColDiv">
+            <div class="card card-custom gutter-b">
+                <div class="card-body">
+                    <div id="iamTabPanel"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

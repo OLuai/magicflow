@@ -12,7 +12,7 @@ using IA.MagicSuite.MultiTenancy.Accounting;
 using IA.MagicSuite.MultiTenancy.Payments;
 using IA.MagicSuite.Storage;
 using IA.MagicSuite.MagicSys;
-//using IA.MagicSuite.MagicMarket;
+using IA.MagicSuite.MagicMarket;
 
 namespace IA.MagicSuite.EntityFrameworkCore
 {
@@ -82,7 +82,7 @@ namespace IA.MagicSuite.EntityFrameworkCore
 
         public virtual DbSet<MagicSolution> MagicSolutions { get; set; }
 
-        //public virtual DbSet<MagicVendor> MagicVendors { get; set; }
+        public virtual DbSet<MagicVendor> MagicVendors { get; set; }
 
 
         /* Define an IDbSet for each entity of the application */
@@ -116,13 +116,13 @@ namespace IA.MagicSuite.EntityFrameworkCore
             base.OnModelCreating(modelBuilder);
 
             //MagicMarket tables *********************************************************
-            //modelBuilder.Entity<MagicVendor>(v =>
-            //{
-            //    //Ajouter les uniques constraints de la table des vendors
-            //    v.HasIndex(e => new { e.Acronym }).IsUnique();
-            //    v.HasIndex(e => new { e.Name }).IsUnique();
-            //    v.HasIndex(e => new { e.TenantId }).IsUnique();
-            //});
+            modelBuilder.Entity<MagicVendor>(v =>
+            {
+                //Ajouter les uniques constraints de la table des vendors
+                v.HasIndex(e => new { e.Acronym }).IsUnique();
+                v.HasIndex(e => new { e.Name }).IsUnique();
+                v.HasIndex(e => new { e.TenantId }).IsUnique();
+            });
 
             //MagicSolution tables *********************************************************
             modelBuilder.Entity<MagicSolution>(m =>

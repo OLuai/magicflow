@@ -1,243 +1,151 @@
-﻿@using System.Threading.Tasks
-@using IA.MagicSuite.Web.Areas.App.Startup;
+﻿@using IA.MagicSuite.Authorization
+@*@using IA.MagicSuite.Web.Areas.App.Models.MagicApps*@
+@using IA.MagicSuite.Web.Areas.App.Startup
+@*@model MagicAppsViewModel*@
+@*@{
+    //ViewBag.CurrentPageName = AppPageNames.Common.MagicApps;
+}*@
 
-@{
-    Layout = "~/Areas/App/Views/Layout/_iamMagicFlowLayout.cshtml";
-    ViewBag.CurrentPageName = AppPageNames.Common.Dashboard;
+@section Scripts
+{
+    <script>
+    //variable centrale de la page dans laquelle est stoquée toutes les informations importantes
+        var iamPageVariables = {
+
+            tenantId: "@AbpSession.TenantId", //l'id du tenant
+            userId: "@AbpSession.UserId", //l'id de l'utilisateur
+            designPageUrl:'@Url.Action("DesignPage", "Designers")',
+
+        }
+    </script>
+    <script abp-src="/view-resources/Areas/App/Views/MagicFlow/Index.js" asp-append-version="true"></script>
 }
 
-@section Styles{
+<div class="content d-flex flex-column flex-column-fluid">
 
-    <style type="text/css" media="screen">
+    <abp-page-subheader title="@L("MagicApps")" description="@L("MagicAppsHeaderInfo")">
 
+        <button id="CreateNewMagicAppButton" class="btn btn-primary blue"><i class="fa fa-plus"></i> @L("CreateNewMagicApp")</button>
 
-        .scroll-wrapper {
-            overflow-x: auto;
-            overflow-y: auto;
-            width: 840px;
-        }
-        /*Set the row height to the viewport*/
-        .row-height {
-            height: 85vh;
-        }
+    </abp-page-subheader>
 
-        /*Set up the columns with a 100% height, body color and overflow scroll*/
-
-        .left {
-            height: 100%;
-            width: 300px;
-            overflow-y: auto;
-        }
-
-        .right {
-            height: 100%;
-            overflow-y: auto;
-            width: 300px;
-        }
-
-        .mid {
-            height: 100%;
-        }
-
-
-        .iamAceEditor {
-            /*width: inherit !important;*/
-            height: 100%;
-            width: 100%;
-        }
-
-        .ia-flow-icon-size-lg {
-            font-size: 2.25rem;
-        }
-
-        .flow-switch-case {
-            background-color: #ccc5c230;
-        }
-
-        .active-case {
-            background-color: #ccc5c2;
-        }
-    </style>
-
-    <style>
-
-        .min-width-property-grid {
-            min-width: 350px;
-            min-height: 450px;
-        }
-
-        .toolbar-label,
-        .toolbar-label > b {
-            font-size: 17px;
-        }
-
-        #iamDesignerContent {
-            margin: 5px;
-        }
-
-        #iamContentFormLayout {
-            border-bottom: 1px dotted gray;
-        }
-
-        #draggable {
-            width: 24px;
-            height: 24px;
-            padding: 0.5em;
-            z-index: 10000;
-        }
-
-        #iamfloating_edit_caption {
-            width: 200px;
-            display: none;
-            /*position:absolute;*/
-            /*float:left;*/
-        }
-
-        .iamHFD_active_CSS {
-            border: 1px dashed green;
-        }
-
-        .iamHFD_drag_over_CSS {
-            border: 2px dashed orange;
-        }
-
-        .controle-picker-list {
-            display: flex;
-            flex-flow: row wrap;
-            list-style: none;
-            padding-left: 0;
-            background-color: #ededed;
-        }
-
-            .controle-picker-list li {
-                display: flex;
-                flex: 0 0 98px;
-                float: left;
-                margin: 3px;
-                /*width: 20%;*/
-            }
-
-            .controle-picker-list a {
-                background-color: #808080;
-                border: 1px solid #fff;
-                color: white;
-                display: block;
-                flex: 1 1 auto;
-                font-size: 12px;
-                line-height: 1.4;
-                min-height: 100px;
-                padding: 10px;
-                text-align: center;
-                user-select: none;
-            }
-
-                .controle-picker-list a:hover {
-                    background-color: #1e86ea;
-                    color: #fff;
-                    cursor: pointer;
-                    text-decoration: none;
-                }
-
-                .controle-picker-list a.active {
-                    background-color: #009E49;
-                    color: #fff;
-                    cursor: pointer;
-                    text-decoration: none;
-                }
-
-            .controle-picker-list .fa {
-                font-size: 24px;
-                margin-bottom: 10px;
-                margin-top: 5px;
-            }
-
-            .controle-picker-list .name-class {
-                display: block;
-                text-align: center;
-                word-wrap: break-word;
-            }
-
-
-        .emulator__item {
-            display: block; /*inline-block;*/
-            margin: 0 auto 0 auto;
-            border-radius: 15px;
-            border: 8px solid #333333;
-            box-sizing: content-box;
-            border-top: 30px solid #333333;
-            border-bottom: 20px solid #333333;
-            overflow-x: hidden;
-            transform-origin: left bottom;
-            will-change: transform;
-            padding: 4px;
-        }
-
-        .desktop__item {
-            padding: 3px;
-        }
-
-        .flex-column-fluidp {
-            -ms-flex: inherit;
-            -webkit-flex: inherit;
-            flex: inherit;
-        }
-    </style>
-
-}
-
-@section Scripts{
-    <script src="~/view-resources/Areas/App/Views/MagicFlow/ia-flow.js"></script>
-    <script src="~/view-resources/Areas/App/Views/MagicFlow/ia-flow-builder.js"></script>
-
-}
-
-
-
-<style id="iamDynamicActiveFormCSS"></style>
-
-<!-- Div de génération des éléments dynamiques du designer devant être présentés à l'utilisateur en popup-->
-<div id="iamToolsDynamicContentPopup">
-    <!-- Div conteneur dans lequel seront insérés les éléments dynamiques-->
-    <div id="iamToolsDynamicContent"></div>
-</div>
-
-<div class="content d-flex flex-column flex-column-fluid p-0">
-
-    <div class="d-flex flew-row justify-content-between row-height p-0" id="iamFlowMainDivContainer">
-        <div class="left">
-            <div class="card card-custom gutter-b" id="iamActionsFlowColDiv">
-                <div class="card-body">
-                    <div class="card-custom gutter-b" style="position:-webkit-sticky;position:sticky;top:20px;">
-                        <div class="accordion accordion-solid accordion-toggle-plus" id="toolboxActionTypeIA">
-
+    <div class="@(await GetContainerClass())">
+        <div class="card card-custom gutter-b">
+            <div class="card-body">
+                <div class="form">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-xl-12">
+                            <div class="form-group align-items-center">
+                                <div class="input-group">
+                                    <input type="text" id="MagicAppsTableFilter" class="form-control m-input" placeholder="@L("SearchWithThreeDot")" value="">
+                                    <span class="input-group-btn">
+                                        <button id="GetMagicAppsButton" class="btn btn-primary" type="submit"><i class="flaticon-search-1"></i></button>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                 </div>
-            </div>
-        </div>
-        <div class="mid mx-6">
-            <div class="card card-custom gutter-b row-height scroll-wrapper" id="iamFlowColDiv">
-                <div class="card-body" style="width: fit-content; min-width:840px;">
-                    <div id="flow-container" class="flow-container" style="width: 100%;height: 100%;">
-                        <div class="init-drop-zone" style="height: 100%; border: 2px dashed #7F7F91 !important"></div>
-                        <div class="hidden-zone" style="height:2vw; background-color: #00FF34;display:none;">
-
-                        </div>
-
+                <div id="AdvacedAuditFiltersArea" style="display: none" class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="kt-separator kt-separator--border-dashed"></div>
                     </div>
 
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="NameFilterId">@L("Name")</label>
+                            <input type="text" class="form-control" name="nameFilter" id="NameFilterId">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="UniqueNameFilterId">@L("UniqueName")</label>
+                            <input type="text" class="form-control" name="uniqueNameFilter" id="UniqueNameFilterId">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="DescriptionFilterId">@L("Description")</label>
+                            <input type="text" class="form-control" name="descriptionFilter" id="DescriptionFilterId">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="ActiveVersionFilterId">@L("ActiveVersion")</label>
+                            <input type="text" class="form-control" name="activeVersionFilter" id="ActiveVersionFilterId">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="ColorOrClassNameFilterId">@L("ColorOrClassName")</label>
+                            <input type="text" class="form-control" name="colorOrClassNameFilter" id="ColorOrClassNameFilterId">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="UseDefaultIconFilterId">@L("UseDefaultIcon")</label>
+                        <select class="form-control" name="UseDefaultIconFilter" id="UseDefaultIconFilterId">
+                            <option value="-1">@L("All")</option>
+                            <option value="0">@L("False")</option>
+                            <option value="1">@L("True")</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="SystemIconFilterId">@L("SystemIcon")</label>
+                            <input type="text" class="form-control" name="systemIconFilter" id="SystemIconFilterId">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="IconUrlFilterId">@L("IconUrl")</label>
+                            <input type="text" class="form-control" name="iconUrlFilter" id="IconUrlFilterId">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="IsActiveFilterId">@L("IsActive")</label>
+                        <select class="form-control" name="IsActiveFilter" id="IsActiveFilterId">
+                            <option value="-1">@L("All")</option>
+                            <option value="0">@L("False")</option>
+                            <option value="1">@L("True")</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="IsSystemAppFilterId">@L("IsSystemApp")</label>
+                        <select class="form-control" name="IsSystemAppFilter" id="IsSystemAppFilterId">
+                            <option value="-1">@L("All")</option>
+                            <option value="0">@L("False")</option>
+                            <option value="1">@L("True")</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="MagicSolutionNameFilterId">(@L("MagicSolution")) @L("Name")</label>
+                            <input type="text" class="form-control" name="magicSolutionNameFilter" id="MagicSolutionNameFilterId">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="MagicAppTypeNameFilterId">(@L("MagicAppType")) @L("Name")</label>
+                            <input type="text" class="form-control" name="magicAppTypeNameFilter" id="MagicAppTypeNameFilterId">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="MagicAppStatusNameFilterId">(@L("MagicAppStatus")) @L("Name")</label>
+                            <input type="text" class="form-control" name="magicAppStatusNameFilter" id="MagicAppStatusNameFilterId">
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="right scroll" id="iamPropertyGridColDiv">
-            <div class="card card-custom gutter-b">
-                <div class="card-body">
-                    <div id="iamTabPanel"></div>
+                <div class="row mb-4">
+                    <div class="col-xl-12">
+                        <span id="ShowAdvancedFiltersSpan" class="text-muted clickable-item"><i class="fa fa-angle-down"></i> @L("ShowAdvancedFilters")</span>
+                        <span id="HideAdvancedFiltersSpan" class="text-muted clickable-item" style="display: none"><i class="fa fa-angle-up"></i> @L("HideAdvancedFilters")</span>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div id="MagicAppsGrid"></div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
-

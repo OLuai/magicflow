@@ -15,5 +15,10 @@ namespace IA.MagicSuite.Web.Areas.App.Controllers
         {
             return View();
         }
+
+        public ActionResult Designer(string Id)
+        {
+            return View();
+        }
     }
 }
