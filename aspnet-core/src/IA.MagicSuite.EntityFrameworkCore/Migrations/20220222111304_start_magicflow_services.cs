@@ -146,7 +146,7 @@ namespace IA.MagicSuite.Migrations
                         column: x => x.StatusId,
                         principalTable: "IASYS_FlowExecutionStatus",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
