@@ -83,6 +83,12 @@ namespace IA.MagicSuite.EntityFrameworkCore
         public virtual DbSet<MagicSolution> MagicSolutions { get; set; }
 
         public virtual DbSet<MagicVendor> MagicVendors { get; set; }
+        public virtual DbSet<MagicFlow> MagicFlows { get; set; }
+        public virtual DbSet<MagicFlowExecution> MagicFlowExecutions { get; set; }
+        public virtual DbSet<MagicFlowExecutionAction> MagicFlowExecutionActions { get; set; }
+        public virtual DbSet<MagicFlowExecutionStatus> MagicFlowExecutionStatus { get; set; }
+        public virtual DbSet<MagicFlowLink> MagicFlowLinks { get; set; }
+        public virtual DbSet<MagicFlowType> MagicFlowTypes { get; set; }
 
 
         /* Define an IDbSet for each entity of the application */

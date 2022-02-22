@@ -4,14 +4,16 @@ using IA.MagicSuite.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IA.MagicSuite.Migrations
 {
     [DbContext(typeof(MagicSuiteDbContext))]
-    partial class MagicSuiteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220222111304_start_magicflow_services")]
+    partial class start_magicflow_services
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

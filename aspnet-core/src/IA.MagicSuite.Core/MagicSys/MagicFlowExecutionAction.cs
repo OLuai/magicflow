@@ -16,7 +16,7 @@ namespace IA.MagicSuite.MagicSys
 		
 
 		[Required]
-		public virtual string FlowExecutionId { get; set; } //Identifiant du flow en exécution
+		public virtual long FlowExecutionId { get; set; } //Identifiant du flow en exécution
 
 		[ForeignKey("FlowExecutionId")]
 		public MagicFlowExecution MagicFlowExecutionFk { get; set; }		

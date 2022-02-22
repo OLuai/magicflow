@@ -1,6 +1,7 @@
 ﻿/// <reference path="../../../../../lib/iamagic/dxlib/js/jquery.min.js" />
 /// <reference path="../../../../../lib/iamagic/iamlib/ia-common.js" />
 
+
 (function () {
     $(function () {
 
