@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace IA.MagicSuite.Web.Areas.App.Controllers
 {
     [Area("App")]
-    public class MagicFlow : MagicSuiteControllerBase
+    public class MagicFlowController : MagicSuiteControllerBase
     {
         public ActionResult Index()
         {
