@@ -56,30 +56,29 @@
 
     @if (CultureHelper.IsRtl)
     {
-        <link rel="stylesheet" href="@(ApplicationPath)Common/Styles/abp-zero-template-rtl.css" asp-append-version="true" />
-    }
+<link rel="stylesheet" href="@(ApplicationPath)Common/Styles/abp-zero-template-rtl.css" asp-append-version="true" />}
 
     @if (isChatEnabled)
     {
-        <link rel="stylesheet" abp-href="/view-resources/Areas/App/Views/Layout/_ChatBar.css" asp-append-version="true" />
-    }
-    
+<link rel="stylesheet" abp-href="/view-resources/Areas/App/Views/Layout/_ChatBar.css" asp-append-version="true" />}
+
     <link rel="stylesheet" abp-href="/view-resources/Areas/App/Views/Layout/_Layout.css" asp-append-version="true" />
 
     @await RenderSectionAsync("Styles", false)
 
     @{ var loginInfo = await SessionCache.GetCurrentLoginInformationsAsync(); }
     @if (loginInfo?.Tenant?.CustomCssId != null)
-    {
-        <!-- id parameter is used to prevent caching -->
-        <link id="TenantCustomCss" rel="stylesheet" href="@Url.Action("GetCustomCss", "TenantCustomization" , new { area = string.Empty, tenantId = loginInfo?.Tenant?.Id })" asp-append-version="true" />
-    }
+    {<!-- id parameter is used to prevent caching -->
+                <link id="TenantCustomCss" rel="stylesheet" href="@Url.Action("GetCustomCss", "TenantCustomization" , new { area = string.Empty, tenantId = loginInfo?.Tenant?.Id })" asp-append-version="true" />}
 
     <script type="text/javascript">
         @* This is used to get the application's root path from javascript.
         It's useful if you're running application in a virtual directory under IIS. *@
         var abp = abp || {}; abp.appPath = '@ApplicationPath';
     </script>
+
+    <link href="~/lib/iaMagic/dxLib/css/dx.common.css" rel="stylesheet" />
+    <link href="~/lib/iaMagic/dxLib/css/dx.material.blue.light.css" rel="stylesheet" />
 </head>
 <!-- END HEAD -->
 <!-- begin::Body -->

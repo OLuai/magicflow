@@ -6,9 +6,9 @@
     $(function () {
 
         var _$magicAppsGrid = $('#MagicAppsGrid');        
-        var _magicAppsService = abp.services.app.magicApps;
+        var _magicAppsService = abp.services.app.flow;
         var _magicDataService = abp.services.app.magicData;
-        var _entityTypeFullName = 'IA.MagicSuite.MagicSys.MagicApp';
+        var _entityTypeFullName = 'IA.MagicSuite.MagicSys.MagicFlow';
         var selectedRowData = null;
         var _gridData;
                
@@ -73,11 +73,14 @@
                 magicAppStatusNameFilter: $('#MagicAppStatusNameFilterId').val()
             };
 
-            _magicAppsService.getAll(myFilter).done(function (data) {
+            //add by me
+            myFilter = '';
+
+            _magicAppsService.getFlows(myFilter).done(function (data) {
 
                 //recuppérer le tableau de données retourné
                 _gridData = data.items.map(item => {
-                    let o = item.magicApp;
+                    let o = item;
                     return {
                         id: o.id,
                         name: o.name,                       
@@ -155,7 +158,7 @@
                     //Gérer le double click sur les lignes du grid
                     onRowDblClick: function (e) {
                         
-                        let viewUrl = abp.appPath + 'App/MagicApps/AppBuilder?id=' + e.data.id;
+                        let viewUrl = abp.appPath + 'App/MagicFlow/Designer?id=' + e.data.id;
                         window.location.href = viewUrl;
                     },
 

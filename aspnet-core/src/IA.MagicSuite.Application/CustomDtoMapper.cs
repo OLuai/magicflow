@@ -41,6 +41,8 @@ using IA.MagicSuite.Notifications.Dto;
 using IA.MagicSuite.Organizations.Dto;
 using IA.MagicSuite.Sessions.Dto;
 using IA.MagicSuite.WebHooks.Dto;
+using IA.MagicSuite.MagicSys;
+using IA.MagicSuite.Flows;
 
 namespace IA.MagicSuite
 {
@@ -164,6 +166,7 @@ namespace IA.MagicSuite
             configuration.CreateMap<CreateUserDelegationDto, UserDelegation>();
 
             /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */
+            configuration.CreateMap<MagicFlow, FlowsListDto>();
         }
     }
 }
