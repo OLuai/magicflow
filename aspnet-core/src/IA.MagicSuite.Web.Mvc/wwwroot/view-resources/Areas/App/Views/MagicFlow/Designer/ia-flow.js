@@ -1,14 +1,21 @@
+<<<<<<< Updated upstream
 ﻿var generatedId = 100;
+=======
+var generatedId = 100;
+>>>>>>> Stashed changes
 var iamFlow = {
 
     //Element actif selectionné
     activeItem: null,
 
     init: function () {
+<<<<<<< Updated upstream
         $("#save-flow").on('click', e => {
             console.log('hummmm');
             abp.services.app.flow.saveFlow({ 'id': iamFlow.flow.FlowId, 'name': iamFlow.flow.FlowName, 'flowJSON': JSON.stringify(iamFlow.flow.FlowActions) });
         });
+=======
+>>>>>>> Stashed changes
         $("#btn-import").on('click', (e) => {
             iamFlow.transfert.importFlow();
         });
@@ -26,11 +33,19 @@ var iamFlow = {
                     break;
                 case "iamFlowNameSave":
                     let name = $("#iamFlowNameInput").val();
+<<<<<<< Updated upstream
                     if (name && name != iamFlow.flow.FlowName) {
                         iamFlow.flow.FlowName = name;
                     }
                     else {
                         name = iamFlow.flow.FlowName;
+=======
+                    if (name && name != iamFlow.flow.name) {
+                        iamFlow.flow.name = name;
+                    }
+                    else {
+                        name = iamFlow.flow.name;
+>>>>>>> Stashed changes
                     }
                     $("#iamFlowName").html(name);
                     $("#iamFlowNameInput").val(name);
@@ -44,6 +59,10 @@ var iamFlow = {
 
         $("#iamFlowNameInput").val('');
         $("#iamFlowNameSave").trigger('click');
+<<<<<<< Updated upstream
+=======
+        console.log();
+>>>>>>> Stashed changes
 
     },
 
@@ -51,9 +70,15 @@ var iamFlow = {
     transfert: {
         //Fonction d'export de flow
         exportFlow: function () {
+<<<<<<< Updated upstream
             iamShared.files.stringToFileDownload(iamFlow.flow.FlowName + ".json", JSON.stringify(iamFlow.flow));
         },
         //Fonction d'import de flow
+=======
+            iamShared.files.stringToFileDownload(iamFlow.flow.name + ".json", JSON.stringify(iamFlow.flow));
+        },
+        //Fonction d'iport de flow
+>>>>>>> Stashed changes
         importFlow: function () {
             let input = document.createElement('input');
             input.type = 'file';
@@ -74,7 +99,11 @@ var iamFlow = {
 
                     iamFlow.flow = flow;
 
+<<<<<<< Updated upstream
                     $("#flow-container").html('');
+=======
+                    
+>>>>>>> Stashed changes
                     iamFlow.transfert.import(flow.FlowActions);
 
                     $("#iamFlowNameInput").val('');
@@ -90,7 +119,11 @@ var iamFlow = {
         },
         //Fonction d'affichage du flow importer
         import: function (array) {
+<<<<<<< Updated upstream
             if (array.length > 0) {
+=======
+            if (array) {
+>>>>>>> Stashed changes
                 $("#flow-container").html('');
                 let func = iamFlowBuider.importBuilder;
                 let printChildren = function (children) {
@@ -107,18 +140,30 @@ var iamFlow = {
 
                 printChildren(array);
             }
+<<<<<<< Updated upstream
             }
 
+=======
+
+        }
+>>>>>>> Stashed changes
     },
 
     //Le flow et ses propietes
     flow: {
+<<<<<<< Updated upstream
         FlowId: iamShared.utils.guidString(),
         FlowName: "Sans Titre",
         //Array de toutes les actions
         FlowActions: [],
         //Variables du flow
         FlowVariables: [],
+=======
+        id: iamShared.utils.guidString(),
+        name: "Sans Titre",
+        //Array de toutes les actions
+        flowJSON: [],
+>>>>>>> Stashed changes
     },
 
     //Les fonctions du property grid
@@ -191,7 +236,11 @@ var iamFlow = {
         //Retourne une Action 
         get: function (actionId) {
 
+<<<<<<< Updated upstream
             let items = iamFlow.flow.FlowActions;
+=======
+            let items = iamFlow.flow.flowJSON;
+>>>>>>> Stashed changes
             let node;
 
             let getNode = function (actions, node) {
@@ -276,7 +325,11 @@ var iamFlow = {
                 Options: iamFlow.action.getOptions(actionType),
             };
 
+<<<<<<< Updated upstream
             let toContainer = iamFlow.flow.FlowActions;
+=======
+            let toContainer = iamFlow.flow.flowJSON;
+>>>>>>> Stashed changes
 
             //Ajout de donnees supplementaires
             switch (actionType) {
@@ -327,7 +380,11 @@ var iamFlow = {
         delete: function (Id) {
 
             let action = iamFlow.action.get(Id);
+<<<<<<< Updated upstream
             let parentItems = iamFlow.flow.FlowActions;
+=======
+            let parentItems = iamFlow.flow.flowJSON;
+>>>>>>> Stashed changes
             if (action.ParentId) {
                 let parent = iamFlow.action.get(action.ParentId);
                 if (parent) parentItems = parent.Items;
@@ -348,7 +405,11 @@ var iamFlow = {
             newParentId = newParentId || null;
 
             let action = iamFlow.action.get(actionId);
+<<<<<<< Updated upstream
             let newParentItems = iamFlow.flow.FlowActions;
+=======
+            let newParentItems = iamFlow.flow.flowJSON;
+>>>>>>> Stashed changes
 
             if (action) {
                 iamFlow.action.delete(action.Id);

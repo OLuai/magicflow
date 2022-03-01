@@ -1,4 +1,3 @@
-﻿
 $(function () {
     //alert("test");
     
@@ -82,6 +81,7 @@ var iamFlowBuider = {
                     <div class="form-group">
                         <label class="font-weight-bolder" for="exampleTextarea">Description :</label>
                         <textarea class="form-control form-control" rows="3" data-description-for="${obj.id.slice(5)}">${obj.description}</textarea>
+
                     </div>
                     
                 </div>
@@ -121,7 +121,8 @@ var iamFlowBuider = {
                     
                     <div class="form-group">
                         <label class="font-weight-bolder" for="exampleTextarea">Description :</label>
-                        <textarea class="form-control form-control" rows="3" data-description-for="${obj.id.slice(5)}">${obj.description}</textarea>
+                        <textarea class="form-control form-control" rows="3" data-description-for="${obj.id.slice(5)}" >${obj.description}</textarea>
+
                     </div>
                     
                 </div>
@@ -200,6 +201,7 @@ var iamFlowBuider = {
                     <div class="form-group">
                         <label class="font-weight-bolder" for="exampleTextarea">Description :</label>
                         <textarea class="form-control form-control" rows="3" data-description-for="${obj.id.slice(5)}">${obj.description}</textarea>
+
                     </div>
                     
                 </div>
