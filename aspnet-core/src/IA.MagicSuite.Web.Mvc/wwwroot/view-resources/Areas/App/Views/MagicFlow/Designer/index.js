@@ -13,7 +13,7 @@
             iamFlow.flow.FlowName = data.name;
             iamFlow.flow.FlowActions = JSON.parse(data.flowJSON);
 
-            $("#flow-container").html('');
+            
             iamFlow.transfert.import(iamFlow.flow.FlowActions);
 
             $("#iamFlowNameInput").val('');
