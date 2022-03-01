@@ -90,21 +90,24 @@ var iamFlow = {
         },
         //Fonction d'affichage du flow importer
         import: function (array) {
-            let func = iamFlowBuider.importBuilder;
-            let printChildren = function (children) {
-                for (let node of children) {
-                    if (!(node.Type == "IF_CONDITION_YES" || node.Type == "IF_CONDITION_NO")) {
-                        func(node);
-                    }
-                    if (node.Items) {
-                        printChildren(node.Items)
-                    }
+            if (array.length > 0) {
+                let func = iamFlowBuider.importBuilder;
+                let printChildren = function (children) {
+                    for (let node of children) {
+                        if (!(node.Type == "IF_CONDITION_YES" || node.Type == "IF_CONDITION_NO")) {
+                            func(node);
+                        }
+                        if (node.Items) {
+                            printChildren(node.Items)
+                        }
 
+                    }
                 }
+
+                printChildren(array);
+            }
             }
 
-            printChildren(array);
-        }
     },
 
     //Le flow et ses propietes
