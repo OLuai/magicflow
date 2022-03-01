@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <localizationDictionary culture="fr">
   <texts>
+	<text name="MagicFlowHeaderInfo">Information sur magic flow</text>
+	<text name="CreateNewMagicFlow">Créer Flow</text>
+	<text name="Description">Description</text>
+	  <text name="FlowType">Type De Flow</text>
     <text name="HomePage">Page d'accueil</text>
     <text name="AboutUs">À propos</text>
     <text name="Administration">Administration</text>

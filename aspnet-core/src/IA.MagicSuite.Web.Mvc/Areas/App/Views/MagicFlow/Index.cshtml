@@ -16,7 +16,7 @@
 
             tenantId: "@AbpSession.TenantId", //l'id du tenant
             userId: "@AbpSession.UserId", //l'id de l'utilisateur
-            designPageUrl:'@Url.Action("DesignPage", "Designers")',
+            designPageUrl:'@Url.Action("Designer", "MagicFlow")',
 
         }
     </script>
@@ -26,9 +26,9 @@
 
 <div class="content d-flex flex-column flex-column-fluid">
 
-    <abp-page-subheader title="@L("MagicApps")" description="@L("MagicAppsHeaderInfo")">
+    <abp-page-subheader title="@L("MagicFlow")" description="@L("MagicFlowHeaderInfo")">
 
-        <button id="CreateNewMagicAppButton" class="btn btn-primary blue"><i class="fa fa-plus"></i> @L("CreateNewMagicApp")</button>
+        <button id="CreateNewMagicAppButton" class="btn btn-primary blue"><i class="fa fa-plus"></i> @L("CreateNewMagicFlow")</button>
 
     </abp-page-subheader>
 
@@ -62,50 +62,12 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label for="UniqueNameFilterId">@L("UniqueName")</label>
-                            <input type="text" class="form-control" name="uniqueNameFilter" id="UniqueNameFilterId">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
                             <label for="DescriptionFilterId">@L("Description")</label>
                             <input type="text" class="form-control" name="descriptionFilter" id="DescriptionFilterId">
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="ActiveVersionFilterId">@L("ActiveVersion")</label>
-                            <input type="text" class="form-control" name="activeVersionFilter" id="ActiveVersionFilterId">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="ColorOrClassNameFilterId">@L("ColorOrClassName")</label>
-                            <input type="text" class="form-control" name="colorOrClassNameFilter" id="ColorOrClassNameFilterId">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="UseDefaultIconFilterId">@L("UseDefaultIcon")</label>
-                        <select class="form-control" name="UseDefaultIconFilter" id="UseDefaultIconFilterId">
-                            <option value="-1">@L("All")</option>
-                            <option value="0">@L("False")</option>
-                            <option value="1">@L("True")</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="SystemIconFilterId">@L("SystemIcon")</label>
-                            <input type="text" class="form-control" name="systemIconFilter" id="SystemIconFilterId">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="IconUrlFilterId">@L("IconUrl")</label>
-                            <input type="text" class="form-control" name="iconUrlFilter" id="IconUrlFilterId">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="IsActiveFilterId">@L("IsActive")</label>
+                        <label for="IsActiveFilterId">@L("FlowType")</label>
                         <select class="form-control" name="IsActiveFilter" id="IsActiveFilterId">
                             <option value="-1">@L("All")</option>
                             <option value="0">@L("False")</option>
@@ -113,30 +75,12 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="IsSystemAppFilterId">@L("IsSystemApp")</label>
-                        <select class="form-control" name="IsSystemAppFilter" id="IsSystemAppFilterId">
+                        <label for="IsActiveFilterId">@L("IsActive")</label>
+                        <select class="form-control" name="IsActiveFilter" id="IsActiveFilterId">
                             <option value="-1">@L("All")</option>
-                            <option value="0">@L("False")</option>
-                            <option value="1">@L("True")</option>
+                            <option value="0">@L("Yes")</option>
+                            <option value="1">@L("No")</option>
                         </select>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="MagicSolutionNameFilterId">(@L("MagicSolution")) @L("Name")</label>
-                            <input type="text" class="form-control" name="magicSolutionNameFilter" id="MagicSolutionNameFilterId">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="MagicAppTypeNameFilterId">(@L("MagicAppType")) @L("Name")</label>
-                            <input type="text" class="form-control" name="magicAppTypeNameFilter" id="MagicAppTypeNameFilterId">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="MagicAppStatusNameFilterId">(@L("MagicAppStatus")) @L("Name")</label>
-                            <input type="text" class="form-control" name="magicAppStatusNameFilter" id="MagicAppStatusNameFilterId">
-                        </div>
                     </div>
                 </div>
                 <div class="row mb-4">
