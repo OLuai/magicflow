@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿
+=======
+
+>>>>>>> Stashed changes
 $(function () {
     //alert("test");
     
@@ -77,11 +81,19 @@ var iamFlowBuider = {
                <div class="m-5">
                     <div class="form-group ">
                         <label class="font-weight-bolder">Display Name : </label>
+<<<<<<< Updated upstream
                         <input type="text" class="form-control" value="${obj.title}" data-displayname-for="${obj.id.slice(5)}"  maxlength="39" onchange="edit(event)" />
                     </div>
                     <div class="form-group">
                         <label class="font-weight-bolder" for="exampleTextarea">Description :</label>
                         <textarea class="form-control form-control" rows="3" data-description-for="${obj.id.slice(5)}" onchange="edit(event)">${obj.description}</textarea>
+=======
+                        <input type="text" class="form-control" value="${obj.title}" data-displayname-for="${obj.id.slice(5)}"  maxlength="39" />
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder" for="exampleTextarea">Description :</label>
+                        <textarea class="form-control form-control" rows="3" data-description-for="${obj.id.slice(5)}" >${obj.description}</textarea>
+>>>>>>> Stashed changes
                     </div>
                     
                 </div>
@@ -121,7 +133,11 @@ var iamFlowBuider = {
                     
                     <div class="form-group">
                         <label class="font-weight-bolder" for="exampleTextarea">Description :</label>
+<<<<<<< Updated upstream
                         <textarea class="form-control form-control" rows="3" data-description-for="${obj.id.slice(5)}" onchange="edit(event)">${obj.description}</textarea>
+=======
+                        <textarea class="form-control form-control" rows="3" data-description-for="${obj.id.slice(5)}" >${obj.description}</textarea>
+>>>>>>> Stashed changes
                     </div>
                     
                 </div>
@@ -199,7 +215,11 @@ var iamFlowBuider = {
                     
                     <div class="form-group">
                         <label class="font-weight-bolder" for="exampleTextarea">Description :</label>
+<<<<<<< Updated upstream
                         <textarea class="form-control form-control" rows="3" data-description-for="${obj.id.slice(5)}" onchange="edit(event)">${obj.description}</textarea>
+=======
+                        <textarea class="form-control form-control" rows="3" data-description-for="${obj.id.slice(5)}">${obj.description}</textarea>
+>>>>>>> Stashed changes
                     </div>
                     
                 </div>
