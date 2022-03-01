@@ -43,6 +43,7 @@ using IA.MagicSuite.Sessions.Dto;
 using IA.MagicSuite.WebHooks.Dto;
 using IA.MagicSuite.MagicSys;
 using IA.MagicSuite.Flows;
+using IA.MagicSuite.Flows.Dto;
 
 namespace IA.MagicSuite
 {
@@ -167,6 +168,7 @@ namespace IA.MagicSuite
 
             /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */
             configuration.CreateMap<MagicFlow, FlowsListDto>();
+            configuration.CreateMap<MagicFlow, FlowDto>();
         }
     }
 }

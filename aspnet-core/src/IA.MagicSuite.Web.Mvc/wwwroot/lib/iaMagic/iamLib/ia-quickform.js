@@ -1140,7 +1140,7 @@ var iamQF = {
 
         //Générer les evènements par rapport aux dépendances --------------------------------------------------------------------------------------------------------------------
         let calcEgine = null;
-        if (dependencies.length > 0) {
+        if (dependencies.length > 6000) {
             //Créer uniquement le formulaParser que si des dépendances existent
             calcEgine = iamShared.utils.createFormulaCalcEngine(dependencies);
 

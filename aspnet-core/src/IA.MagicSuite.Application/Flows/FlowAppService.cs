@@ -17,6 +17,7 @@ using IA.MagicSuite.Editions.Dto;
 using IA.MagicSuite.MultiTenancy;
 using IA.MagicSuite.MagicSys;
 using IA.MagicSuite.EntityFrameworkCore;
+using IA.MagicSuite.Flows.Dto;
 
 namespace IA.MagicSuite.Flows
 {
@@ -26,34 +27,34 @@ namespace IA.MagicSuite.Flows
         private readonly IRepository<MagicFlow, string> _flowRepository;
 
 
-        public FlowAppService(
-            IRepository<MagicFlow, string> flowRepository
-            )
+        public FlowAppService(IRepository<MagicFlow, string> flowRepository)
         
         {
 
             _flowRepository = flowRepository;
         }
 
+        public FlowDto GetFlow(GetFlowInput input)
+        {
+            var flow = _flowRepository.Get(input.Id);
+            var result = ObjectMapper.Map<FlowDto>(flow);
+
+            return result;
+        }
+
         public ListResultDto<FlowsListDto> GetFlows(GetFlowsInput input)
         {
 
             var flows = _flowRepository.GetAllList().ToList();
-            //var result = new List<FlowsListDto>();
-            //foreach (var flow in flows)
-            //{
-            //    var resultFlow = ObjectMapper.Map<FlowsListDto>(flow);
-
-            //    result.Add(resultFlow);
-            //}
-
-            //return new ListResultDto<FlowsListDto>(result);
             return new ListResultDto<FlowsListDto>(ObjectMapper.Map<List<FlowsListDto>>(flows));
         }
 
-        public async Task<int> GetLuaiAge()
+        public void SaveFlow(FlowDto input)
         {
-            return await _flowRepository.CountAsync(t => t.Id == "luai-a-fait-test");
+            var flow = _flowRepository.Get(input.Id);
+            flow.FlowJSON = input.FlowJSON;
+            flow.Name = input.Name;
+            _flowRepository.Update(flow);
         }
     }
 }

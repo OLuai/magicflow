@@ -1,7 +1,7 @@
 ﻿
 $(function () {
     //alert("test");
-    iamFlowBuider.init();
+    
 })
 
 
@@ -68,7 +68,7 @@ var iamFlowBuider = {
                                             </div>
                                             <div class="mr-1 d-flex justify-content-center align-items-center">
                                                 <i class=" text-dark flaticon-more-1 ml-3"></i>
-                                                <a class="btn btn-hover-bg-danger btn-text-dark btn-hover-text-white ml-3 flow-delete" data-delete-flow="${obj.id.slice(5)}" onclick="deleteFlow(event)">
+                                                <a class="btn btn-hover-bg-danger btn-text-dark btn-hover-text-white ml-3 flow-delete" data-delete-flow="${obj.id.slice(5)}">
                                                       <i class="flaticon2-cross"></i>
                                                 </a>
                                             </div>

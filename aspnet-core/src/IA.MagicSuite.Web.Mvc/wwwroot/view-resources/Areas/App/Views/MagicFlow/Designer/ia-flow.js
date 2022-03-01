@@ -5,6 +5,10 @@ var iamFlow = {
     activeItem: null,
 
     init: function () {
+        $("#save-flow").on('click', e => {
+            console.log('hummmm');
+            abp.services.app.flow.saveFlow({ 'id': iamFlow.flow.FlowId, 'name': iamFlow.flow.FlowName, 'flowJSON': JSON.stringify(iamFlow.flow.FlowActions) });
+        });
         $("#btn-import").on('click', (e) => {
             iamFlow.transfert.importFlow();
         });
@@ -49,7 +53,7 @@ var iamFlow = {
         exportFlow: function () {
             iamShared.files.stringToFileDownload(iamFlow.flow.FlowName + ".json", JSON.stringify(iamFlow.flow));
         },
-        //Fonction d'iport de flow
+        //Fonction d'import de flow
         importFlow: function () {
             let input = document.createElement('input');
             input.type = 'file';
@@ -1177,7 +1181,6 @@ var iamFlow = {
 
 };
 
-iamFlow.init();
 
 
 
