@@ -65,7 +65,7 @@ var iamFlow = {
             _magicFlowService.getFlow({ 'id': id }).done(data => {
                 data.flowJSON = JSON.parse(data.flowJSON) || [];
                 iamFlow.flow = data;
-                iamFlow.transfert.import(data.flowJSON);
+                iamFlow.transfert.import(data.flowJSON || []);
             });
         }
     },
