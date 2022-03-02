@@ -237,20 +237,21 @@
 
                 //fonction exécutée quand le quickform est globalement validé (terminé).   
                 OnValidated: function (data) {
-                    abp.ui.setBusy('body');
-                    _magicAppsService.createOrEdit(
-                        data
-                    ).done(function () {
-                        abp.notify.info(app.localize('SavedSuccessfully'));
-                        abp.event.trigger('app.createOrEditMagicAppModalSaved');
+                    console.log(data);
+                    //abp.ui.setBusy('body');
+                    //_magicAppsService.createOrEdit(
+                    //    data
+                    //).done(function () {
+                    //    abp.notify.info(app.localize('SavedSuccessfully'));
+                    //    abp.event.trigger('app.createOrEditMagicAppModalSaved');
 
-                        //Recharger la liste des apps
-                        getMagicApps();
-                        iamShared.ui.activeQuickFormHide();
+                    //    //Recharger la liste des apps
+                    //    getMagicApps();
+                    //    iamShared.ui.activeQuickFormHide();
 
-                    }).always(function () {
-                        abp.ui.clearBusy('body');
-                    });
+                    //}).always(function () {
+                    //    abp.ui.clearBusy('body');
+                    //});
                 },
                 //Liste des sources utilisables par les items
                 //donner le nom de la source a la propriété "ListDataSourceName" pour la voir utiliser sur l'item
@@ -290,15 +291,75 @@
                         DenyBack: false,
                         OrderNumber: 1
                     },
-                    {
-                        Id: "0002",
-                        Name: "Style",
-                        DisplayName: app.localize("Style").toUpperCase(),
-                        DenyBack: false,
-                        OrderNumber: 2
-                    }
+                    //{
+                    //    Id: "0002",
+                    //    Name: "Style",
+                    //    DisplayName: app.localize("Style").toUpperCase(),
+                    //    DenyBack: false,
+                    //    OrderNumber: 2
+                    //}
                 ],
                 Items: [
+                    {
+                        Id: "item_Name",
+                        StepId: "0001",
+                        OrderNumber: 1,
+                        DataField: "Name",
+                        DisplayName: null,
+                        IsRequired: true,
+                        EditorType: "dxTextBox",
+                        ValidationRules: [
+                            {
+                                type: 'pattern', //require, email,compare,range,stringLength
+                                pattern: '^[0-9A-Za-z_ ]+$',
+                                message: app.localize("InvalidDataInput")
+                            }
+                        ],
+                    },
+                    {
+                        Id: "item_Description",
+                        StepId: "0001",
+                        OrderNumber: null,
+                        DataField: "Description",
+                        DisplayName: null,
+                        IsRequired: false,
+                        EditorType: "dxTextArea",
+                    },
+                    {
+                        Id: "item_FlowType",
+                        StepId: "0001",
+                        OrderNumber: null,
+                        DataField: "Flow Type",
+                        DisplayName: null,//app.localize("AppType"),
+                        DefaultValue: "DUAL",
+                        IsRequired: false,
+                        EditorType: "dxSelectBox",
+
+                        //Spécifique pour les objets liste ou  les tableaux immediats automatique pour un dxTextBox avec bouton rechercher
+                        ListValueExpression: null, // Spécifier le champ de valeur retournée
+                        ListDisplayExpression: null, //Spécifier le champ affiché
+                        ListSystemIconExpression: null, //Spécifier le champ utilisé pour afficher des images système
+                        ListIconUrlExpression: null, //Spécifier le champ utilisé pour afficher des images depuis les Url
+                        ListImageExpression: null, //spécifier  le champ utilisé pour afficher des images (base64 ou byteaarray)
+                        EntityRequestObject: {
+                            EntityId: 'MagicAppType', //nom unique de l'entité
+                            KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
+                            DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
+                            FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
+                        }
+                    },
+                    {
+                        Id: "item_IsActive",
+                        StepId: "0001",
+                        OrderNumber: null,
+                        DataField: "IsActive",
+                        DisplayName: null,
+                        IsRequired: false,
+                        EditorType: "dxCheckBox",
+                        DefaultValue: true
+                    },
+                ],
+                Item: [
                     {
                         Id: "item_Name",
                         StepId: "0001",
