@@ -231,13 +231,14 @@
             appCreate: {
                 AutoCreateEditors: false,
                 Id: "iamQFAppCreate",
-                Name: "CreateMagicApp",
+                Name: "Create New Flow",
                 DisplayName: null,
                 PositionId: "rightpanel",
 
                 //fonction exécutée quand le quickform est globalement validé (terminé).   
                 OnValidated: function (data) {
                     console.log(data);
+                    getMagicApps();
                     //abp.ui.setBusy('body');
                     //_magicAppsService.createOrEdit(
                     //    data
@@ -255,7 +256,7 @@
                 },
                 //Liste des sources utilisables par les items
                 //donner le nom de la source a la propriété "ListDataSourceName" pour la voir utiliser sur l'item
-                DataSources: [
+                DataSource: [
                     {
                         Name: "MagicSolutionSelect",
                         EntityRequestObject: {
@@ -275,6 +276,27 @@
                             FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
                         }
                     }, 
+                ],
+                DataSources: [
+                    {
+                        Name: "FlowTypeSelect",
+                        EntityRequestObject: {
+                            EntityId: 'FlowTypeSelect', //nom unique de l'entité
+                            KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
+                            DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
+                            FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
+                        }
+                    },
+
+                    {
+                        Name: "TenantSelect",
+                        EntityRequestObject: {
+                            EntityId: 'TenantSelect', //nom unique de l'entité
+                            KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
+                            DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
+                            FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
+                        }
+                    },
                 ],
                 Data: null,
                 IgnoreStepsOrderNumber: false, //Ignore le numéro d'ordre attribué et ordonne par ordre de position dans le tableau des steps
@@ -301,6 +323,19 @@
                 ],
                 Items: [
                     {
+                        Id: "item_Id",
+                        StepId: "0001",
+                        OrderNumber: null,
+                        ColSpan: null,
+                        CssClass: null,
+                        DataField: "Id",
+                        DisplayName: null,
+                        IsRequired: true,
+                        ReadOnly: true,
+                        EditorType: "dxTextBox",
+                        Formula: `IF({tenantId}=NULL;convertToPascalCase({Name}); CONCATENATE("t";{tenantId};"_";convertToPascalCase({Name})))`
+                    },
+                    {
                         Id: "item_Name",
                         StepId: "0001",
                         OrderNumber: 1,
@@ -316,6 +351,7 @@
                             }
                         ],
                     },
+                    
                     {
                         Id: "item_Description",
                         StepId: "0001",
@@ -333,20 +369,21 @@
                         DisplayName: null,//app.localize("AppType"),
                         DefaultValue: "DUAL",
                         IsRequired: false,
-                        EditorType: "dxSelectBox",
+                        EditorType: "dxTextBox",// "dxSelectBox",
 
-                        //Spécifique pour les objets liste ou  les tableaux immediats automatique pour un dxTextBox avec bouton rechercher
-                        ListValueExpression: null, // Spécifier le champ de valeur retournée
-                        ListDisplayExpression: null, //Spécifier le champ affiché
-                        ListSystemIconExpression: null, //Spécifier le champ utilisé pour afficher des images système
-                        ListIconUrlExpression: null, //Spécifier le champ utilisé pour afficher des images depuis les Url
-                        ListImageExpression: null, //spécifier  le champ utilisé pour afficher des images (base64 ou byteaarray)
-                        EntityRequestObject: {
-                            EntityId: 'MagicAppType', //nom unique de l'entité
-                            KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
-                            DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
-                            FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
-                        }
+                        //ListDataSourceName: "FlowTypeSelect"
+                    },
+                    {
+                        Id: "item_TenantID",
+                        StepId: "0001",
+                        OrderNumber: null,
+                        DataField: "Tenant",
+                        DisplayName: null,//app.localize("AppType"),
+                        DefaultValue: "DUAL",
+                        IsRequired: false,
+                        EditorType: "dxTextBox",// "dxSelectBox",
+
+                        //ListDataSourceName: "TenantSelect"
                     },
                     {
                         Id: "item_IsActive",
