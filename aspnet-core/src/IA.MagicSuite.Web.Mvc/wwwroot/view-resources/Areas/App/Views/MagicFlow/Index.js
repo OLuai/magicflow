@@ -255,7 +255,7 @@
                 },
                 //Liste des sources utilisables par les items
                 //donner le nom de la source a la propriété "ListDataSourceName" pour la voir utiliser sur l'item
-                DataSource: [
+                DataSourceOriginal: [
                     {
                         Name: "MagicSolutionSelect",
                         EntityRequestObject: {
@@ -276,7 +276,7 @@
                         }
                     }, 
                 ],
-                DataSources: [
+                DataSource: [
                     {
                         Name: "FlowTypeSelect",
                         EntityRequestObject: {
