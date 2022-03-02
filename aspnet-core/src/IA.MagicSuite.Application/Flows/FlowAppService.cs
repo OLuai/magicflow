@@ -47,6 +47,10 @@ namespace IA.MagicSuite.Flows
                 }
                 else
                 {
+                    flow.Name = input.Name;
+                    flow.Description = input.Description;
+                    flow.FlowTypeId = input.FlowTypeId;
+                    flow.IsActive = input.IsActive;
                     //TO DO
                     _flowRepository.Update(flow);   
                 }
