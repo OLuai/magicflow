@@ -6,7 +6,7 @@
     $(function () {
 
         var _$magicAppsGrid = $('#MagicAppsGrid');        
-        var _magicAppsService = abp.services.app.flow;
+        var _magicFlowService = abp.services.app.flow;
         var _magicDataService = abp.services.app.magicData;
         var _entityTypeFullName = 'IA.MagicSuite.MagicSys.MagicFlow';
         var selectedRowData = null;
@@ -53,7 +53,7 @@
             return element.data("DateTimePicker").date().format("YYYY-MM-DDT23:59:59Z"); 
         }
 
-        function getMagicApps() {
+        function getFlows() {
 
             //prendre les filtres
             let myFilter = {
@@ -76,7 +76,7 @@
             //add by me
             myFilter = '';
 
-            _magicAppsService.getFlows(myFilter).done(function (data) {
+            _magicFlowService.getFlows(myFilter).done(function (data) {
 
                 //recuppérer le tableau de données retourné
                 _gridData = data.items.map(item => {
@@ -178,10 +178,10 @@
                 app.localize('AreYouSure'),
                 function (isConfirmed) {
                     if (isConfirmed) {
-                        _magicAppsService.delete({
+                        _magicFlowService.delete({
                             id: magicApp.id
                         }).done(function () {
-                            getMagicApps(true);
+                            getFlows(true);
                             abp.notify.success(app.localize('SuccessfullyDeleted'));
                         });
                     }
@@ -209,21 +209,21 @@
         });        
 
         abp.event.on('app.createOrEditMagicAppModalSaved', function () {
-            getMagicApps();
+            getFlows();
         });
 
-		$('#GetMagicAppsButton').click(function (e) {
+		$('#getFlowsButton').click(function (e) {
             e.preventDefault();
-            getMagicApps();
+            getFlows();
         });
 
 		$(document).keypress(function(e) {
 		  if(e.which === 13) {
-			getMagicApps();
+			getFlows();
 		  }
 		});
 		
-        getMagicApps();
+        getFlows();
 
 
         var iamQFObjects = {
@@ -238,21 +238,20 @@
                 //fonction exécutée quand le quickform est globalement validé (terminé).   
                 OnValidated: function (data) {
                     console.log(data);
-                    getMagicApps();
-                    //abp.ui.setBusy('body');
-                    //_magicAppsService.createOrEdit(
-                    //    data
-                    //).done(function () {
-                    //    abp.notify.info(app.localize('SavedSuccessfully'));
-                    //    abp.event.trigger('app.createOrEditMagicAppModalSaved');
 
-                    //    //Recharger la liste des apps
-                    //    getMagicApps();
-                    //    iamShared.ui.activeQuickFormHide();
+                    _magicFlowService.createOrEditFlow(
+                        data
+                    ).done(function () {
+                        abp.notify.info(app.localize('SavedSuccessfully'));
+                        //abp.event.trigger('app.createOrEditMagicAppModalSaved');
 
-                    //}).always(function () {
-                    //    abp.ui.clearBusy('body');
-                    //});
+                        //Recharger la liste des apps
+                        getFlows();
+                        iamShared.ui.activeQuickFormHide();
+
+                    }).always(function () {
+                        abp.ui.clearBusy('body');
+                    });
                 },
                 //Liste des sources utilisables par les items
                 //donner le nom de la source a la propriété "ListDataSourceName" pour la voir utiliser sur l'item

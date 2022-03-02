@@ -10,5 +10,7 @@ namespace IA.MagicSuite.Flows
         ListResultDto<FlowsListDto> GetFlows(GetFlowsInput input);
         void SaveFlow(FlowDto input);
         FlowDto GetFlow(GetFlowInput input);
+
+        void CreateOrEditFlow(CreateOrEditFlowDto input);
     }
 }

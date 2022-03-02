@@ -34,6 +34,20 @@ namespace IA.MagicSuite.Flows
             _flowRepository = flowRepository;
         }
 
+        public void CreateOrEditFlow(CreateOrEditFlowDto input)
+        {
+            MagicFlow flow;
+            if(input.Id != null)
+            {
+                flow = _flowRepository.FirstOrDefault(input.Id);
+                if(flow == null)
+                {
+                    flow = ObjectMapper.Map<MagicFlow>(input);
+                }
+                _flowRepository.InsertOrUpdateAndGetId(flow);
+            }
+        }
+
         public FlowDto GetFlow(GetFlowInput input)
         {
             var flow = _flowRepository.Get(input.Id);

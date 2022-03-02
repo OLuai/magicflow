@@ -6,10 +6,9 @@ namespace IA.MagicSuite.Flows
     {
         public string Filter { get; set; }
     }
-    public class FlowsListDto : FullAuditedEntityDto<string>
+    public class FlowsListDto : EntityDto<string>
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string FlowJSON { get; set; }
     }
 }

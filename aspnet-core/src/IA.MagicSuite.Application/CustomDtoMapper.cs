@@ -169,6 +169,7 @@ namespace IA.MagicSuite
             /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */
             configuration.CreateMap<MagicFlow, FlowsListDto>();
             configuration.CreateMap<MagicFlow, FlowDto>();
+            configuration.CreateMap<MagicFlow, CreateOrEditFlowDto>().ReverseMap();
         }
     }
 }
