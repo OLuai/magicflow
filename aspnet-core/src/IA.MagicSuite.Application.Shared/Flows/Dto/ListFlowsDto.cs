@@ -7,7 +7,11 @@ using System.Text;
 
 namespace IA.MagicSuite.Flows.Dto
 {
-    public class CreateOrEditFlowDto: EntityDto<string>, IMayHaveTenant, IPassivable
+    public class GetFlowsInput
+    {
+        public string Filter { set; get; }
+    }
+    public class ListFlowDto: EntityDto<string>, IMayHaveTenant, IPassivable
     {
         [Required]
         [StringLength(150)]

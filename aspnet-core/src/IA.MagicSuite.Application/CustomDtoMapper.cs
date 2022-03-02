@@ -167,9 +167,8 @@ namespace IA.MagicSuite
             configuration.CreateMap<CreateUserDelegationDto, UserDelegation>();
 
             /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */
-            configuration.CreateMap<MagicFlow, FlowsListDto>();
+            configuration.CreateMap<MagicFlow, ListFlowDto>().ReverseMap();
             configuration.CreateMap<MagicFlow, FlowDto>();
-            configuration.CreateMap<MagicFlow, CreateOrEditFlowDto>().ReverseMap();
         }
     }
 }

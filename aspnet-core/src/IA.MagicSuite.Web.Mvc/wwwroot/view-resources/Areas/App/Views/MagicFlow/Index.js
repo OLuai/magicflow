@@ -84,12 +84,9 @@
                     return {
                         id: o.id,
                         name: o.name,                       
-                        fullName: o.name + " (" + o.id + ")",
-                        appTypeName: o.typeName,
-                        solutionName: item.magicSolutionName,
-                        creationTime: o.creationTime,
-                        lastModificationTime: o.lastModificationTime,
-                        isSystemApp: o.isSystemApp,
+                        description: o.description,
+                        flowTypeId: o.flowTypeId,
+                        tenantId: o.tenantId,
                         isActive: o.isActive
                     }
                 });
@@ -106,40 +103,24 @@
                             visible: false
                         },
                         {
-                            dataField: "fullName",
-                            caption: app.localize("FullName")
+
+                            dataField: "tenantId",
+                            visible: false
+                        },
+                        {
+                            dataField: "name",
+                            caption: app.localize("Name")
                            
                         },
                         {
-                            dataField: "solutionName",
-                            caption: app.localize("SolutionName"),
+                            dataField: "description",
+                            caption: app.localize("Description"),
                             width: 150
                         },
                         {
-                            dataField: "appTypeName",
-                            caption: app.localize("AppTypeName"),
-                            width: 80
-                        }
-                        ,
-                        {
-                            dataField: "creationTime",
-                            caption: app.localize("CreationTime"),
-                            format: 'dd/MM/yyyy',
-                            dataType: "date",
-                            width: 100
-                        },
-                        {
-                            dataField: "lastModificationTime",
-                            caption: app.localize("LastModificationTime"),
-                            format: 'dd/MM/yyyy',
-                            dataType: "date",
-                            width: 100
-                        },
-                        {
-                            dataField: "isSystemApp",
-                            caption: app.localize("IsSystemApp"),
-                            dataType: "boolean",
-                            width: 80
+                            dataField: "flowTypeId",
+                            caption: app.localize("FlowTypeId"),
+                            width: 150
                         },
                         {
                             dataField: "isActive",
@@ -151,10 +132,16 @@
                     ],
 
                     focusedRowEnabled: true,
+                    focusedRowKey: -1,
                     onFocusedRowChanged: function (e) {
                         selectedRowData = e.data;
                     },
+                    onRowClick: function (e) {
+                        //console.log("-+-+-+-+-+-+-+-+-+-+-+-+-+-", e.data);
+                        iamShared.ui.rightPanelShow();
 
+                        iamQF.createForm(iamQFObjects.appCreate, e.data, false, null, true, app, _magicDataService, true, true, null);
+                    },
                     //Gérer le double click sur les lignes du grid
                     onRowDblClick: function (e) {
                         
@@ -205,7 +192,7 @@
         $('#CreateNewMagicAppButton').click(function () {
             iamShared.ui.rightPanelShow();
                        
-            iamQF.createForm(iamQFObjects.appCreate, null, false, null, true, app, _magicDataService, true, true, null);
+            iamQF.createForm(iamQFObjects.appCreate,null,false, null, true, app, _magicDataService, true, true, null);
         });        
 
         abp.event.on('app.createOrEditMagicAppModalSaved', function () {
@@ -307,7 +294,7 @@
                 Steps: [
                     {
                         Id: "0001",
-                        Name: "Identification",
+                        Name: "",
                         DisplayName: app.localize("Identification").toUpperCase(),
                         DenyBack: false,
                         OrderNumber: 1
@@ -327,8 +314,8 @@
                         OrderNumber: null,
                         ColSpan: null,
                         CssClass: null,
-                        DataField: "Id",
-                        DisplayName: null,
+                        DataField: "id",
+                        DisplayName: "Id",
                         IsRequired: true,
                         ReadOnly: true,
                         EditorType: "dxTextBox",
@@ -338,8 +325,8 @@
                         Id: "item_Name",
                         StepId: "0001",
                         OrderNumber: 1,
-                        DataField: "Name",
-                        DisplayName: null,
+                        DataField: "name",
+                        DisplayName: "Name",
                         IsRequired: true,
                         EditorType: "dxTextBox",
                         ValidationRules: [
@@ -355,8 +342,8 @@
                         Id: "item_Description",
                         StepId: "0001",
                         OrderNumber: null,
-                        DataField: "Description",
-                        DisplayName: null,
+                        DataField: "description",
+                        DisplayName: "Description",
                         IsRequired: false,
                         EditorType: "dxTextArea",
                     },
@@ -364,8 +351,8 @@
                         Id: "item_FlowType",
                         StepId: "0001",
                         OrderNumber: null,
-                        DataField: "Flow Type",
-                        DisplayName: null,//app.localize("AppType"),
+                        DataField: "flowTypeId",
+                        DisplayName: "Flow Type",//app.localize("AppType"),
                         DefaultValue: "DUAL",
                         IsRequired: false,
                         EditorType: "dxTextBox",// "dxSelectBox",
@@ -376,8 +363,8 @@
                         Id: "item_TenantID",
                         StepId: "0001",
                         OrderNumber: null,
-                        DataField: "Tenant",
-                        DisplayName: null,//app.localize("AppType"),
+                        DataField: "tenantId",
+                        DisplayName: "Tenant",//app.localize("AppType"),
                         DefaultValue: "DUAL",
                         IsRequired: false,
                         EditorType: "dxTextBox",// "dxSelectBox",
@@ -388,8 +375,8 @@
                         Id: "item_IsActive",
                         StepId: "0001",
                         OrderNumber: null,
-                        DataField: "IsActive",
-                        DisplayName: null,
+                        DataField: "isActive",
+                        DisplayName: "IsActive",
                         IsRequired: false,
                         EditorType: "dxCheckBox",
                         DefaultValue: true

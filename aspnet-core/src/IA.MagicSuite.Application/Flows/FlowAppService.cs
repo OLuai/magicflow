@@ -34,7 +34,7 @@ namespace IA.MagicSuite.Flows
             _flowRepository = flowRepository;
         }
 
-        public void CreateOrEditFlow(CreateOrEditFlowDto input)
+        public void CreateOrEditFlow(ListFlowDto input)
         {
             MagicFlow flow;
             if(input.Id != null)
@@ -47,6 +47,7 @@ namespace IA.MagicSuite.Flows
                 }
                 else
                 {
+                    //TO DO
                     _flowRepository.Update(flow);   
                 }
                
@@ -61,11 +62,11 @@ namespace IA.MagicSuite.Flows
             return result;
         }
 
-        public ListResultDto<FlowsListDto> GetFlows(GetFlowsInput input)
+        public ListResultDto<ListFlowDto> GetFlows(GetFlowsInput input)
         {
 
             var flows = _flowRepository.GetAllList().ToList();
-            return new ListResultDto<FlowsListDto>(ObjectMapper.Map<List<FlowsListDto>>(flows));
+            return new ListResultDto<ListFlowDto>(ObjectMapper.Map<List<ListFlowDto>>(flows));
         }
 
         public void SaveFlow(FlowDto input)

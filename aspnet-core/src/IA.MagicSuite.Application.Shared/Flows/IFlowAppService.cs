@@ -7,10 +7,10 @@ namespace IA.MagicSuite.Flows
 {
     public interface IFlowAppService : IApplicationService
     {
-        ListResultDto<FlowsListDto> GetFlows(GetFlowsInput input);
+        ListResultDto<ListFlowDto> GetFlows(GetFlowsInput input);
         void SaveFlow(FlowDto input);
         FlowDto GetFlow(GetFlowInput input);
 
-        void CreateOrEditFlow(CreateOrEditFlowDto input);
+        void CreateOrEditFlow(ListFlowDto input);
     }
 }
