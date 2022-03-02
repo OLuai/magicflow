@@ -127,8 +127,29 @@
                             caption: app.localize("IsActive"),
                             dataType: "boolean",
                             width: 80
-                        }
-                        
+                        },
+                        {
+                            type: 'buttons',
+                            width: 110,
+                            buttons: ['edit', 'delete', {
+                                hint: 'Clone',
+                                icon: 'copy',
+                                visible(e) {
+                                    return !e.row.isEditing;
+                                },
+                                disabled(e) {
+                                    return isChief(e.row.data.Position);
+                                },
+                                onClick(e) {
+                                    const clonedItem = $.extend({}, e.row.data, { ID: maxID += 1 });
+
+                                    employees.splice(e.row.rowIndex, 0, clonedItem);
+                                    e.component.refresh(true);
+                                    e.event.preventDefault();
+                                },
+                            }],
+
+                        },
                     ],
 
                     focusedRowEnabled: true,
@@ -192,7 +213,7 @@
         $('#CreateNewMagicAppButton').click(function () {
             iamShared.ui.rightPanelShow();
                        
-            iamQF.createForm(iamQFObjects.appCreate,null,false, null, true, app, _magicDataService, true, true, null);
+            iamQF.createForm(iamQFObjects.appCreate, null, false, null, true, app, _magicDataService, true, true, null);
         });        
 
         abp.event.on('app.createOrEditMagicAppModalSaved', function () {
@@ -220,7 +241,7 @@
                 Id: "iamQFAppCreate",
                 Name: "Create New Flow",
                 DisplayName: null,
-                PositionId: "rightpanel",
+                PositionId: "wizard",
 
                 //fonction exécutée quand le quickform est globalement validé (terminé).   
                 OnValidated: function (data) {
