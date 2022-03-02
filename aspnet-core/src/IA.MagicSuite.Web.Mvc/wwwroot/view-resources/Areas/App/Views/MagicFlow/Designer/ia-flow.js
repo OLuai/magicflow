@@ -5,19 +5,24 @@ var iamFlow = {
     //Element actif selectionné
     activeItem: null,
 
+    //Initialisation du Flow
     init: function () {
+
+        //Sauvegarde du flow vers le serveur
         $("#save-flow").on('click', e => {
-            console.log('hummmm');
-            abp.services.app.flow.saveFlow({ 'id': iamFlow.flow.FlowId, 'name': iamFlow.flow.FlowName, 'flowJSON': JSON.stringify(iamFlow.flow.FlowActions) });
+            abp.services.app.flow.saveFlow({ 'id': iamFlow.flow.id, 'name': iamFlow.flow.name, 'flowJSON': JSON.stringify(iamFlow.flow.flowJSON) });
         });
+        //Importer un flow depuis un fichier Json
         $("#btn-import").on('click', (e) => {
             iamFlow.transfert.importFlow();
         });
 
+        //Exporter un Flow dans un fichier Json
         $("#btn-export").on('click', (e) => {
             iamFlow.transfert.exportFlow();
         });
 
+        //Modification du nom du flow
         $("#iamFlowBtnEditFlowName, #iamFlowNameSave, #iamFlowNameCancel").on('click', (e) => {
             let targetId = e.currentTarget.id;
             switch (targetId) {
@@ -27,11 +32,11 @@ var iamFlow = {
                     break;
                 case "iamFlowNameSave":
                     let name = $("#iamFlowNameInput").val();
-                    if (name && name != iamFlow.flow.FlowName) {
-                        iamFlow.flow.FlowName = name;
+                    if (name && name != iamFlow.flow.name) {
+                        iamFlow.flow.name = name;
                     }
                     else {
-                        name = iamFlow.flow.FlowName;
+                        name = iamFlow.flow.name;
 
                     }
                     $("#iamFlowName").html(name);
@@ -44,17 +49,32 @@ var iamFlow = {
             };
         });
 
+
+        //Initialisation du nom du flow
         $("#iamFlowNameInput").val('');
         $("#iamFlowNameSave").trigger('click');
 
 
+
+        var _magicFlowService = abp.services.app.flow;
+        var url = new URL(window.location.href);
+        var id = url.searchParams.get("id");
+
+        //Récupération du flow
+        if (id) {
+            _magicFlowService.getFlow({ 'id': id }).done(data => {
+                data.flowJSON = JSON.parse(data.flowJSON);
+                iamFlow.flow = data;
+                iamFlow.transfert.import(data.flowJSON);
+            });
+        }
     },
 
     //Les fonctions de transfert du flow
     transfert: {
         //Fonction d'export de flow
         exportFlow: function () {
-            iamShared.files.stringToFileDownload(iamFlow.flow.FlowName + ".json", JSON.stringify(iamFlow.flow));
+            iamShared.files.stringToFileDownload(iamFlow.flow.name + ".json", JSON.stringify(iamFlow.flow));
         },
         //Fonction d'import de flow
         importFlow: function () {
@@ -78,11 +98,6 @@ var iamFlow = {
                     iamFlow.flow = flow;
 
                     iamFlow.transfert.import(flow.FlowActions);
-
-                    $("#iamFlowNameInput").val('');
-                    $("#iamFlowNameSave").trigger('click');
-
-
                     iamShared.messages.showSuccessMsg("Imported !")
                     return flow;
                 }
@@ -109,6 +124,8 @@ var iamFlow = {
                 }
 
                 printChildren(array);
+                $("#iamFlowNameInput").val('');
+                $("#iamFlowNameSave").trigger('click');
             }
         }
 
@@ -116,10 +133,10 @@ var iamFlow = {
 
     //Le flow et ses propietes
     flow: {
-        FlowId: iamShared.utils.guidString(),
-        FlowName: "Sans Titre",
+        id: iamShared.utils.guidString(),
+        name: "Sans Titre",
         //Array de toutes les actions
-        FlowActions: [],
+        flowJSON: [],
 
     },
 
@@ -193,7 +210,7 @@ var iamFlow = {
         //Retourne une Action 
         get: function (actionId) {
 
-            let items = iamFlow.flow.FlowActions;
+            let items = iamFlow.flow.flowJSON;
             let node;
 
             let getNode = function (actions, node) {
@@ -278,7 +295,7 @@ var iamFlow = {
                 Options: iamFlow.action.getOptions(actionType),
             };
 
-            let toContainer = iamFlow.flow.FlowActions;
+            let toContainer = iamFlow.flow.flowJSON;
 
 
             //Ajout de donnees supplementaires
@@ -330,7 +347,7 @@ var iamFlow = {
         delete: function (Id) {
 
             let action = iamFlow.action.get(Id);
-            let parentItems = iamFlow.flow.FlowActions;
+            let parentItems = iamFlow.flow.flowJSON;
 
             if (action.ParentId) {
                 let parent = iamFlow.action.get(action.ParentId);
@@ -352,7 +369,7 @@ var iamFlow = {
             newParentId = newParentId || null;
 
             let action = iamFlow.action.get(actionId);
-            let newParentItems = iamFlow.flow.FlowActions;
+            let newParentItems = iamFlow.flow.flowJSON;
 
             if (action) {
                 iamFlow.action.delete(action.Id);
