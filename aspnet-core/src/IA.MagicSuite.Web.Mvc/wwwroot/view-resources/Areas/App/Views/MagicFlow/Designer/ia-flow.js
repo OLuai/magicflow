@@ -108,7 +108,7 @@ var iamFlow = {
         //Fonction d'affichage du flow importer
         import: function (array) {
             
-            if (array.length > 0) {
+            if (array && array.length > 0) {
                 $("#flow-container").html('');
                 let func = iamFlowBuider.importBuilder;
                 let printChildren = function (children) {

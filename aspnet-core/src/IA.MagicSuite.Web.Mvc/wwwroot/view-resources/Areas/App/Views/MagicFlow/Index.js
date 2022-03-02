@@ -247,7 +247,7 @@
 
                         //Recharger la liste des apps
                         getFlows();
-                        iamShared.ui.activeQuickFormHide();
+                        //iamShared.ui.activeQuickFormHide();
 
                     }).always(function () {
                         abp.ui.clearBusy('body');

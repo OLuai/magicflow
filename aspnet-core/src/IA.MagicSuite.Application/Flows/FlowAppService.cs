@@ -43,8 +43,13 @@ namespace IA.MagicSuite.Flows
                 if(flow == null)
                 {
                     flow = ObjectMapper.Map<MagicFlow>(input);
+                    _flowRepository.Insert(flow);
                 }
-                _flowRepository.InsertOrUpdateAndGetId(flow);
+                else
+                {
+                    _flowRepository.Update(flow);   
+                }
+               
             }
         }
 
