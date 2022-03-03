@@ -131,9 +131,10 @@
                         {
                             type: 'buttons',
                             width: 110,
-                            buttons: ['edit', 'delete', {
-                                hint: 'Clone',
-                                icon: 'copy',
+                            buttons: [
+                                {
+                                hint: 'Edit',
+                                icon: 'edit',
                                 visible(e) {
                                     return !e.row.isEditing;
                                 },
@@ -141,13 +142,34 @@
                                     return isChief(e.row.data.Position);
                                 },
                                 onClick(e) {
-                                    const clonedItem = $.extend({}, e.row.data, { ID: maxID += 1 });
+                                    //const clonedItem = $.extend({}, e.row.data, { ID: maxID += 1 });
 
-                                    employees.splice(e.row.rowIndex, 0, clonedItem);
-                                    e.component.refresh(true);
-                                    e.event.preventDefault();
+                                    //employees.splice(e.row.rowIndex, 0, clonedItem);
+                                    //e.component.refresh(true);
+                                    //e.event.preventDefault();
+
+                                    console.log("-+-+-+-+-+-+-+-+-+-+-+-+-+-", e);
+                                    iamShared.ui.rightPanelShow();
+
+                                    iamQF.createForm(iamQFObjects.appCreate, e.row.data, false, null, true, app, _magicDataService, true, true, null);
+
                                 },
-                            }],
+                                },
+                                {
+                                    hint: 'Remove',
+                                    icon: 'remove',
+                                    visible(e) {
+                                        return !e.row.isEditing;
+                                    },
+                                    disabled(e) {
+                                        return isChief(e.row.data.Position);
+                                    },
+                                    onClick(e) {
+                                    console.log("id", e.row.data.id);
+                                        deleteFlow(e.row.data.id);
+                                    },
+                                }
+                            ],
 
                         },
                     ],
@@ -159,9 +181,9 @@
                     },
                     onRowClick: function (e) {
                         //console.log("-+-+-+-+-+-+-+-+-+-+-+-+-+-", e.data);
-                        iamShared.ui.rightPanelShow();
+                        //iamShared.ui.rightPanelShow();
 
-                        iamQF.createForm(iamQFObjects.appCreate, e.data, false, null, true, app, _magicDataService, true, true, null);
+                        //iamQF.createForm(iamQFObjects.appCreate, e.data, false, null, true, app, _magicDataService, true, true, null);
                     },
                     //Gérer le double click sur les lignes du grid
                     onRowDblClick: function (e) {
@@ -180,15 +202,13 @@
             });
         }
 
-        function deleteMagicApp(magicApp) {
+        function deleteFlow(id) {
             abp.message.confirm(
                 '',
                 app.localize('AreYouSure'),
                 function (isConfirmed) {
                     if (isConfirmed) {
-                        _magicFlowService.delete({
-                            id: magicApp.id
-                        }).done(function () {
+                        _magicFlowService.deleteFlow({id}).done(function () {
                             getFlows(true);
                             abp.notify.success(app.localize('SuccessfullyDeleted'));
                         });
@@ -209,7 +229,7 @@
             $('#AdvacedAuditFiltersArea').slideUp();
         });
 
-        //afficher le panneau de creation d'une nouvelle app
+        //afficher le panneau de creation d'un nouveau flow
         $('#CreateNewMagicAppButton').click(function () {
             iamShared.ui.rightPanelShow();
                        
@@ -241,7 +261,7 @@
                 Id: "iamQFAppCreate",
                 Name: "Create New Flow",
                 DisplayName: null,
-                PositionId: "wizard",
+                PositionId: "rightPanel",
 
                 //fonction exécutée quand le quickform est globalement validé (terminé).   
                 OnValidated: function (data) {
