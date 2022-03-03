@@ -58,7 +58,12 @@ namespace IA.MagicSuite.Flows
             }
         }
 
-        public FlowDto GetFlow(GetFlowInput input)
+        public void DeleteFlow(GetOrDeleteFlowInput input)
+        {
+            _flowRepository.Delete(input.Id);
+        }
+
+        public FlowDto GetFlow(GetOrDeleteFlowInput input)
         {
             var flow = _flowRepository.Get(input.Id);
             var result = ObjectMapper.Map<FlowDto>(flow);

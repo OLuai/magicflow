@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IA.MagicSuite.Flows.Dto
 {
-    public class GetFlowInput: EntityDto<string> { }
+    public class GetOrDeleteFlowInput: EntityDto<string> { }
     public class FlowDto : EntityDto<string>
     {
         public FlowDto(){
