@@ -360,7 +360,7 @@
                         IsRequired: true,
                         ReadOnly: true,
                         EditorType: "dxTextBox",
-                        Formula: `IF({tenantId}=NULL;convertToPascalCase({Name}); CONCATENATE("t";{tenantId};"_";convertToPascalCase({Name})))`
+                        Formula: `IF({tenantId}=NULL;convertToPascalCase({name}); CONCATENATE("t";{tenantId};"_";convertToPascalCase({name})))`
                     },
                     {
                         Id: "item_Name",
