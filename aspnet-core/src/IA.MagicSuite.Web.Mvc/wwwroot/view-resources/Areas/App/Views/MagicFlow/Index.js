@@ -74,6 +74,7 @@
                         name: o.name,
                         description: o.description,
                         flowTypeId: o.flowTypeId,
+                        magicFlowType: o.magicFlowType,
                         tenantId: o.tenantId,
                         isActive: o.isActive
                     }
@@ -106,8 +107,8 @@
                             width: 150
                         },
                         {
-                            dataField: "flowTypeId",
-                            caption: app.localize("FlowTypeId"),
+                            dataField: "magicFlowType",
+                            caption: app.localize("FlowType"),
                             width: 150
                         },
                         {

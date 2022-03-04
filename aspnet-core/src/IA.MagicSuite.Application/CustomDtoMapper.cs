@@ -169,9 +169,12 @@ namespace IA.MagicSuite
 
 
 
-            configuration.CreateMap<MagicFlow, ListMagicFlowsDto>().ReverseMap();
+            configuration.CreateMap<MagicFlow, ListMagicFlowsDto>().ForMember(mgftp => mgftp.MagicFlowType, options => options.MapFrom(mgf => mgf.MagicFlowTypeFk == null ? "" :mgf.MagicFlowTypeFk.Name)).ReverseMap();
             configuration.CreateMap<MagicFlow, MagicFlowDto>();
             configuration.CreateMap<MagicFlowType, MagicFlowTypeDto>();
         }
     }
 }
+
+//configuration.CreateMap<MagicFlow, ListMagicFlowsDto>().Include<MagicFlowType, MagicFlowTypeDto>();
+//configuration.CreateMap<ListMagicFlowsDto, MagicFlow>();

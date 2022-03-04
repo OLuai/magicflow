@@ -39,7 +39,7 @@ namespace IA.MagicSuite.MagicSys.Dtos
         public string Description { get; set; }
 
         public string FlowTypeId { get; set; } //Le type du flow pour filtrer les différents type d'actions disponibles APPROVAL,UI,STANDARD
-        public MagicFlowTypeDto MagicFlowType { get; set; }
+        public string MagicFlowType { get; set; }
         public bool IsActive { get; set; }
         public int? TenantId { get; set; }
     }

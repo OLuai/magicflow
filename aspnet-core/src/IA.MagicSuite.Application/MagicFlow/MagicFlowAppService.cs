@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Abp.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace IA.MagicSuite.MagicSys
 {
@@ -65,19 +66,21 @@ namespace IA.MagicSuite.MagicSys
 
             var flows = _flowRepository
                 .GetAll()
+                .Include(flow => flow.MagicFlowTypeFk)
                 .WhereIf(input != null,
                     flow => {
 
-                        bool checkFilter = input.Filter.IsNullOrEmpty() || flow.Name.Contains(input.Filter) || (!flow.Description.IsNullOrEmpty() && flow.Description.Contains(input.Filter)) || (flow.MagicEntityFk !=null && flow.MagicEntityFk.Name.Contains(input.Filter));
-                        bool checkName = input.NameFilter.IsNullOrEmpty() || flow.Name.Contains(input.NameFilter);
-                        bool checkDescription = input.DescriptionFilter.IsNullOrEmpty() || (!flow.Description.IsNullOrEmpty() && flow.Description.Contains(input.DescriptionFilter));
+                        bool checkFilter = input.Filter.IsNullOrEmpty() || flow.Name.ToLower().Contains(input.Filter.ToLower()) || (!flow.Description.IsNullOrEmpty() && flow.Description.ToLower().Contains(input.Filter.ToLower())) || (flow.MagicFlowTypeFk != null && flow.MagicFlowTypeFk.Name.ToLower().Contains(input.Filter.ToLower()));
+                        bool checkName = input.NameFilter.IsNullOrEmpty() || flow.Name.ToLower().Contains(input.NameFilter.ToLower());
+                        bool checkDescription = input.DescriptionFilter.IsNullOrEmpty() || (!flow.Description.IsNullOrEmpty() && flow.Description.ToLower().Contains(input.DescriptionFilter.ToLower()));
                         bool checkActive = input.IsActiveFilter.IsNullOrEmpty() || flow.IsActive.Equals(input.IsActiveFilter == "0");
                         return checkFilter && checkName && checkDescription && checkActive;
                     }
                 )
                 .ToList();
+            dynamic result = new ListResultDto<ListMagicFlowsDto>(ObjectMapper.Map<List<ListMagicFlowsDto>>(flows));
 
-            return new ListResultDto<ListMagicFlowsDto>(ObjectMapper.Map<List<ListMagicFlowsDto>>(flows));
+            return result;
         }
 
         public void SaveMagicFlow(MagicFlowDto input)
