@@ -1,4 +1,5 @@
 ﻿using Abp.Application.Services.Dto;
+using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
 using IA.MagicSuite.MagicSys.Dtos;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Abp.Extensions;
 
 namespace IA.MagicSuite.MagicSys
 {
@@ -59,7 +61,22 @@ namespace IA.MagicSuite.MagicSys
 
         public ListResultDto<ListMagicFlowsDto> GetMagicFlows(GetMagicFlowsInput input)
         {
-            var flows = _flowRepository.GetAllList().ToList();
+
+
+            var flows = _flowRepository
+                .GetAll()
+                .WhereIf(input != null,
+                    flow => {
+
+                        bool checkFilter = input.Filter.IsNullOrEmpty() || flow.Name.Contains(input.Filter) || (!flow.Description.IsNullOrEmpty() && flow.Description.Contains(input.Filter)) || (flow.MagicEntityFk !=null && flow.MagicEntityFk.Name.Contains(input.Filter));
+                        bool checkName = input.NameFilter.IsNullOrEmpty() || flow.Name.Contains(input.NameFilter);
+                        bool checkDescription = input.DescriptionFilter.IsNullOrEmpty() || (!flow.Description.IsNullOrEmpty() && flow.Description.Contains(input.DescriptionFilter));
+                        bool checkActive = input.IsActiveFilter.IsNullOrEmpty() || flow.IsActive.Equals(input.IsActiveFilter == "0");
+                        return checkFilter && checkName && checkDescription && checkActive;
+                    }
+                )
+                .ToList();
+
             return new ListResultDto<ListMagicFlowsDto>(ObjectMapper.Map<List<ListMagicFlowsDto>>(flows));
         }
 
@@ -75,3 +92,4 @@ namespace IA.MagicSuite.MagicSys
         }
     }
 }
+ //|| flow.MagicEntityFk.Name.Contains(input.Filter)
