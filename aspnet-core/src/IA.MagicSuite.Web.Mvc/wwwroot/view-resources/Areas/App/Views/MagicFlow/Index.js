@@ -5,14 +5,14 @@
 (function () {
     $(function () {
 
-        var _$magicAppsGrid = $('#MagicAppsGrid');        
-        var _magicFlowService = abp.services.app.flow;
+        var _$magicFlowsGrid = $('#MagicFlowsGrid');
+        var _magicFlowService = abp.services.app.magicFlow;
         var _magicDataService = abp.services.app.magicData;
         var _entityTypeFullName = 'IA.MagicSuite.MagicSys.MagicFlow';
         var selectedRowData = null;
         var _gridData;
-               
-        
+
+
         moment.locale(abp.localization.currentLanguage.name);
 
         //Créer le right panel pour les quickCreate/quickforms
@@ -30,9 +30,9 @@
             'delete': abp.auth.hasPermission('Pages.MagicApps.Delete')
         };
 
-       
-		        var _entityTypeHistoryModal = app.modals.EntityTypeHistoryModal.create();
-		        function entityHistoryIsEnabled() {
+
+        var _entityTypeHistoryModal = app.modals.EntityTypeHistoryModal.create();
+        function entityHistoryIsEnabled() {
             return abp.auth.hasPermission('Pages.Administration.AuditLogs') &&
                 abp.custom.EntityHistory &&
                 abp.custom.EntityHistory.IsEnabled &&
@@ -43,47 +43,35 @@
             if (element.data("DateTimePicker").date() == null) {
                 return null;
             }
-            return element.data("DateTimePicker").date().format("YYYY-MM-DDT00:00:00Z"); 
+            return element.data("DateTimePicker").date().format("YYYY-MM-DDT00:00:00Z");
         }
-        
+
         var getMaxDateFilter = function (element) {
             if (element.data("DateTimePicker").date() == null) {
                 return null;
             }
-            return element.data("DateTimePicker").date().format("YYYY-MM-DDT23:59:59Z"); 
+            return element.data("DateTimePicker").date().format("YYYY-MM-DDT23:59:59Z");
         }
 
         function getFlows() {
 
             //prendre les filtres
             let myFilter = {
-                filter: $('#MagicAppsTableFilter').val(),
+                filter: $('#MagicFlowsTableFilter').val(),
                 nameFilter: $('#NameFilterId').val(),
-                uniqueNameFilter: $('#UniqueNameFilterId').val(),
                 descriptionFilter: $('#DescriptionFilterId').val(),
-                activeVersionFilter: $('#ActiveVersionFilterId').val(),
-                colorOrClassNameFilter: $('#ColorOrClassNameFilterId').val(),
-                useDefaultIconFilter: $('#UseDefaultIconFilterId').val(),
-                systemIconFilter: $('#SystemIconFilterId').val(),
-                iconUrlFilter: $('#IconUrlFilterId').val(),
+                flowTypeFilter: $('#FlowTypeId').val(),
                 isActiveFilter: $('#IsActiveFilterId').val(),
-                isSystemAppFilter: $('#IsSystemAppFilterId').val(),
-                magicSolutionNameFilter: $('#MagicSolutionNameFilterId').val(),
-                magicAppTypeNameFilter: $('#MagicAppTypeNameFilterId').val(),
-                magicAppStatusNameFilter: $('#MagicAppStatusNameFilterId').val()
             };
 
-            //add by me
-            myFilter = '';
-
-            _magicFlowService.getFlows(myFilter).done(function (data) {
+            _magicFlowService.getMagicFlows(myFilter).done(function (data) {
 
                 //recuppérer le tableau de données retourné
                 _gridData = data.items.map(item => {
                     let o = item;
                     return {
                         id: o.id,
-                        name: o.name,                       
+                        name: o.name,
                         description: o.description,
                         flowTypeId: o.flowTypeId,
                         tenantId: o.tenantId,
@@ -91,10 +79,10 @@
                     }
                 });
 
-                _$magicAppsGrid.dxDataGrid({
+                _$magicFlowsGrid.dxDataGrid({
                     dataSource: _gridData,
                     hoverStateEnabled: true,
-                    keyExpr:"id",
+                    keyExpr: "id",
                     columnFixing: { enabled: false },
                     columns: [
                         {
@@ -110,7 +98,7 @@
                         {
                             dataField: "name",
                             caption: app.localize("Name")
-                           
+
                         },
                         {
                             dataField: "description",
@@ -133,27 +121,27 @@
                             width: 110,
                             buttons: [
                                 {
-                                hint: 'Edit',
-                                icon: 'edit',
-                                visible(e) {
-                                    return !e.row.isEditing;
-                                },
-                                disabled(e) {
-                                    return isChief(e.row.data.Position);
-                                },
-                                onClick(e) {
-                                    //const clonedItem = $.extend({}, e.row.data, { ID: maxID += 1 });
+                                    hint: 'Edit',
+                                    icon: 'edit',
+                                    visible(e) {
+                                        return !e.row.isEditing;
+                                    },
+                                    disabled(e) {
+                                        return isChief(e.row.data.Position);
+                                    },
+                                    onClick(e) {
+                                        //const clonedItem = $.extend({}, e.row.data, { ID: maxID += 1 });
 
-                                    //employees.splice(e.row.rowIndex, 0, clonedItem);
-                                    //e.component.refresh(true);
-                                    //e.event.preventDefault();
+                                        //employees.splice(e.row.rowIndex, 0, clonedItem);
+                                        //e.component.refresh(true);
+                                        //e.event.preventDefault();
 
-                                    console.log("-+-+-+-+-+-+-+-+-+-+-+-+-+-", e);
-                                    iamShared.ui.rightPanelShow();
+                                        console.log("-+-+-+-+-+-+-+-+-+-+-+-+-+-", e);
+                                        iamShared.ui.rightPanelShow();
 
-                                    iamQF.createForm(iamQFObjects.appCreate, e.row.data, false, null, true, app, _magicDataService, true, true, null);
+                                        iamQF.createForm(iamQFObjects.appCreate, e.row.data, false, null, true, app, _magicDataService, true, true, null);
 
-                                },
+                                    },
                                 },
                                 {
                                     hint: 'Remove',
@@ -165,7 +153,7 @@
                                         return isChief(e.row.data.Position);
                                     },
                                     onClick(e) {
-                                    console.log("id", e.row.data.id);
+                                        console.log("id", e.row.data.id);
                                         deleteFlow(e.row.data.id);
                                     },
                                 }
@@ -187,8 +175,8 @@
                     },
                     //Gérer le double click sur les lignes du grid
                     onRowDblClick: function (e) {
-                        
-                        let viewUrl = abp.appPath + 'App/MagicFlow/Designer?id=' + e.data.id;
+
+                        let viewUrl = abp.appPath + 'App/MagicFlow/Editor?id=' + e.data.id;
                         window.location.href = viewUrl;
                     },
 
@@ -208,7 +196,7 @@
                 app.localize('AreYouSure'),
                 function (isConfirmed) {
                     if (isConfirmed) {
-                        _magicFlowService.deleteFlow({id}).done(function () {
+                        _magicFlowService.deleteMagicFlow({ id }).done(function () {
                             getFlows(true);
                             abp.notify.success(app.localize('SuccessfullyDeleted'));
                         });
@@ -217,7 +205,7 @@
             );
         }
 
-		$('#ShowAdvancedFiltersSpan').click(function () {
+        $('#ShowAdvancedFiltersSpan').click(function () {
             $('#ShowAdvancedFiltersSpan').hide();
             $('#HideAdvancedFiltersSpan').show();
             $('#AdvacedAuditFiltersArea').slideDown();
@@ -230,32 +218,32 @@
         });
 
         //afficher le panneau de creation d'un nouveau flow
-        $('#CreateNewMagicAppButton').click(function () {
+        $('#CreateNewMagicFlowButton').click(function () {
             iamShared.ui.rightPanelShow();
-                       
+
             iamQF.createForm(iamQFObjects.appCreate, null, false, null, true, app, _magicDataService, true, true, null);
-        });        
+        });
 
         abp.event.on('app.createOrEditMagicAppModalSaved', function () {
             getFlows();
         });
 
-		$('#getFlowsButton').click(function (e) {
+        $('#getFlowsButton').click(function (e) {
             e.preventDefault();
             getFlows();
         });
 
-		$(document).keypress(function(e) {
-		  if(e.which === 13) {
-			getFlows();
-		  }
-		});
-		
+        $(document).keypress(function (e) {
+            if (e.which === 13) {
+                getFlows();
+            }
+        });
+
         getFlows();
 
 
         var iamQFObjects = {
-                      
+
             appCreate: {
                 AutoCreateEditors: false,
                 Id: "iamQFAppCreate",
@@ -267,7 +255,7 @@
                 OnValidated: function (data) {
                     console.log(data);
 
-                    _magicFlowService.createOrEditFlow(
+                    _magicFlowService.createOrEditMagicFlow(
                         data
                     ).done(function () {
                         abp.notify.info(app.localize('SavedSuccessfully'));
@@ -292,7 +280,7 @@
                             DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
                             FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
                         }
-                    }, 
+                    },
 
                     {
                         Name: "UserSelect",
@@ -302,7 +290,7 @@
                             DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
                             FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
                         }
-                    }, 
+                    },
                 ],
                 DataSource: [
                     {
@@ -378,7 +366,7 @@
                             }
                         ],
                     },
-                    
+
                     {
                         Id: "item_Description",
                         StepId: "0001",
@@ -528,7 +516,7 @@
                         EditorType: "dxCheckBox",
                         DefaultValue: false
                     },
-                    
+
                     {
                         Id: "item_ColorOrClassName",
                         StepId: "0002",

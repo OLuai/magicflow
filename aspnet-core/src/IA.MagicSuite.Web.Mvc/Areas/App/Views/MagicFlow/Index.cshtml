@@ -27,7 +27,7 @@
 
     <abp-page-subheader title="@L("MagicFlow")" description="@L("MagicFlowHeaderInfo")">
 
-        <button id="CreateNewMagicAppButton" class="btn btn-primary blue"><i class="fa fa-plus"></i> @L("CreateNewMagicFlow")</button>
+        <button id="CreateNewMagicFlowButton" class="btn btn-primary blue"><i class="fa fa-plus"></i> @L("CreateNewMagicFlow")</button>
 
     </abp-page-subheader>
 
@@ -39,7 +39,7 @@
                         <div class="col-xl-12">
                             <div class="form-group align-items-center">
                                 <div class="input-group">
-                                    <input type="text" id="MagicAppsTableFilter" class="form-control m-input" placeholder="@L("SearchWithThreeDot")" value="">
+                                    <input type="text" id="MagicFlowsTableFilter" class="form-control m-input" placeholder="@L("SearchWithThreeDot")" value="">
                                     <span class="input-group-btn">
                                         <button id="GetMagicAppsButton" class="btn btn-primary" type="submit"><i class="flaticon-search-1"></i></button>
                                     </span>
@@ -66,8 +66,8 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <label for="IsActiveFilterId">@L("FlowType")</label>
-                        <select class="form-control" name="IsActiveFilter" id="IsActiveFilterId">
+                        <label for="FlowTypeId">@L("FlowType")</label>
+                        <select class="form-control" name="IsActiveFilter" id="FlowTypeId">
                             <option value="-1">@L("All")</option>
                             <option value="0">@L("False")</option>
                             <option value="1">@L("True")</option>
@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <div class="row align-items-center">
-                    <div id="MagicAppsGrid"></div>
+                    <div id="MagicFlowsGrid"></div>
                 </div>
             </div>
         </div>

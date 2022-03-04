@@ -44,6 +44,7 @@ using IA.MagicSuite.WebHooks.Dto;
 using IA.MagicSuite.MagicSys;
 using IA.MagicSuite.Flows;
 using IA.MagicSuite.Flows.Dto;
+using IA.MagicSuite.MagicSys.Dtos;
 
 namespace IA.MagicSuite
 {
@@ -169,6 +170,12 @@ namespace IA.MagicSuite
             /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */
             configuration.CreateMap<MagicFlow, ListFlowDto>().ReverseMap();
             configuration.CreateMap<MagicFlow, FlowDto>();
+
+
+
+            configuration.CreateMap<MagicFlow, ListMagicFlowsDto>().ReverseMap();
+            configuration.CreateMap<MagicFlow, MagicFlowDto>();
+            configuration.CreateMap<MagicFlowType, MagicFlowTypeDto>();
         }
     }
 }

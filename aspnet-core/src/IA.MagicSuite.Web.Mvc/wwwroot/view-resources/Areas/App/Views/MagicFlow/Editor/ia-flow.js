@@ -50,19 +50,15 @@ var iamFlow = {
         });
 
 
-        //Initialisation du nom du flow
-        $("#iamFlowNameInput").val('');
-        $("#iamFlowNameSave").trigger('click');
 
 
-
-        var _magicFlowService = abp.services.app.flow;
+        var _magicFlowService = abp.services.app.magicFlow;
         var url = new URL(window.location.href);
         var id = url.searchParams.get("id");
 
         //Récupération du flow
         if (id) {
-            _magicFlowService.getFlow({ 'id': id }).done(data => {
+            _magicFlowService.getMagicFlow({ 'id': id }).done(data => {
                 data.flowJSON = JSON.parse(data.flowJSON) || [];
                 iamFlow.flow = data;
                 iamFlow.transfert.import(data.flowJSON);
@@ -124,9 +120,11 @@ var iamFlow = {
                 }
 
                 printChildren(array);
-                $("#iamFlowNameInput").val('');
-                $("#iamFlowNameSave").trigger('click');
+
             }
+            //Initialisation du nom du flow
+            $("#iamFlowNameInput").val('');
+            $("#iamFlowNameSave").trigger('click');
         }
 
     },
