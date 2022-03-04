@@ -42,8 +42,6 @@ using IA.MagicSuite.Organizations.Dto;
 using IA.MagicSuite.Sessions.Dto;
 using IA.MagicSuite.WebHooks.Dto;
 using IA.MagicSuite.MagicSys;
-using IA.MagicSuite.Flows;
-using IA.MagicSuite.Flows.Dto;
 using IA.MagicSuite.MagicSys.Dtos;
 
 namespace IA.MagicSuite
@@ -168,8 +166,6 @@ namespace IA.MagicSuite
             configuration.CreateMap<CreateUserDelegationDto, UserDelegation>();
 
             /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */
-            configuration.CreateMap<MagicFlow, ListFlowDto>().ReverseMap();
-            configuration.CreateMap<MagicFlow, FlowDto>();
 
 
 
