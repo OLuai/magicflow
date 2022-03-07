@@ -96,4 +96,3 @@ namespace IA.MagicSuite.MagicSys
         }
     }
 }
- //|| flow.MagicEntityFk.Name.Contains(input.Filter)

@@ -68,15 +68,14 @@
 
                 //recuppérer le tableau de données retourné
                 _gridData = data.items.map(item => {
-                    let o = item;
                     return {
-                        id: o.id,
-                        name: o.name,
-                        description: o.description,
-                        flowTypeId: o.flowTypeId,
-                        magicFlowType: o.magicFlowType,
-                        tenantId: o.tenantId,
-                        isActive: o.isActive
+                        id: item.id,
+                        name: item.name,
+                        description: item.description,
+                        flowTypeId: item.flowTypeId,
+                        magicFlowType: item.magicFlowType,
+                        tenantId: item.tenantId,
+                        isActive: item.isActive
                     }
                 });
 
