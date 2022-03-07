@@ -262,27 +262,27 @@
                 },
                 //Liste des sources utilisables par les items
                 //donner le nom de la source a la propriété "ListDataSourceName" pour la voir utiliser sur l'item
-                DataSources: [
-                    {
-                        Name: "MagicSolutionSelect",
-                        EntityRequestObject: {
-                            EntityId: 'MagicSolutionSelect', //nom unique de l'entité
-                            KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
-                            DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
-                            FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
-                        }
-                    },
+                //DataSources: [
+                //    {
+                //        Name: "MagicSolutionSelect",
+                //        EntityRequestObject: {
+                //            EntityId: 'MagicSolutionSelect', //nom unique de l'entité
+                //            KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
+                //            DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
+                //            FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
+                //        }
+                //    },
 
-                    {
-                        Name: "UserSelect",
-                        EntityRequestObject: {
-                            EntityId: 'UserSelect', //nom unique de l'entité
-                            KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
-                            DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
-                            FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
-                        }
-                    },
-                ],
+                //    {
+                //        Name: "UserSelect",
+                //        EntityRequestObject: {
+                //            EntityId: 'UserSelect', //nom unique de l'entité
+                //            KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
+                //            DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
+                //            FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
+                //        }
+                //    },
+                //],
                 Data: null,
                 IgnoreStepsOrderNumber: false, //Ignore le numéro d'ordre attribué et ordonne par ordre de position dans le tableau des steps
                 IgnoreItemsOrderNumber: true,
@@ -293,8 +293,8 @@
                 Steps: [
                     {
                         Id: "0001",
-                        Name: "Identification",
-                        DisplayName: app.localize("Identification").toUpperCase(),
+                        Name: null,
+                        DisplayName: null,
                         DenyBack: false,
                         OrderNumber: 1
                     }
@@ -372,29 +372,29 @@
                         EditorType: "dxCheckBox",
                         DefaultValue: true
                     },
-                    {
-                        Id: "item_AppTypeId",
-                        StepId: "0001",
-                        OrderNumber: null,
-                        DataField: "AppTypeId",
-                        DisplayName: app.localize("AppType"),
-                        DefaultValue: "DUAL",
-                        IsRequired: true,
-                        EditorType: "dxSelectBox",
+                    //{
+                    //    Id: "item_MagicFlowTypeId",
+                    //    StepId: "0001",
+                    //    OrderNumber: null,
+                    //    DataField: "MagicFlowTypeId",
+                    //    DisplayName: app.localize("FlowType"),
+                    //    DefaultValue: "STANDARD",
+                    //    IsRequired: true,
+                    //    EditorType: "dxSelectBox",
 
-                        //Spécifique pour les objets liste ou  les tableaux immediats automatique pour un dxTextBox avec bouton rechercher
-                        ListValueExpression: null, // Spécifier le champ de valeur retournée
-                        ListDisplayExpression: null, //Spécifier le champ affiché
-                        ListSystemIconExpression: null, //Spécifier le champ utilisé pour afficher des images système
-                        ListIconUrlExpression: null, //Spécifier le champ utilisé pour afficher des images depuis les Url
-                        ListImageExpression: null, //spécifier  le champ utilisé pour afficher des images (base64 ou byteaarray)
-                        EntityRequestObject: {
-                            EntityId: 'MagicFlowType', //nom unique de l'entité
-                            KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
-                            DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
-                            FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
-                        }
-                    },
+                    //    //Spécifique pour les objets liste ou  les tableaux immediats automatique pour un dxTextBox avec bouton rechercher
+                    //    ListValueExpression: null, // Spécifier le champ de valeur retournée
+                    //    ListDisplayExpression: null, //Spécifier le champ affiché
+                    //    ListSystemIconExpression: null, //Spécifier le champ utilisé pour afficher des images système
+                    //    ListIconUrlExpression: null, //Spécifier le champ utilisé pour afficher des images depuis les Url
+                    //    ListImageExpression: null, //spécifier  le champ utilisé pour afficher des images (base64 ou byteaarray)
+                    //    EntityRequestObject: {
+                    //        EntityId: 'MagicFlowType', //nom unique de l'entité
+                    //        KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
+                    //        DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
+                    //        FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
+                    //    }
+                    //},
                     //{
                     //    Id: "item_SolutionId",
                     //    StepId: "0001",

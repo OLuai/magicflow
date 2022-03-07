@@ -3,7 +3,6 @@
 /// <reference path="../dxlib/js/jquery.min.js" />
 
 var formulaParser = import("./formula-parser.min.js");
-
 var iamQF = {
     //template utiles
 
@@ -75,7 +74,6 @@ var iamQF = {
             //let DisplayName = iamShared.strings.removeAllWhiteSpaces(step.DisplayName || app.localize(step.Name));
 
             if (step.Name == gpName) {
-
                 frm.itemOption(step.Name, "visible", true);
             } else {
                 frm.itemOption(step.Name, "visible", false);
@@ -119,14 +117,13 @@ var iamQF = {
         let i = 0;
         steps.forEach(function (step) {
             //let DisplayName = iamShared.strings.removeAllWhiteSpaces(step.DisplayName || app.localize(step.Name));
-
-            if (i == gpOrderIndex) {
-
-                frm.itemOption(step.Name, "visible", true);
-            } else {
-                frm.itemOption(step.Name, "visible", false);
+            if (step.Name != null) {
+                if (i == gpOrderIndex) {
+                    frm.itemOption(step.Name, "visible", true);
+                } else {
+                    frm.itemOption(step.Name, "visible", false);
+                }
             }
-
             i++;
         });
     },
@@ -1142,7 +1139,6 @@ var iamQF = {
 
         //Générer les evènements par rapport aux dépendances --------------------------------------------------------------------------------------------------------------------
         let calcEgine = null;
-        console.log("dependencies", dependencies);
         if (dependencies.length > 0) {
             //Créer uniquement le formulaParser que si des dépendances existent
             calcEgine = iamShared.utils.createFormulaCalcEngine(dependencies);
