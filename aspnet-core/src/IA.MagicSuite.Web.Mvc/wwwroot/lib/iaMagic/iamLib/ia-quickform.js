@@ -1,6 +1,7 @@
 ﻿/// <reference path="ia-common.js" />
 /// <reference path="jquery-ui.min.js" />
 /// <reference path="../dxlib/js/jquery.min.js" />
+var formulaParser = import('./formula-parser.min.js');
 
 var iamQF = {
     //template utiles

@@ -130,13 +130,6 @@
                                         return isChief(e.row.data.Position);
                                     },
                                     onClick(e) {
-                                        //const clonedItem = $.extend({}, e.row.data, { ID: maxID += 1 });
-
-                                        //employees.splice(e.row.rowIndex, 0, clonedItem);
-                                        //e.component.refresh(true);
-                                        //e.event.preventDefault();
-
-                                        console.log("-+-+-+-+-+-+-+-+-+-+-+-+-+-", e);
                                         iamShared.ui.rightPanelShow();
 
                                         iamQF.createForm(iamQFObjects.appCreate, e.row.data, false, null, true, app, _magicDataService, true, true, null);
