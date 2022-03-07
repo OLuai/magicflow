@@ -53,29 +53,44 @@
             return element.data("DateTimePicker").date().format("YYYY-MM-DDT23:59:59Z");
         }
 
-        function getFlows() {
+        function getMagicApps() {
 
             //prendre les filtres
             let myFilter = {
-                filter: $('#MagicFlowsTableFilter').val(),
+                filter: $('#MagicAppsTableFilter').val(),
                 nameFilter: $('#NameFilterId').val(),
+                uniqueNameFilter: $('#UniqueNameFilterId').val(),
                 descriptionFilter: $('#DescriptionFilterId').val(),
-                flowTypeFilter: $('#FlowTypeId').val(),
+                activeVersionFilter: $('#ActiveVersionFilterId').val(),
+                colorOrClassNameFilter: $('#ColorOrClassNameFilterId').val(),
+                useDefaultIconFilter: $('#UseDefaultIconFilterId').val(),
+                systemIconFilter: $('#SystemIconFilterId').val(),
+                iconUrlFilter: $('#IconUrlFilterId').val(),
                 isActiveFilter: $('#IsActiveFilterId').val(),
+                isSystemAppFilter: $('#IsSystemAppFilterId').val(),
+                magicSolutionNameFilter: $('#MagicSolutionNameFilterId').val(),
+                magicAppTypeNameFilter: $('#MagicAppTypeNameFilterId').val(),
+                magicAppStatusNameFilter: $('#MagicAppStatusNameFilterId').val()
             };
+
+            //add by me
+            myFilter = {};
 
             _magicFlowService.getMagicFlows(myFilter).done(function (data) {
 
                 //recuppérer le tableau de données retourné
                 _gridData = data.items.map(item => {
+                    let o = item;
                     return {
-                        id: item.id,
-                        name: item.name,
-                        description: item.description,
-                        flowTypeId: item.flowTypeId,
-                        magicFlowType: item.magicFlowType,
-                        tenantId: item.tenantId,
-                        isActive: item.isActive
+                        id: o.id,
+                        name: o.name,
+                        fullName: o.name + " (" + o.id + ")",
+                        appTypeName: o.typeName,
+                        solutionName: item.magicSolutionName,
+                        creationTime: o.creationTime,
+                        lastModificationTime: o.lastModificationTime,
+                        isSystemApp: o.isSystemApp,
+                        isActive: o.isActive
                     }
                 });
 
@@ -91,85 +106,59 @@
                             visible: false
                         },
                         {
-
-                            dataField: "tenantId",
-                            visible: false
-                        },
-                        {
-                            dataField: "name",
-                            caption: app.localize("Name")
+                            dataField: "fullName",
+                            caption: app.localize("FullName")
 
                         },
                         {
-                            dataField: "description",
-                            caption: app.localize("Description"),
+                            dataField: "solutionName",
+                            caption: app.localize("SolutionName"),
                             width: 150
                         },
                         {
-                            dataField: "magicFlowType",
-                            caption: app.localize("FlowType"),
-                            width: 150
+                            dataField: "appTypeName",
+                            caption: app.localize("AppTypeName"),
+                            width: 80
+                        }
+                        ,
+                        {
+                            dataField: "creationTime",
+                            caption: app.localize("CreationTime"),
+                            format: 'dd/MM/yyyy',
+                            dataType: "date",
+                            width: 100
+                        },
+                        {
+                            dataField: "lastModificationTime",
+                            caption: app.localize("LastModificationTime"),
+                            format: 'dd/MM/yyyy',
+                            dataType: "date",
+                            width: 100
+                        },
+                        {
+                            dataField: "isSystemApp",
+                            caption: app.localize("IsSystemApp"),
+                            dataType: "boolean",
+                            width: 80
                         },
                         {
                             dataField: "isActive",
                             caption: app.localize("IsActive"),
                             dataType: "boolean",
                             width: 80
-                        },
-                        {
-                            type: 'buttons',
-                            width: 110,
-                            buttons: [
-                                {
-                                    hint: 'Edit',
-                                    icon: 'edit',
-                                    visible(e) {
-                                        return !e.row.isEditing;
-                                    },
-                                    disabled(e) {
-                                        return isChief(e.row.data.Position);
-                                    },
-                                    onClick(e) {
-                                        iamShared.ui.rightPanelShow();
+                        }
 
-                                        iamQF.createForm(iamQFObjects.flowCreate, e.row.data, false, null, true, app, _magicDataService, true, true, null);
-
-                                    },
-                                },
-                                {
-                                    hint: 'Remove',
-                                    icon: 'remove',
-                                    visible(e) {
-                                        return !e.row.isEditing;
-                                    },
-                                    disabled(e) {
-                                        return isChief(e.row.data.Position);
-                                    },
-                                    onClick(e) {
-                                        console.log("id", e.row.data.id);
-                                        deleteFlow(e.row.data.id);
-                                    },
-                                }
-                            ],
-
-                        },
                     ],
 
                     focusedRowEnabled: true,
-                    focusedRowKey: -1,
                     onFocusedRowChanged: function (e) {
                         selectedRowData = e.data;
                     },
-                    onRowClick: function (e) {
-                        //console.log("-+-+-+-+-+-+-+-+-+-+-+-+-+-", e.data);
-                        //iamShared.ui.rightPanelShow();
 
-                        //iamQF.createForm(iamQFObjects.flowCreate, e.data, false, null, true, app, _magicDataService, true, true, null);
-                    },
                     //Gérer le double click sur les lignes du grid
                     onRowDblClick: function (e) {
 
-                        let viewUrl = abp.appPath + 'App/MagicFlow/Editor?id=' + e.data.id;
+                        let viewUrl = abp.appPath + 'App/MagicFlow/Designer?id=' + e.data.id;
                         window.location.href = viewUrl;
                     },
 
@@ -183,14 +172,16 @@
             });
         }
 
-        function deleteFlow(id) {
+        function deleteMagicApp(magicApp) {
             abp.message.confirm(
                 '',
                 app.localize('AreYouSure'),
                 function (isConfirmed) {
                     if (isConfirmed) {
-                        _magicFlowService.deleteMagicFlow({ id }).done(function () {
-                            getFlows(true);
+                        _magicFlowService.delete({
+                            id: magicApp.id
+                        }).done(function () {
+                            getMagicApps(true);
                             abp.notify.success(app.localize('SuccessfullyDeleted'));
                         });
                     }
@@ -210,34 +201,34 @@
             $('#AdvacedAuditFiltersArea').slideUp();
         });
 
-        //afficher le panneau de creation d'un nouveau flow
+        //afficher le panneau de creation d'une nouvelle app
         $('#CreateNewMagicFlowButton').click(function () {
             iamShared.ui.rightPanelShow();
 
-            iamQF.createForm(iamQFObjects.flowCreate, null, false, null, true, app, _magicDataService, true, true, null);
+            iamQF.createForm(iamQFObjects.appCreate, null, false, null, true, app, _magicDataService, true, true, null);
         });
 
         abp.event.on('app.createOrEditMagicAppModalSaved', function () {
-            getFlows();
+            getMagicApps();
         });
 
-        $('#getFlowsButton').click(function (e) {
+        $('#GetMagicAppsButton').click(function (e) {
             e.preventDefault();
-            getFlows();
+            getMagicApps();
         });
 
         $(document).keypress(function (e) {
             if (e.which === 13) {
-                getFlows();
+                getMagicApps();
             }
         });
 
-        getFlows();
+        getMagicApps();
 
 
         var iamQFObjects = {
 
-            flowCreate: {
+            appCreate: {
                 AutoCreateEditors: false,
                 Id: "iamQFAppCreate",
                 Name: "CreateMagicApp",
@@ -415,7 +406,7 @@
 
                     {
                         Id: "item_ColorOrClassName",
-                        StepId: "0001",
+                        StepId: "0002",
                         OrderNumber: 4,
                         DataField: "ColorOrClassName",
                         DisplayName: null,
@@ -424,7 +415,7 @@
                     },
                     {
                         Id: "item_UseDefaultIcon",
-                        StepId: "0001",
+                        StepId: "0002",
                         OrderNumber: 4,
                         DataField: "UseDefaultIcon",
                         DisplayName: null,
@@ -434,7 +425,7 @@
                     },
                     {
                         Id: "item_SystemIcon",
-                        StepId: "0001",
+                        StepId: "0002",
                         OrderNumber: 5,
                         DataField: "SystemIcon",
                         DisplayName: null,
@@ -443,7 +434,7 @@
                     },
                     {
                         Id: "item_IconUrl",
-                        StepId: "0001",
+                        StepId: "0002",
                         OrderNumber: 6,
                         DataField: "IconUrl",
                         DisplayName: null,

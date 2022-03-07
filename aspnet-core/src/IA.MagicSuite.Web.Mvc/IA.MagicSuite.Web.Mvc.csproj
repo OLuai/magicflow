@@ -69,4 +69,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\view-resources\Areas\App\Views\MagicFlow\Index - Copier.min.js">
+      <DependentUpon>Index - old.min.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+
 </Project>
