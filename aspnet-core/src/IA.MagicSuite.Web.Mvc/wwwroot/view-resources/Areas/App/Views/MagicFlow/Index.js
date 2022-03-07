@@ -239,23 +239,22 @@
 
             flowCreate: {
                 AutoCreateEditors: false,
-                Id: "iamQFAppCreate",
-                Name: "CreateMagicApp",
+                Id: "iamQFFlowCreate",
+                Name: "Create New Flow",
                 DisplayName: null,
                 PositionId: "rightpanel",
 
                 //fonction exécutée quand le quickform est globalement validé (terminé).   
                 OnValidated: function (data) {
                     abp.ui.setBusy('body');
-                    _magicFlowService.createOrEdit(
+                    _magicFlowService.createOrEditMagicFlow(
                         data
                     ).done(function () {
                         abp.notify.info(app.localize('SavedSuccessfully'));
                         abp.event.trigger('app.createOrEditMagicAppModalSaved');
 
                         //Recharger la liste des apps
-                        getMagicApps();
-                        iamShared.ui.activeQuickFormHide();
+                        getFlows();
 
                     }).always(function () {
                         abp.ui.clearBusy('body');
@@ -298,22 +297,28 @@
                         DisplayName: app.localize("Identification").toUpperCase(),
                         DenyBack: false,
                         OrderNumber: 1
-                    },
-                    {
-                        Id: "0002",
-                        Name: "Style",
-                        DisplayName: app.localize("Style").toUpperCase(),
-                        DenyBack: false,
-                        OrderNumber: 2
                     }
                 ],
                 Items: [
                     {
+                        Id: "item_Id",
+                        StepId: "0001",
+                        OrderNumber: null,
+                        ColSpan: null,
+                        CssClass: null,
+                        DataField: "id",
+                        DisplayName: "Id",
+                        IsRequired: true,
+                        ReadOnly: true,
+                        EditorType: "dxTextBox",
+                        Formula: `IF({tenantId}=NULL;convertToPascalCase({name}); CONCATENATE("t";{tenantId};"_";convertToPascalCase({name})))`
+                    },
+                    {
                         Id: "item_Name",
                         StepId: "0001",
                         OrderNumber: 1,
-                        DataField: "Name",
-                        DisplayName: null,
+                        DataField: "name",
+                        DisplayName: "Name",
                         IsRequired: true,
                         EditorType: "dxTextBox",
                         ValidationRules: [
@@ -325,17 +330,47 @@
                         ],
                     },
                     {
-                        Id: "item_Id",
+                        Id: "item_Description",
                         StepId: "0001",
                         OrderNumber: null,
-                        ColSpan: null,
-                        CssClass: null,
-                        DataField: "id",
-                        DisplayName: null,
-                        IsRequired: true,
-                        ReadOnly: true,
-                        EditorType: "dxTextBox",
-                        Formula: `IF({tenantId}=NULL;convertToPascalCase({Name}); CONCATENATE("t";{tenantId};"_";convertToPascalCase({Name})))`
+                        DataField: "description",
+                        DisplayName: "Description",
+                        IsRequired: false,
+                        EditorType: "dxTextArea",
+                    },
+                    {
+                        Id: "item_FlowType",
+                        StepId: "0001",
+                        OrderNumber: null,
+                        DataField: "flowTypeId",
+                        DisplayName: "Flow Type",//app.localize("AppType"),
+                        DefaultValue: "DUAL",
+                        IsRequired: false,
+                        EditorType: "dxTextBox",// "dxSelectBox",
+
+                        //ListDataSourceName: "FlowTypeSelect"
+                    },
+                    {
+                        Id: "item_TenantID",
+                        StepId: "0001",
+                        OrderNumber: null,
+                        DataField: "tenantId",
+                        DisplayName: "Tenant",//app.localize("AppType"),
+                        DefaultValue: "DUAL",
+                        IsRequired: false,
+                        EditorType: "dxTextBox",// "dxSelectBox",
+
+                        //ListDataSourceName: "TenantSelect"
+                    },
+                    {
+                        Id: "item_IsActive",
+                        StepId: "0001",
+                        OrderNumber: null,
+                        DataField: "isActive",
+                        DisplayName: "IsActive",
+                        IsRequired: false,
+                        EditorType: "dxCheckBox",
+                        DefaultValue: true
                     },
                     {
                         Id: "item_AppTypeId",
@@ -354,102 +389,23 @@
                         ListIconUrlExpression: null, //Spécifier le champ utilisé pour afficher des images depuis les Url
                         ListImageExpression: null, //spécifier  le champ utilisé pour afficher des images (base64 ou byteaarray)
                         EntityRequestObject: {
-                            EntityId: 'MagicAppType', //nom unique de l'entité
+                            EntityId: 'MagicFlowType', //nom unique de l'entité
                             KeyValuePairs: null, //objet des paramètres nécessaires pour sélectionner les données de l'entité
                             DataId: null, // Valeur du champ Id lorsqu'on recherche un enregistrement unique spécifique
                             FilterExpression: null //expression de filtre complémentaire possible dans les cas spécifiques ex: [champ1]='valeurText1' AND [champ2]=valeurNumerique2 etc.
                         }
                     },
-                    {
-                        Id: "item_SolutionId",
-                        StepId: "0001",
-                        OrderNumber: null,
-                        DataField: "SolutionId",
-                        DisplayName: null,
-                        IsRequired: true,
-                        ReadOnly: false,
-                        EditorType: "dxTextBox",
-                        ListDataSourceName: "MagicSolutionSelect"////le nom de la source de données dans la propriété Datasources du quickForm
-                    },
-                    {
-                        Id: "item_OwnerId",
-                        StepId: "0001",
-                        OrderNumber: null,
-                        DataField: "OwnerId",
-                        DisplayName: null,
-                        IsRequired: true,
-                        ReadOnly: false,
-                        EditorType: "dxNumberBox",
-                        ListDataSourceName: "UserSelect",////le nom de la source de données dans la propriété Datasources du quickForm
-                        DefaultValue: iamPageVariables.userId
-                    },
-                    {
-                        Id: "item_Description",
-                        StepId: "0001",
-                        OrderNumber: null,
-                        DataField: "Description",
-                        DisplayName: null,
-                        IsRequired: false,
-                        EditorType: "dxTextArea"
-                    },
-                    {
-                        Id: "item_IsActive",
-                        StepId: "0001",
-                        OrderNumber: 3,
-                        DataField: "IsActive",
-                        DisplayName: null,
-                        IsRequired: false,
-                        EditorType: "dxCheckBox",
-                        DefaultValue: true
-                    },
-                    {
-                        Id: "item_IsSystemApp",
-                        StepId: "0001",
-                        OrderNumber: 3,
-                        DataField: "IsSystemApp",
-                        DisplayName: null,
-                        IsRequired: false,
-                        EditorType: "dxCheckBox",
-                        DefaultValue: false
-                    },
-
-                    {
-                        Id: "item_ColorOrClassName",
-                        StepId: "0001",
-                        OrderNumber: 4,
-                        DataField: "ColorOrClassName",
-                        DisplayName: null,
-                        IsRequired: false,
-                        EditorType: "dxTextBox"
-                    },
-                    {
-                        Id: "item_UseDefaultIcon",
-                        StepId: "0001",
-                        OrderNumber: 4,
-                        DataField: "UseDefaultIcon",
-                        DisplayName: null,
-                        IsRequired: false,
-                        EditorType: "dxCheckBox",
-                        DefaultValue: false
-                    },
-                    {
-                        Id: "item_SystemIcon",
-                        StepId: "0001",
-                        OrderNumber: 5,
-                        DataField: "SystemIcon",
-                        DisplayName: null,
-                        IsRequired: false,
-                        EditorType: "dxTextBox"
-                    },
-                    {
-                        Id: "item_IconUrl",
-                        StepId: "0001",
-                        OrderNumber: 6,
-                        DataField: "IconUrl",
-                        DisplayName: null,
-                        IsRequired: false,
-                        EditorType: "dxTextBox"
-                    }
+                    //{
+                    //    Id: "item_SolutionId",
+                    //    StepId: "0001",
+                    //    OrderNumber: null,
+                    //    DataField: "SolutionId",
+                    //    DisplayName: null,
+                    //    IsRequired: true,
+                    //    ReadOnly: false,
+                    //    EditorType: "dxTextBox",
+                    //    ListDataSourceName: "MagicSolutionSelect"////le nom de la source de données dans la propriété Datasources du quickForm
+                    //},
                 ]
             },
 
