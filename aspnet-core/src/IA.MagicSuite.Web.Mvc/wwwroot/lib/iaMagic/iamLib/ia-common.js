@@ -3,9 +3,6 @@
 
 DevExpress.setTemplateEngine("underscore");
 
-
-var formulaParser = import("./formula-parser.min.js");
-
 //Objet contenant les fonctions essentielles de magic
 var iamShared = {
 

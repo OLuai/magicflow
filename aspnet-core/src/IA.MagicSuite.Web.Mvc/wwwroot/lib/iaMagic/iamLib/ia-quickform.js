@@ -5,17 +5,17 @@
 var iamQF = {
     //template utiles
 
-    quickForms: [], //Tableau des quickforms créés
+    quickForms: [],//Tableau des quickforms créés
 
     propertyGrids: [], //Tableau des propertyGrids créés
     activePropertyGridForm: null,
     activePropertyGridObject: null,
     activeForm: null,
-    loadedFormsDatasources: [], //Tableau des noms des forms dont les dataSourcs des controles ont été chargés
+    loadedFormsDatasources: [],//Tableau des noms des forms dont les dataSourcs des controles ont été chargés
     activeFormsData: [], //conserve les data fourni et devant etre mise a jour pour les quickforms actif car formData du dxForm ne conserve que les valeurs modifiées
 
     //permet de créer un QF depuis une chaine pour faire un test ou l'intégrer dynamquement au tableau des QF et l'utiliser par action ultérieurement et autre
-    createFormFromString: function(strFrm, data, recreate = false, showAfterCreate = true) {
+    createFormFromString: function (strFrm, data, recreate = false, showAfterCreate = true) {
         if (!strFrm) {
             return null;
         } else {
@@ -27,12 +27,12 @@ var iamQF = {
     },
 
     //Masquer tous les groupes
-    hideAllGroups: function(frmObj, frm, app) {
+    hideAllGroups: function (frmObj, frm, app) {
         let steps = DevExpress.data.query(frmObj.Steps)
             .sortBy("OrderNumber")
             .toArray();
 
-        steps.forEach(function(step) {
+        steps.forEach(function (step) {
             //let DisplayName = step.DisplayName || app.localize(step.Name);
 
             //frm.itemOption(DisplayName, "visible", false);
@@ -41,25 +41,25 @@ var iamQF = {
     },
 
     //Activer le bon groupe depuis le OrderNumber
-    activateGroupByOrderNumber: function(frmObj, frm, app, gpOrderNumber) {
+    activateGroupByOrderNumber: function (frmObj, frm, app, gpOrderNumber) {
         let dxQ = DevExpress.data.query(frmObj.Steps)
             .filter(["OrderNumber", "=", gpOrderNumber]);
 
-        dxQ.count().done(function(value) {
+        dxQ.count().done(function (value) {
             if (value == 0) {
-                return;
-            } else {
+                return; 
+            }else{
                 //this.activateGroupByDisplayName(frmObj, frm, app, (dxQ.toArray()[0].DisplayName || app.localize(dxQ.toArray()[0].Name)));
                 this.activateGroupByName(frmObj, frm, app, dxQ.toArray()[0].Name);
             }
         });
+        
 
-
-
+        
     },
 
     //Activer le bon groupe depuis le Name
-    activateGroupByName: function(frmObj, frm, app, gpName) {
+    activateGroupByName: function (frmObj, frm, app, gpName) {
 
         //let dxQ = DevExpress.data.query(frmObj.Steps)
         //    .filter(["Name", "=", gpName]);
@@ -69,7 +69,7 @@ var iamQF = {
         //this.activateGroupByDisplayName(frmObj, frm, app, (dxQ.toArray()[0].DisplayName || app.localize(dxQ.toArray()[0].Name)));
 
         let steps = frmObj.Steps;
-        steps.forEach(function(step) {
+        steps.forEach(function (step) {
             //let DisplayName = iamShared.strings.removeAllWhiteSpaces(step.DisplayName || app.localize(step.Name));
 
             if (step.Name == gpName) {
@@ -83,14 +83,14 @@ var iamQF = {
     },
 
     //Activer le bon groupe depuis le DisplayName
-    activateGroupByDisplayName: function(frmObj, frm, app, gpDisplayName) {
+    activateGroupByDisplayName: function (frmObj, frm, app, gpDisplayName) {
         let steps = DevExpress.data.query(frmObj.Steps)
             .sortBy("OrderNumber")
             .toArray();
 
 
-        steps.forEach(function(step) {
-            let DisplayName = step.DisplayName || ((!app || !app.localize) ? step.Name : app.localize(step.Name));
+        steps.forEach(function (step) {
+            let DisplayName = step.DisplayName || ((!app || !app.localize) ? step.Name : app.localize(step.Name)) ;
 
             if (gpDisplayName == DisplayName) {
                 frm.itemOption(iamShared.strings.removeAllWhiteSpaces(DisplayName), "visible", true);
@@ -101,7 +101,7 @@ var iamQF = {
     },
 
     //Activer le bon groupe depuis la position (index) dans la collection
-    activateGroupByOrderIndex: function(frmObj, frm, app, gpOrderIndex) {
+    activateGroupByOrderIndex: function (frmObj, frm, app, gpOrderIndex) {
         let steps;
 
         if (frmObj.IgnoreStepsOrderNumber) {
@@ -115,7 +115,7 @@ var iamQF = {
         }
 
         let i = 0;
-        steps.forEach(function(step) {
+        steps.forEach(function (step) {
             //let DisplayName = iamShared.strings.removeAllWhiteSpaces(step.DisplayName || app.localize(step.Name));
 
             if (i == gpOrderIndex) {
@@ -130,14 +130,14 @@ var iamQF = {
     },
 
     //Créer les éléments de validations des controles dans le quickform
-    createEditorsValidationGroups: function(frmObj, frm, step) {
+    createEditorsValidationGroups: function (frmObj, frm, step) {
 
         //Parcourir les items (inputs) liés du step afin de gérer leur validation en bloc
         DevExpress.data.query(frmObj.Items)
             .filter(["StepId", "=", step.Id])
             .sortBy("OrderNumber")
             .toArray()
-            .forEach(function(it) {
+            .forEach(function (it) {
 
                 //sortir si l'item n'est pas lié à une validation
                 if (!it.DataField) return;
@@ -145,7 +145,7 @@ var iamQF = {
                 //Parcourir les validations paramétrées dans le quickforms pour chaque item et les importer dans les validations Rules du controle
                 let validationRules = [];
                 if (it.IsRequired) validationRules.push({ type: 'required' })
-                if (it.ValidationRules) it.ValidationRules.forEach(function(valR) {
+                if (it.ValidationRules) it.ValidationRules.forEach(function (valR) {
                     validationRules.push(valR);
                 });
 
@@ -165,7 +165,7 @@ var iamQF = {
     },
 
     //Permet de retourner l'objet source intégrant les modifications faites sur le quickform
-    getUpdatedData: function(uniqueId, frm) {
+    getUpdatedData: function (uniqueId, frm) {
 
         //iamShared.arrays.updatePropertiesByKey(iamQF.activeFormsData, "uniqueId", uniqueId, )
 
@@ -182,10 +182,10 @@ var iamQF = {
 
     },
 
-
+    
     //permet de créer le formulaire quickform selon l'objet de paramétrage frmObj
     //overridePositionId = htmlContainer, popup, stepper, wizard, rightPanel
-    createForm: function(frmObj, data, recreate = false, overridePositionId = null, showAfterCreate = false, app, magicDataService, closeAfterValidation = true) {
+    createForm: function (frmObj, data, recreate = false, overridePositionId = null, showAfterCreate = false, app, magicDataService, closeAfterValidation = true) {
         let iamQF = this;
         let $qfParent;
 
@@ -193,7 +193,7 @@ var iamQF = {
         let innerContent = "";
         let qfCreationHtml = "<div id={id}></div>";
         let colCount = 2;
-        let validateText = ((!app || !app.localize) ? "Validate" : app.localize("Validate"));
+        let validateText = ((!app|| !app.localize)?"Validate": app.localize("Validate"));
         let title = (frmObj.DisplayName || ((!app || !app.localize) ? frmObj.Name : app.localize(frmObj.Name)));
 
         //Prendre la position paramétrée si aucune n'est passée
@@ -224,11 +224,11 @@ var iamQF = {
                     if (overridePositionId == 'wizard') {
                         $qfParent = $("#iamQFWizardContainer");
 
-
+                        
                         if (!$qfParent.length) {
                             //Créer le html dans le body pour les assistants
-                            iamShared.ui.wizardPopupHtmlCreate();
-
+                            iamShared.ui.wizardPopupHtmlCreate();                           
+                            
                         }
 
                         if (frmObj.colCount) colCount = frmObj.colCount;
@@ -242,7 +242,7 @@ var iamQF = {
 
                         if (!$qfParent.length) {
                             //Créer le right panel pour les quickCreate/quickforms
-                            iamShared.ui.rightPanelCreate(null, false, null);
+                            iamShared.ui.rightPanelCreate(null, false, null);                            
                         }
 
                         colCount = 1;
@@ -353,7 +353,8 @@ var iamQF = {
                     
                 </div>
             </div>
-        </div>` : //else
+        </div>`
+            ://else
             `<div class="card card-custom">
              <div class="card-body p-0">                                   
                 <div class="wizard wizard-2" data-wizard-state="first" data-wizard-clickable="false">
@@ -374,7 +375,7 @@ var iamQF = {
                     </div>
                 </div>
             </div>
-        </div>`;
+        </div>` ;
 
         if (overridePositionId == 'stepper') {
             stepperHtml = stepperHtml.replace("{stepperClass}", frmObj.StepperClass).replace("{id}", uniqueId);
@@ -405,7 +406,7 @@ var iamQF = {
         let BackGroupDisplayName = "";
         let dependencies = []; //Tableau des dépendances liées aux formules, a dependancy item is : {item: FormItem ,sourceObjectName:,sourceObjectProperty:, dependentObjectName:, dependentObjectProperty:, formula: formule de calcule adaptée au calculateur}
 
-        steps.forEach(function(el) {
+        steps.forEach(function (el) {
 
             let gpDisplayName = el.DisplayName || ((!app || !app.localize) ? el.Name : app.localize(el.Name));
             let nextGpDisplayName = "";
@@ -451,7 +452,7 @@ var iamQF = {
 
                 innerStepperHtml += '<div class="mt-step-number ' + (frmObj.StepperClass.indexOf('step-background') > -1 ? '' : 'bg-white') + '">' + (chaineImage || i.toString()) + '</div>';
                 innerStepperHtml += '<div class="mt-step-title uppercase font-grey-cascade">' + ((UseIcons) ? i.toString() + '. ' : '') + gpDisplayName + '</div>';
-                if (el.Description) innerStepperHtml += '<div class="mt-step-content font-grey-cascade">' + ((!app || !app.localize) ? el.Description : app.localize(el.Description)) + '</div>';
+                if (el.Description) innerStepperHtml += '<div class="mt-step-content font-grey-cascade">' + ((!app || !app.localize) ? el.Description : app.localize(el.Description))  + '</div>';
 
                 //Fermer le div du step
                 innerStepperHtml += '</div>';
@@ -537,7 +538,7 @@ var iamQF = {
             }
 
             //Parcourir et ajouter les éléments à mettre dans le groupe ----------------------------------------------------------------------------------------------------------------
-            ItemsArray.forEach(function(it) {
+            ItemsArray.forEach(function (it) {
                 let item;
                 let editorType = "dxTextBox";
                 let itemType = "simple";
@@ -566,7 +567,7 @@ var iamQF = {
                         dataField: it.DataField,
                         //IsRequired: it.isRequired,
                         //Prendre null sinon créer un div comme item template
-                        template: ((it.DataField || itemType == "button") ? ((it.template) ? it.template : null) : function(data, $itemElement) {
+                        template: ((it.DataField || itemType == "button") ? ((it.template) ? it.template : null) : function (data, $itemElement) {
                             ((!it.CssClass) ? $("<div>").appendTo($itemElement).html('<span class="dx-form-group-caption">' + ((!app || !app.localize) ? it.DisplayName : app.localize(it.DisplayName)) + '</span><div class="dx-form-group-content"><div>') : $("<div>").appendTo($itemElement).html('<span class="' + it.CssClass + '">' + ((!app || !app.localize) ? it.DisplayName : app.localize(it.DisplayName)) + '</span>'));
                         }),
                         cssClass: it.CssClass,
@@ -586,7 +587,7 @@ var iamQF = {
                             valueExpr: it.ListValueExpression,
                             readOnly: it.ReadOnly,
                             searchEnabled: true,
-                            onContentReady: function(e) {
+                            onContentReady: function (e) {
                                 let editor = e.component;
 
                                 if (!editor.option("dataSource")) {
@@ -631,13 +632,13 @@ var iamQF = {
                                     location: "after",
                                     options: {
                                         icon: "fas fa-search",
-                                        stylingMode: "contained", //text, outllined
+                                        stylingMode: "contained",//text, outllined
                                         type: "normal",
-                                        onClick: function(e) {
+                                        onClick: function (e) {
                                             //lancer un popup de sélection
                                             iamShared.ui.popupShowSelection(
-                                                app, (it.DisplayName || ((!app || !app.localize) ? it.DataField : app.localize(it.DataField))), null, iamShared.utils.getRealDataSource(it.ListDataSource, Window), it.ListMultiSelect,
-                                                function(selectedItems) {
+                                                app, (it.DisplayName || ((!app || !app.localize) ? it.DataField : app.localize(it.DataField))) , null, iamShared.utils.getRealDataSource(it.ListDataSource, Window), it.ListMultiSelect,
+                                                function (selectedItems) {
                                                     let Value;
 
                                                     if (selectedItems) {
@@ -656,7 +657,8 @@ var iamQF = {
                                             )
                                         }
                                     }
-                                }]
+                                }
+                                ]
                             }
                         } else {
 
@@ -669,28 +671,26 @@ var iamQF = {
                                         location: "after",
                                         options: {
                                             icon: "fas fa-search",
-                                            stylingMode: "contained", //text, outllined
+                                            stylingMode: "contained",//text, outllined
                                             type: "normal",
-                                            onClick: function(e) {
+                                            onClick: function (e) {
 
                                                 //Si c'est directement un nom de fonctionnement interne (Listes internes) alors le gérer par le système lui même selon le nom de l'objet liste interne
                                                 if (it.EntityRequestObject && (typeof it.EntityRequestObject === 'string' || it.EntityRequestObject instanceof String)) {
 
                                                     switch (it.EntityRequestObject) {
-                                                        case 'iamSystemIcon':
-                                                            {
-                                                                //Afficher le popup de sélection des icones système
-                                                                iamShared.fontAwesome.createFontAwesomePopupSelector(app, function(selectedItem) {
-                                                                    //mettre à jour le controle
-                                                                    frm.updateData(it.DataField, ((selectedItem) ? selectedItem.name : null));
-                                                                }, "solid");
-                                                                break;
-                                                            }
-                                                        default:
-                                                            {
-                                                                //ne rien faire
-                                                                break;
-                                                            }
+                                                        case 'iamSystemIcon': {
+                                                            //Afficher le popup de sélection des icones système
+                                                            iamShared.fontAwesome.createFontAwesomePopupSelector(app, function (selectedItem) {
+                                                                //mettre à jour le controle
+                                                                frm.updateData(it.DataField, ((selectedItem) ? selectedItem.name : null));
+                                                            }, "solid");
+                                                            break;
+                                                        }
+                                                        default: {
+                                                            //ne rien faire
+                                                            break;
+                                                        }
                                                     }
 
                                                     return;
@@ -702,8 +702,8 @@ var iamQF = {
                                                     //Si l'objet est directement rattaché à un EntityRequestObject
                                                     if (it.EntityRequestObject) {
 
-
-                                                        magicDataService.get(iamShared.magicData.adaptEntityRequestObject(it.EntityRequestObject, frm.option("formData"), frmObj.Variables)).done(function(res) {
+                                                        
+                                                        magicDataService.get(iamShared.magicData.adaptEntityRequestObject(it.EntityRequestObject, frm.option("formData"), frmObj.Variables)).done(function (res) {
 
                                                             let dataSource = res.data;
                                                             let valExpr = it.ListValueExpression || res.keyFieldName;
@@ -712,7 +712,7 @@ var iamQF = {
                                                             //lancer un popup de sélection
                                                             iamShared.ui.popupShowSelection(
                                                                 app, (it.DisplayName || ((!app || !app.localize) ? it.DataField : app.localize(it.DataField))), null, dataSource, it.ListMultiSelect,
-                                                                function(selectedItems) {
+                                                                function (selectedItems) {
                                                                     let Value;
 
                                                                     if (selectedItems) {
@@ -747,7 +747,7 @@ var iamQF = {
 
 
                                                                 //Données dynamiques donc recharger depuis le serveur
-                                                                magicDataService.get(iamShared.magicData.adaptEntityRequestObject(res.EntityRequestObject, frm.option("formData"), frmObj.Variables)).done(function(r) {
+                                                                magicDataService.get(iamShared.magicData.adaptEntityRequestObject(res.EntityRequestObject, frm.option("formData"), frmObj.Variables)).done(function (r) {
 
                                                                     //Mettre à jour le dataSource à conserver.
                                                                     res.Data = r.data;
@@ -766,7 +766,7 @@ var iamQF = {
                                                                     //lancer un popup de sélection
                                                                     iamShared.ui.popupShowSelection(
                                                                         app, (it.DisplayName || ((!app || !app.localize) ? it.DataField : app.localize(it.DataField))), null, dataSource, it.ListMultiSelect,
-                                                                        function(selectedItems) {
+                                                                        function (selectedItems) {
                                                                             let Value;
 
                                                                             if (selectedItems) {
@@ -794,7 +794,7 @@ var iamQF = {
                                                                 //lancer un popup de sélection
                                                                 iamShared.ui.popupShowSelection(
                                                                     app, (it.DisplayName || ((!app || !app.localize) ? it.DataField : app.localize(it.DataField))), null, dataSource, it.ListMultiSelect,
-                                                                    function(selectedItems) {
+                                                                    function (selectedItems) {
                                                                         let Value;
 
                                                                         if (selectedItems) {
@@ -820,19 +820,20 @@ var iamQF = {
 
                                             }
                                         }
-                                    }]
+                                    }
+                                    ]
                                 };
                             } else {
 
                                 if (itemType == "button") {
                                     //Clonner les options de l'editeur configurées dans le quickform
-                                    item["buttonOptions"] = Object.assign({}, it.editorOptions);
+                                    item["buttonOptions"] = Object.assign({}, it.editorOptions);    
                                 } else {
                                     item["editorOptions"] = {
                                         readOnly: it.ReadOnly
                                     };
                                 }
-
+                                
                             }
                         }
                     }
@@ -857,7 +858,7 @@ var iamQF = {
                         }
 
                         //Parcourir les boutons et les créer dans le tableau
-                        it.buttons.forEach(function(btn) {
+                        it.buttons.forEach(function (btn) {
                             let btnOption = Object.assign({}, btn);
 
                             //Gérer le Eval pour contextualiser les variables et fonctions disponibles dans le click
@@ -883,15 +884,15 @@ var iamQF = {
                     item['label'] = { text: "", visible: false };
                 } else {
                     if (itemType == "button") {
-                        //Déjà géré, ne rien faire
+                       //Déjà géré, ne rien faire
                     } else {
                         item['label'] = (it.DataField) ? { text: it.DisplayName || ((!app || !app.localize) ? it.DataField : app.localize(it.DataField)) } : null;
-                    }
+                    }                    
                 }
 
                 if (itemType != "button" && it.editorOptions) {
                     //Clonner les options de l'editeur configurées dans le quickform
-                    item["editorOptions"] = Object.assign({}, it.editorOptions);
+                    item["editorOptions"] = Object.assign({}, it.editorOptions);   
                 }
 
                 //Gérer la formule liée
@@ -900,7 +901,7 @@ var iamQF = {
                     let params = iamShared.utils.getFormulaParams(it.Formula);
 
                     if (params) {
-                        params.forEach(function(param) {
+                        params.forEach(function (param) {
 
                             let dependentItem = { sourceObjectName: param, sourceObjectProperty: "value", dependentObjectName: it.DataField, dependentObjectProperty: "value", formula: iamShared.utils.adaptFormulaToCalcEngine(it.Formula) };
 
@@ -934,10 +935,12 @@ var iamQF = {
                 itemType: "group",
                 colCount: 2,
                 colSpan: colCount,
-                items: [{
-                    itemType: 'empty',
-                    colSpan: 1
-                }]
+                items: [
+                    {
+                        itemType: 'empty',
+                        colSpan: 1
+                    }
+                ]
             };
 
             let onValidated = null;
@@ -963,14 +966,14 @@ var iamQF = {
                             text: ((!app || !app.localize) ? "Back" : app.localize("Back")),
                             width: 120,
                             icon: "back",
-                            onClick: function(e) {
+                            onClick: function (e) {
 
                                 if (overridePositionId == 'stepper') {
 
                                     //Masquer le dropdown                                    
                                     $("#iamStep_" + el.Name)[0].click();
                                     //afficher le dropdown à l'étape précédente en simulant le click sur elle
-                                    setTimeout(function() { $("#iamStep_" + backName)[0].click(); }, 400);
+                                    setTimeout(function () { $("#iamStep_" + backName)[0].click(); }, 400);
 
                                 } else {
                                     //Gérer les élements complémentaires spécifiques à chaque type
@@ -1006,7 +1009,7 @@ var iamQF = {
                         text: "OK",
                         icon: "check",
                         type: "success",
-                        onClick: function(e) {
+                        onClick: function (e) {
                             //valider les éléments du step
                             if (!e.validationGroup) {
                                 //Créer les éléments de validation des editors
@@ -1055,7 +1058,7 @@ var iamQF = {
             } else {
 
                 //Prendre le caption du groupe suivant pour le rechercher dans le dxform
-                nextGpDisplayName = steps[i].DisplayName || ((!app || !app.localize) ? steps[i].Name : app.localize(steps[i].Name));
+                nextGpDisplayName = steps[i].DisplayName || ((!app || !app.localize) ? steps[i].Name : app.localize(steps[i].Name)) ;
                 let nextGpName = steps[i].Name;
                 navGp.items.push({
                     itemType: "button",
@@ -1067,7 +1070,7 @@ var iamQF = {
                         text: ((!app || !app.localize) ? "Next" : app.localize("Next")),
                         icon: "chevronnext",
                         type: "default",
-                        onClick: function(e) {
+                        onClick: function (e) {
 
                             //valider les éléments du step
                             if (!e.validationGroup) {
@@ -1095,7 +1098,7 @@ var iamQF = {
                                     $("#iamStep_" + el.Name)[0].click();
                                     //bootstrap.Dropdown($("#iamStep_" + el.Name)[0]).toggle();
                                     //afficher le dropdown à l'étape suivante en simulant le click sur la prochaine étape
-                                    setTimeout(function() { $("#iamStep_" + nextGpName)[0].click(); }, 400);
+                                    setTimeout(function () { $("#iamStep_" + nextGpName)[0].click(); }, 400);
                                     //$("#iamStep_" + nextGpName)[0].dispatchEvent(new Event('click'));
 
                                 } else {
@@ -1126,10 +1129,10 @@ var iamQF = {
             //Ajouter le groupe
             gp.items.push(navGp);
 
-            //Ajouter le groupe à liste des éléments du dxForm            gpvisible = false;
-
+            //Ajouter le groupe à liste des éléments du dxForm
             dxItems.push(gp);
             i += 1;
+            gpvisible = false;
             BackGroupDisplayName = gpDisplayName;
         });
 
@@ -1142,7 +1145,7 @@ var iamQF = {
             calcEgine = iamShared.utils.createFormulaCalcEngine(dependencies);
 
             //Parcourir les dépendances
-            iamShared.arrays.getDistinctPropertyValue(dependencies, "sourceObjectName").forEach(function(sourceObjectName) {
+            iamShared.arrays.getDistinctPropertyValue(dependencies, "sourceObjectName").forEach(function (sourceObjectName) {
 
                 //Passer au suivant si c'est une variable globale
                 if (iamShared.utils.isCalcEngineGlobalVariable(sourceObjectName)) return;
@@ -1156,9 +1159,9 @@ var iamQF = {
                     let srcDependencies = iamShared.arrays.filterByItemProperty(dependencies, "sourceObjectName", sourceObjectName);
 
                     //gérer le changement de valeur de la propriété de destination
-                    sourceObjItem.editorOptions.onOptionChanged = function(e) {
+                    sourceObjItem.editorOptions.onOptionChanged = function (e) {
 
-                        srcDependencies.forEach(function(dependencyItem) {
+                        srcDependencies.forEach(function (dependencyItem) {
                             if (e.name === dependencyItem.sourceObjectProperty) {
 
                                 //Mettre à jour la formule dans le parseur
@@ -1190,7 +1193,7 @@ var iamQF = {
 
 
         //Créer le dxForm avec ces attributs par défaut -----------------------------------------------------------------------------------------------------------------------------------
-        let frmHeight = function() { return (overridePositionId == 'rightpanel') ? (iamShared.ui.getHeightFromWindowHeight(-150) < 400 ? 400 : iamShared.ui.getHeightFromWindowHeight(-150)) : null; }
+        let frmHeight = function () { return (overridePositionId == 'rightpanel') ? (iamShared.ui.getHeightFromWindowHeight(-150) < 400 ? 400 : iamShared.ui.getHeightFromWindowHeight(-150)) : null; }
 
         let dxFormOption = {
             name: uniqueId,
@@ -1204,11 +1207,11 @@ var iamQF = {
             scrollingEnabled: true,
             showColonAfterLabel: false,
             width: "100%",
-            customizeItem: function(item) {
+            customizeItem: function (item) {
                 if (item.editorType == null)
                     return;
             },
-            onContentReady: function(e) {
+            onContentReady: function (e) {
 
                 //sortir si le servide de données magic data n'est pas disponible
                 if (!magicDataService) return;
@@ -1216,7 +1219,7 @@ var iamQF = {
                 //vérifier si les sources des objets de ce formulaire on déjà été créées
                 if (iamQF.loadedFormsDatasources.includes(frmObj.Id)) return;
 
-                let listItems = frmObj.Items.filter(function(item) {
+                let listItems = frmObj.Items.filter(function (item) {
                     return (item.EntityRequestObject || item.ListDataSourceName) && item.EditorType != "dxTextBox";
                 });
 
@@ -1239,12 +1242,12 @@ var iamQF = {
 
                         let listOfReqObjects = [];
                         //charger la liste des requestObjects
-                        frmObj.DataSources.forEach(function(it) {
+                        frmObj.DataSources.forEach(function (it) {
                             listOfReqObjects.push(iamShared.magicData.adaptEntityRequestObject(it.EntityRequestObject, data, frmObj.Variables));
                         });
 
                         //Rechercher les données en 1 bloc                 
-                        magicDataService.getEntities({ rejectAllOnError: false, entitiesString: JSON.stringify(listOfReqObjects) }).done(function(res) {
+                        magicDataService.getEntities({ rejectAllOnError: false, entitiesString: JSON.stringify(listOfReqObjects) }).done(function (res) {
                             //Error message
                             let Err = null;
 
@@ -1276,7 +1279,7 @@ var iamQF = {
                             }
 
                             //Rechercher les objets ayant un EntityRequestObject vide et un ListDataSourceName attribué
-                            listItems.forEach(function(it) {
+                            listItems.forEach(function (it) {
 
                                 if (!it.EntityRequestObject && it.ListDataSourceName) {
                                     //cas du datasourceName, récupérer l'editor
@@ -1322,7 +1325,7 @@ var iamQF = {
                 }
 
                 //Rechercher les objets ayant un EntityRequestObject directement attribué
-                listItems.forEach(function(it) {
+                listItems.forEach(function (it) {
                     //Gérer les objets ayant un EntityRequestObject directement attribué
                     if (it.EntityRequestObject) {
                         let editor = e.component.getEditor(it.DataField);
@@ -1330,7 +1333,7 @@ var iamQF = {
                         //Cas du requestObjectIndépendant
                         let reqObj = iamShared.magicData.adaptEntityRequestObject(it.EntityRequestObject, data, frmObj.Variables);
 
-                        magicDataService.get(reqObj).done(function(res) {
+                        magicDataService.get(reqObj).done(function (res) {
 
                             //Modifier les éléments des items pour le futur
                             it.ListDataSource = res.data;
@@ -1402,7 +1405,7 @@ var iamQF = {
         //le click sur les titres pour changer le groupe actif
         if (overridePositionId == 'stepper') {
 
-            $("a.mt-step-col").click(function(e) {
+            $("a.mt-step-col").click(function (e) {
 
                 //prendre le nom du groupe à afficher pour l'étape sélectionnée.
                 let gpName = $(this).attr("id").replace("iamStep_", "");
@@ -1424,7 +1427,7 @@ var iamQF = {
                     iamQF.wizardPopup = $("#iamQFWizardPopup").dxPopup({
                         height: "auto",
                         name: "iamQFWizardPopup",
-                        title: (frmObj.DisplayName || ((!app || !app.localize) ? frmObj.Name : app.localize(frmObj.Name)))
+                        title: (frmObj.DisplayName || ((!app || !app.localize) ? frmObj.Name : app.localize(frmObj.Name)) )
                     }).dxPopup("instance");
                 }
                 //Afficher le popup de l'assitant
@@ -1452,19 +1455,19 @@ var iamQF = {
         //redimensionner le frm en fonction de la fenêtre
         if (overridePositionId == 'rightpanel') {
             window.addEventListener("resize",
-                function() {
+                function () {
                     frm.option("height", frmHeight());
                     return;
                 }, false);
         }
 
     },
-
+    
 
     wizardPopup: null,
 
     //mettre à jour le titre d'un QF
-    updateTitle: function(title, positionId = 'rightpanel', titleHtmlId = null) {
+    updateTitle: function (title, positionId = 'rightpanel', titleHtmlId = null) {
 
         //titleHtmlId prioritaire sur tout. Donc le mettre à jour si il est passé en paramètre
         if (titleHtmlId) {
@@ -1492,7 +1495,7 @@ var iamQF = {
     },
 
     //mettre à jour le titre d'un QF
-    closeContainer: function(positionId = 'rightpanel', gpName) {
+    closeContainer: function (positionId = 'rightpanel', gpName) {
 
 
         if (positionId == 'htmlContainer' && frmObj.htmlContainerId) {
@@ -1516,7 +1519,7 @@ var iamQF = {
     },
 
     //Afficher un quickForm contenu dans le tableau des quickforms depuis son Id
-    showForm: function(frmId, quickFormsArray, data, createIfNotExist = true) {
+    showForm: function (frmId, quickFormsArray, data, createIfNotExist = true) {
 
         //prendre l'objet QF dans le tableau
         let frmObj = iamShared.arrays.findByKey(quickFormsArray, "Id", frmId);
@@ -1563,7 +1566,7 @@ var iamQF = {
     },
 
     //configArray :[{"Id":propertyId, "Name":propertyDisplayName, "Type": "Number | String | function()" ("Booleean", "Array", ensemble de type supporté par la propriété), "Default": null (property default value), "ReadOnly": false (si true la propriété est visible mais non modifiable), "AcceptedValues": ["clear", "spins"] (tableau des valeurs acceptables), "Url": "dxNumberBox/Configuration/buttons/", "localizationDescriptionName":"" (nom de localisation contenant la description de la propriété), "Description":"" (description à utiliser par défaut ou quand la localisation n'existe pas),"localizationCategoryName":"General" (nom de localisation contenant la catégorie de la propriété), "Category":"" (nom de la catégorie à laquelle appratient la propriété pour les regroupement de propriété) }]
-    createPropertyGrid: function(objectConfigurationName, configArray, containerId = "iamPropertyGridContainer", onePropertyGridOnly = true) {
+    createPropertyGrid: function (objectConfigurationName, configArray, containerId = "iamPropertyGridContainer", onePropertyGridOnly = true) {
 
         //Sortir si le contenur du propertyGrid n'existe pas
         if ($('#' + containerId).length < 1) return;
@@ -1589,7 +1592,7 @@ var iamQF = {
             if ($('#' + containerId).children('div[data-property-grid-name="' + objectConfigurationName + '"]').length > 0) {
 
                 //Masquer tous les propertyGrid
-                self.propertyGridsforEach(function(el) {
+                self.propertyGridsforEach(function (el) {
                     if (el.name == objectConfigurationName) {
                         //afficher le bon propertyGrid
                         //$divContainer = $('#' + containerId).children('div[data-property-grid-name="' + objectConfigurationName + '"]').first().show();
@@ -1627,8 +1630,8 @@ var iamQF = {
         var activeGroup;
         let items = [];
 
-
-        configArray.forEach(function(item) {
+        
+        configArray.forEach(function (item) {
 
             let itemCategoryName = (item.localizationCategoryName) || ((item.Category) || 'General');
 
@@ -1646,7 +1649,7 @@ var iamQF = {
                         name: activeGroupName,
                         itemType: "group",
                         colCount: 1,
-                        caption: (item.localizationCategoryName) ? ((!app || !app.localize) ? item.localizationCategoryName : app.localize(item.localizationCategoryName)) : ((item.Category) ? item.Category : ((!app || !app.localize) ? 'General' : app.localize('General'))),
+                        caption: (item.localizationCategoryName) ? ((!app || !app.localize) ? item.localizationCategoryName : app.localize(item.localizationCategoryName)) : ((item.Category) ? item.Category : ((!app || !app.localize) ? 'General' : app.localize('General')) ) ,
                         items: []
                     }
 
@@ -1663,9 +1666,9 @@ var iamQF = {
                     location: "after",
                     options: {
                         icon: "fas fa-code",
-                        stylingMode: "text", //text
+                        stylingMode: "text",//text
                         type: "normal",
-                        onClick: function() {
+                        onClick: function () {
                             //afficher le propup de sélection des valeurs de la liste
                         }
                     }
@@ -1680,7 +1683,7 @@ var iamQF = {
                     location: "before",
                     options: {
                         icon: "fas fa-list",
-                        stylingMode: "contained", //text, outllined
+                        stylingMode: "contained",//text, outllined
                         type: "normal",
                         onClick: null
                     }
@@ -1688,15 +1691,15 @@ var iamQF = {
 
                 //Vérifier si c'est un tableau
                 if (Array.isArray(item.AcceptedValues)) {
-                    let arr = item.AcceptedValues.map(function(item) { return { value: ((item === false) ? 'false' : item), text: item.toString() } });
+                    let arr = item.AcceptedValues.map(function (item) { return { value: ((item === false) ? 'false' : item), text: item.toString() } });
 
-                    newBtn.options.onClick = function(e) {
+                    newBtn.options.onClick = function (e) {
 
                         //Afficher le popup ou context menu de sélection des éléments selon le cas
                         iamShared.ui.contextMenuShowSelection(
                             app,
                             arr,
-                            function(itemData) { //callbackFunction,                                
+                            function (itemData) {//callbackFunction,                                
                                 iamQF.activePropertyGridForm.updateData(item.Name, itemData.value);
                                 return;
                             },
@@ -1714,24 +1717,22 @@ var iamQF = {
                     if (typeof item.AcceptedValues === 'string' || item.AcceptedValues instanceof String) {
 
                         switch (item.AcceptedValues) {
-                            case 'iamSystemIcon':
-                                {
-                                    newBtn.options.onClick = function(e) {
+                            case 'iamSystemIcon': {
+                                newBtn.options.onClick = function (e) {
 
-                                        //Afficher le popup de sélection des icones système
-                                        iamShared.fontAwesome.createFontAwesomePopupSelector(app, function(selectedItem) {
-                                            iamQF.activePropertyGridForm.updateData(item.Name, ((selectedItem) ? selectedItem.name : null));
-                                        }, "solid");
-                                    }
-
-                                    buttons.push(newBtn);
-                                    break;
+                                    //Afficher le popup de sélection des icones système
+                                    iamShared.fontAwesome.createFontAwesomePopupSelector(app, function (selectedItem) {
+                                        iamQF.activePropertyGridForm.updateData(item.Name, ((selectedItem) ? selectedItem.name:null));
+                                    }, "solid");
                                 }
-                            default:
-                                {
-                                    //ne rien faire
-                                    break;
-                                }
+                                
+                                buttons.push(newBtn);
+                                break;
+                            }
+                            default: {
+                                //ne rien faire
+                                break;
+                            }
                         }
                     } else {
                         //vérifier si c'est une fonction
@@ -1739,8 +1740,8 @@ var iamQF = {
 
                             //Gérer le Eval pour contextualiser les variables et fonctions disponibles dans le click
                             let fn;
-                            eval("fn=" + item.AcceptedValues.toString() + ";");
-                            newBtn.options.onClick = function(e) {
+                            eval("fn=" + item.AcceptedValues.toString() + ";");                            
+                            newBtn.options.onClick = function (e) {                                
                                 fn(self.activePropertyGridForm, window);
                             }
 
@@ -1752,7 +1753,7 @@ var iamQF = {
 
             let editorType = (item.EditorType || "dxTextBox");
             let editorOptions = {
-                stylingMode: "filled", // "outlined",
+                stylingMode: "filled",// "outlined",
                 buttons: ((item.ReadOnly) ? null : buttons),
                 readOnly: item.ReadOnly,
             };
@@ -1762,10 +1763,10 @@ var iamQF = {
             } else {
                 if (item.EditorType == "dxSelectBox") {
                     editorOptions = {
-                        stylingMode: "filled", // "outlined",
+                        stylingMode: "filled",// "outlined",
                         dataSource: item.AcceptedValues,
                         readOnly: item.ReadOnly,
-                        onValueChanged: function(e) {
+                        onValueChanged: function (e) {
                             self.activePropertyGridObject[item.Name] = e.value;
                         }
                     };
@@ -1795,12 +1796,12 @@ var iamQF = {
         dxFormOption.items = items;
 
         //créer le propertyGrid dans le Html
-        if (onePropertyGridOnly) {
+        if(onePropertyGridOnly) {
             //créer le form propertyGrid
             self.propertyGrids = [{ name: "iamPropertyGrid", propertyGridForm: $divContainer.dxForm(dxFormOption).dxForm("instance") }];
             self.activePropertyGridForm = self.propertyGrids[0].propertyGridForm;
 
-        } else {
+        }  else {
             //créer le form propertyGrid 
             dxFormOption.name = objectConfigurationName;
             self.propertyGrids.push({ name: objectConfigurationName, propertyGridForm: $divContainer.dxForm(dxFormOption).dxForm("instance") });
@@ -1809,12 +1810,12 @@ var iamQF = {
 
         //Créer les fonctions nécessaires à l'utilisation des fonctions internes entre les boutons du propertyGrid  ********************************************  
         //Modifier la valeur d'une propriété du propertyGrid
-        self.activePropertyGridForm.setPropertyValue = function(propertyName, newValue) {
+        self.activePropertyGridForm.setPropertyValue= function(propertyName, newValue){
             iamQF.activePropertyGridForm.updateData(propertyName, newValue);
         };
 
         //Recupérer la valeur d'une propriété du property grid
-        self.activePropertyGridForm.getPropertyValue = function(propertyName) {
+        self.activePropertyGridForm.getPropertyValue = function (propertyName) {
             return iamQF.activePropertyGridForm.option('formData')[propertyName];
         };
 
@@ -1824,7 +1825,7 @@ var iamQF = {
     },
 
     //permet d'affiher les propriétés d'un objet dans un propertyGridForm
-    showObjectProperties: function(obj, objectConfigurationName, configArray, containerId = "iamPropertyGridContainer", onePropertyGridOnly = true) {
+    showObjectProperties: function (obj, objectConfigurationName, configArray, containerId = "iamPropertyGridContainer", onePropertyGridOnly = true) {
         let pGrid = this.createPropertyGrid(objectConfigurationName, configArray, containerId, onePropertyGridOnly);
 
         if (pGrid) {
