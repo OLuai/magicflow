@@ -132,7 +132,7 @@
                                     onClick(e) {
                                         iamShared.ui.rightPanelShow();
 
-                                        iamQF.createForm(iamQFObjects.appCreate, e.row.data, false, null, true, app, _magicDataService, true, true, null);
+                                        iamQF.createForm(iamQFObjects.flowCreate, e.row.data, false, null, true, app, _magicDataService, true, true, null);
 
                                     },
                                 },
@@ -164,7 +164,7 @@
                         //console.log("-+-+-+-+-+-+-+-+-+-+-+-+-+-", e.data);
                         //iamShared.ui.rightPanelShow();
 
-                        //iamQF.createForm(iamQFObjects.appCreate, e.data, false, null, true, app, _magicDataService, true, true, null);
+                        //iamQF.createForm(iamQFObjects.flowCreate, e.data, false, null, true, app, _magicDataService, true, true, null);
                     },
                     //Gérer le double click sur les lignes du grid
                     onRowDblClick: function (e) {
@@ -214,7 +214,7 @@
         $('#CreateNewMagicFlowButton').click(function () {
             iamShared.ui.rightPanelShow();
 
-            iamQF.createForm(iamQFObjects.appCreate, null, false, null, true, app, _magicDataService, true, true, null);
+            iamQF.createForm(iamQFObjects.flowCreate, null, false, null, true, app, _magicDataService, true, true, null);
         });
 
         abp.event.on('app.createOrEditMagicAppModalSaved', function () {
@@ -237,17 +237,15 @@
 
         var iamQFObjects = {
 
-            appCreate: {
+            flowCreate: {
                 AutoCreateEditors: false,
-                Id: "iamQFAppCreate",
+                Id: "iamQFFlowCreate",
                 Name: "Create New Flow",
                 DisplayName: null,
                 PositionId: "rightPanel",
 
                 //fonction exécutée quand le quickform est globalement validé (terminé).   
                 OnValidated: function (data) {
-                    console.log(data);
-
                     _magicFlowService.createOrEditMagicFlow(
                         data
                     ).done(function () {
@@ -317,7 +315,7 @@
                     {
                         Id: "0001",
                         Name: "",
-                        DisplayName: app.localize("Identification").toUpperCase(),
+                        DisplayName: '',
                         DenyBack: false,
                         OrderNumber: 1
                     },
