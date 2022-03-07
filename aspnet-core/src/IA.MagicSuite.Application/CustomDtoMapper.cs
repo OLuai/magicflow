@@ -170,8 +170,8 @@ namespace IA.MagicSuite
 
 
             configuration.CreateMap<MagicFlow, ListMagicFlowsDto>().ForMember(mgftp => mgftp.MagicFlowType, options => options.MapFrom(mgf => mgf.MagicFlowTypeFk == null ? "" :mgf.MagicFlowTypeFk.Name)).ReverseMap();
-            configuration.CreateMap<MagicFlow, MagicFlowDto>();
-            configuration.CreateMap<MagicFlowType, MagicFlowTypeDto>();
+            configuration.CreateMap<MagicFlow, MagicFlowDto>().ReverseMap();
+            configuration.CreateMap<MagicFlowType, MagicFlowTypeDto>().ReverseMap();
         }
     }
 }

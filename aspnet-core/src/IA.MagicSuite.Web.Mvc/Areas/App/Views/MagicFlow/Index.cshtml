@@ -1,11 +1,13 @@
-﻿@using IA.MagicSuite.Authorization
-@*@using IA.MagicSuite.Web.Areas.App.Models.MagicApps*@
-@using IA.MagicSuite.Web.Areas.App.Startup
-@*@model MagicAppsViewModel*@
+﻿@using IA.MagicSuite.Authorization;
+@using IA.MagicSuite.Web.Areas.App.Models.MagicFlow;
+@using IA.MagicSuite.Web.Areas.App.Startup;
+@model IndexViewModel;
 @{
-//ViewBag.CurrentPageName = AppPageNames.Common.MagicApps;
-//_iamBuilderLayoutTemplate.cshtml
-//Layout = "~/Areas/App/Views/Layout/_iamBuilderLayoutTemplate.cshtml";
+    //ViewBag.CurrentPageName = AppPageNames.Common.MagicApps;
+    //_iamBuilderLayoutTemplate.cshtml
+    //Layout = "~/Areas/App/Views/Layout/_iamBuilderLayoutTemplate.cshtml";
+
+    var FlowTypes = 1;
 }
 
 @section Scripts
@@ -67,10 +69,12 @@
                     </div>
                     <div class="col-md-3">
                         <label for="FlowTypeId">@L("FlowType")</label>
-                        <select class="form-control" name="IsActiveFilter" id="FlowTypeId">
+                        <select class="form-control" name="flowTypeFilter" id="FlowTypeId">
+
                             <option value="">@L("All")</option>
-                            <option value="0">@L("False")</option>
-                            <option value="1">@L("True")</option>
+                            @foreach (var flowType in Model.FlowTypes.Items) {
+                                <option value="@flowType.Id">@flowType.Name</option>
+                            }
                         </select>
                     </div>
                     <div class="col-md-3">

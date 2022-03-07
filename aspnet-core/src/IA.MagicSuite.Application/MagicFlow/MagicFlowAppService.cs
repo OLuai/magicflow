@@ -40,7 +40,6 @@ namespace IA.MagicSuite.MagicSys
                     flow.Description = input.Description;
                     flow.FlowTypeId = input.FlowTypeId;
                     flow.IsActive = input.IsActive;
-                    //TO DO
                     _flowRepository.Update(flow);
                 }
 
@@ -74,9 +73,11 @@ namespace IA.MagicSuite.MagicSys
                         bool checkName = input.NameFilter.IsNullOrEmpty() || flow.Name.ToLower().Contains(input.NameFilter.ToLower());
                         bool checkDescription = input.DescriptionFilter.IsNullOrEmpty() || (!flow.Description.IsNullOrEmpty() && flow.Description.ToLower().Contains(input.DescriptionFilter.ToLower()));
                         bool checkActive = input.IsActiveFilter.IsNullOrEmpty() || flow.IsActive.Equals(input.IsActiveFilter == "0");
-                        return checkFilter && checkName && checkDescription && checkActive;
+                        bool checkFlowType = input.FlowTypeFilter.IsNullOrEmpty() || (flow.MagicFlowTypeFk != null && flow.MagicFlowTypeFk.Id.Equals(input.FlowTypeFilter));
+                        return checkFilter && checkName && checkDescription && checkFlowType && checkActive;
                     }
                 )
+                .OrderBy(flow => flow.Name)
                 .ToList();
             dynamic result = new ListResultDto<ListMagicFlowsDto>(ObjectMapper.Map<List<ListMagicFlowsDto>>(flows));
 

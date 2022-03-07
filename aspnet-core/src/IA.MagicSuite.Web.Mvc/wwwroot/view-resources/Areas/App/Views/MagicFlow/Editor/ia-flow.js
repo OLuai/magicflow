@@ -1,4 +1,7 @@
+$(function () {
+    iamFlow.init();
 
+});
 var generatedId = 100;
 var iamFlow = {
 

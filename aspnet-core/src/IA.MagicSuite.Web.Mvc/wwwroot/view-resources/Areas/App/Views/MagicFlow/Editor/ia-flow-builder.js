@@ -1,6 +1,6 @@
 
 $(function () {
-    //alert("test");
+    iamFlowBuider.init();
     
 })
 
