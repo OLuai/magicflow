@@ -13,7 +13,7 @@ var iamFlow = {
 
         //Sauvegarde du flow vers le serveur
         $("#save-flow").on('click', e => {
-            abp.services.app.flow.saveFlow({ 'id': iamFlow.flow.id, 'name': iamFlow.flow.name, 'flowJSON': JSON.stringify(iamFlow.flow.flowJSON) });
+            abp.services.app.magicFlow.saveMagicFlow({ 'id': iamFlow.flow.id, 'name': iamFlow.flow.name, 'flowJSON': JSON.stringify(iamFlow.flow.flowJSON) });
         });
         //Importer un flow depuis un fichier Json
         $("#btn-import").on('click', (e) => {
