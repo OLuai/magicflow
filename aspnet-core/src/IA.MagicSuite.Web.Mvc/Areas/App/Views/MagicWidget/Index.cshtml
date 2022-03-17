@@ -1,6 +1,148 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using System.Threading.Tasks
+@using IA.MagicSuite.Web.Areas.App.Startup;
+
 @{
+    Layout = "~/Areas/App/Views/Layout/_iamMagicWidgetLayout.cshtml";
+    ViewBag.CurrentPageName = AppPageNames.Common.DashboardMagicFlow;
 }
-<h1>Bonjour</h1>
+
+@section Styles{
+
+    <style type="text/css" media="screen">
+    </style>
+
+    <style>
+
+        .min-width-property-grid {
+            /*min-width: 350px;*/
+            min-height: 450px;
+        }
+    </style>
+
+}
+
+@section Scripts{
+
+}
+
+
+<style id="iamCustomWidgetCSS"></style>
+
+<!-- Div de génération des éléments dynamiques du designer devant être présentés à l'utilisateur en popup-->
+<div id="iamToolsDynamicContentPopup">
+    <!-- Div conteneur dans lequel seront insérés les éléments dynamiques-->
+    <div id="iamToolsDynamicContent"></div>
+</div>
+
+<div class="content d-flex flex-column flex-column-fluid">
+
+    <div class="@(await GetContainerClass())">
+        <div class="row">
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-4 min-width-property-grid">
+                        <div class="card card-custom gutter-b">
+                            <div class="card-body">
+                                <div id="iamTabPanel"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="card card-custom">
+                            <div class="card-header">
+                                <div class="card-toolbar">
+                                    <ul class="nav nav-light-danger nav-bold nav-pills">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_5_1">
+                                                <span class="nav-text">HTML</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_5_2">
+                                                <span class="nav-text">CSS</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_5_3">
+                                                <span class="nav-text">JavaScript</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_5_4">
+                                                <span class="nav-icon"><i class="flaticon2-gear"></i></span>
+                                                <span class="nav-text">Attributes</span>
+                                            </a>
+                                        </li>
+                                        <!-- <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                                <span class="nav-icon"><i class="flaticon2-gear"></i></span>
+                                                <span class="nav-text">Year</span>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" data-toggle="tab" href="#kt_tab_pane_5_3">Action</a>
+                                                <a class="dropdown-item" data-toggle="tab" href="#kt_tab_pane_5_3">Another action</a>
+                                                <a class="dropdown-item" data-toggle="tab" href="#kt_tab_pane_5_3">Something else here</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" data-toggle="tab" href="#kt_tab_pane_5_3">Separated link</a>
+                                            </div>
+                                        </li> -->
+                                    </ul>
+                                </div>
+                                <div class="card-toolbar">
+                                    <div class="dropdown dropdown-inline">
+                                        <button type="button" class="btn btn-hover-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="ki ki-bold-more-hor "></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Separated link</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="kt_tab_pane_5_1" role="tabpanel" aria-labelledby="kt_tab_pane_5_1">
+                                        HTML
+                                    </div>
+                                    <div class="tab-pane fade" id="kt_tab_pane_5_2" role="tabpanel" aria-labelledby="kt_tab_pane_5_2">
+                                        CSS
+                                    </div>
+                                    <div class="tab-pane fade" id="kt_tab_pane_5_3" role="tabpanel" aria-labelledby="kt_tab_pane_5_3">
+                                        JS
+                                    </div>
+                                    <div class="tab-pane fade" id="kt_tab_pane_5_4" role="tabpanel" aria-labelledby="kt_tab_pane_5_4">
+                                        Attributes
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card card-custom card-border">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="card-label">
+                                <a class="btn btn-sm btn-light-success font-weight-bold">
+                                    <i class="fas fa-play"></i> Run
+                                </a>
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        ...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script id="iamCustomWidgetJS"></script>
+
