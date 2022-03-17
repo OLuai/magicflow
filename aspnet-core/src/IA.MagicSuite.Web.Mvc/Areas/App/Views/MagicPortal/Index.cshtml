@@ -1,6 +1,37 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
+
+
+@section Styles{
+    @*<link rel="stylesheet" abp-href="/view-resources/Areas/App/Views/_Bundles/customizable-dashboard-libs.css" asp-append-version="true" />*@
+    <link rel="stylesheet" abp-href="~/view-resources/Areas/App/Views/_Bundles/gridstack.min.css" asp-append-version="true" />
+
+    <style type="text/css">
+        .grid-stack {
+            background: #FAFAD2;
+        }
+
+        .grid-stack-item-content {
+            background-color: #18BC9C;
+        }
+    </style>
 }
-<h1>Bonjour</h1>
+
+
+@section Scripts
+{
+    @*<script asp-src="/view-resources/Areas/App/Views/_Bundles/customizable-dashboard-libs.min.js" asp-append-version="true"></script>*@
+    @*<script asp-src="~/view-resources/Areas/App/Views/_Bundles/gridstack.min.js" asp-append-version="true"></script>*@
+    <script asp-src="~/view-resources/Areas/App/Views/_Bundles/gridstack.min.js" asp-append-version="true"></script>
+    <script abp-src="/view-resources/Areas/App/Views/MagicPortal/index.js" asp-append-version="true"></script>
+}
+
+<div class="content d-flex flex-column flex-column-fluid">
+
+
+
+    <h1>Bonjour</h1>
+    <div class="grid-stack"></div>
+
+</div>

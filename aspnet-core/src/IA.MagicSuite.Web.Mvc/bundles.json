@@ -491,6 +491,12 @@
         "node_modules/easy-pie-chart/dist/jquery.easypiechart.js",
         "node_modules/chartist/dist/chartist.js"
       ]
+    },
+    {
+      "output": "view-resources/Areas/App/Views/_Bundles/gridstack.min.js",
+      "input": [
+        "node_modules/gridstack/dist/gridstack-h5.js"
+      ]
     }
   ],
   "styles": [
@@ -688,7 +694,14 @@
       "input": [
         "wwwroot/Common/Scripts/Datatables/datatables-rtl.css"
       ]
+    },
+    {
+      "output": "view-resources/Areas/App/Views/_Bundles/gridstack.min.css",
+      "input": [
+        "node_modules/gridstack/dist/gridstack.css"
+      ]
     }
+
   ],
   "scriptMappings": [
     {
