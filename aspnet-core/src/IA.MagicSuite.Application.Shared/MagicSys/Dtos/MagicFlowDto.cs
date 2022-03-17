@@ -29,7 +29,7 @@ namespace IA.MagicSuite.MagicSys.Dtos
     }
 
 
-    public class ListMagicFlowsDto : EntityDto<string>, IMayHaveTenant, IPassivable
+    public class ListMagicFlowsDto : EntityDto<string>, IPassivable
     {
         [Required]
         [StringLength(150)]
@@ -41,6 +41,6 @@ namespace IA.MagicSuite.MagicSys.Dtos
         public string FlowTypeId { get; set; } //Le type du flow pour filtrer les différents type d'actions disponibles APPROVAL,UI,STANDARD
         public string MagicFlowType { get; set; }
         public bool IsActive { get; set; }
-        public int? TenantId { get; set; }
+        public virtual string SolutionId { get; set; }
     }
 }

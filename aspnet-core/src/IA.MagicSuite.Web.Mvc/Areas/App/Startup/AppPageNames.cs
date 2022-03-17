@@ -4,7 +4,9 @@
     {
         public static class Common
         {
-            public const string Dashboard = "Dashboard.MagicFlow";
+            public const string DashboardPortal = "Dashboard.Portal";
+            public const string DashboardWidget = "Dashboard.Widget";
+            public const string DashboardMagicFlow = "Dashboard.MagicFlow";
             public const string Administration = "Administration";
             public const string Roles = "Administration.Roles";
             public const string Users = "Administration.Users";

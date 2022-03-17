@@ -2,6 +2,8 @@
 <localizationDictionary culture="en">
 	<texts>
 		<text name="MagicFlow">MagicFlow</text>
+		<text name="MagicWidget">MagicWidget</text>
+		<text name="MagicPortal">MagicPortal</text>
 		<text name="Description">Description</text>
 		<text name="MagicFlowHeaderInfo">MagicFlow Information</text>
 		<text name="CreateNewMagicFlow">Create New Flow</text>

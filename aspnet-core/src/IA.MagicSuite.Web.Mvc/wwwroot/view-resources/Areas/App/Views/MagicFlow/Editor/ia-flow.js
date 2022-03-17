@@ -1,8 +1,8 @@
 $(function () {
-    iamFlow.init();
+    
 
 });
-var generatedId = 100;
+var generatedId = new Date().getTime();
 var iamFlow = {
 
     //Element actif selectionné

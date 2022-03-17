@@ -16,9 +16,24 @@ namespace IA.MagicSuite.Web.Areas.App.Startup
 
             menu
                 .AddItem(new MenuItemDefinition(
-                    AppPageNames.Common.Dashboard,
+                    AppPageNames.Common.DashboardMagicFlow,
                     L("MagicFlow"),
+                    icon: "fab fa-stack-overflow",
                     url: "App/MagicFlow"
+                    )
+                )
+                .AddItem(new MenuItemDefinition(
+                    AppPageNames.Common.DashboardPortal,
+                    L("MagicPortal"),
+                    icon: "flaticon2-grids",
+                    url: "App/MagicPortal"
+                    )
+                )
+                .AddItem(new MenuItemDefinition(
+                    AppPageNames.Common.DashboardWidget,
+                    L("MagicWidget"),
+                    icon: "fab fa-react",
+                    url: "App/MagicWidget"
                     )
                 )
                 .AddItem(new MenuItemDefinition(
