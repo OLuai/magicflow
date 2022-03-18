@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <localizationDictionary culture="en">
 	<texts>
+		
+		<text name="CreateNewWidgetAttribute">Add Attribute</text>
 		<text name="MagicFlow">MagicFlow</text>
 		<text name="MagicWidget">MagicWidget</text>
 		<text name="MagicPortal">MagicPortal</text>
