@@ -12,6 +12,7 @@
             tabSize: 4,
             mode: "text/html",
             theme: "dracula",
+            indentUnit: 4,
         });
         iamWidget.codeEditor.css = CodeMirror($(`#${iamWidget.variables.cssEditorId}`)[0], {
             lineNumbers: true,
@@ -27,11 +28,7 @@
             mode: "javascript"
         });
         $(`#${iamWidget.variables.editAttributesId} , #${iamWidget.variables.cssEditorId} , #${iamWidget.variables.jsEditorId}`).toggleClass("show active");
-        //setTimeout(() => $(`#css-btn > a`).trigger('click'), 1000);
-        //setTimeout(() => $(`#js-btn > a`).trigger('click'), 2000);
-        //setTimeout(() => $(`#html-btn > a`).trigger('click'), 3000);
-        
-        
+          
     },
     variables: {
         propertyGridId: null,
