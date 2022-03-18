@@ -7,7 +7,8 @@
 }
 
 @section Styles{
-
+    <link href="~/lib/codemirror/lib/codemirror.css" rel="stylesheet" />
+    <link href="~/lib/codemirror/theme/dracula.css" rel="stylesheet" />
     <style type="text/css" media="screen">
     </style>
 
@@ -15,14 +16,28 @@
 
         .min-width-property-grid {
             /*min-width: 350px;*/
-            min-height: 450px;
+            height: 100%;
+        }
+        .heigth-100 {
+            height: 100%;
+        }
+        .width-100{
+            width:100%;
+        }
+        .CodeMirror {
+            height: 100%;
         }
     </style>
 
 }
 
 @section Scripts{
-
+    <script src="~/lib/codemirror/lib/codemirror.js"></script>
+    <script src="~/lib/codemirror/addon/selection/selection-pointer.js"></script>
+    <script src="~/lib/codemirror/mode/xml/xml.js"></script>
+    <script src="~/lib/codemirror/mode/javascript/javascript.js"></script>
+    <script src="~/lib/codemirror/mode/css/css.js"></script>
+    <script src="~/view-resources/Areas/App/Views/MagicWidget/iamWidget.js"></script>
 }
 
 
@@ -36,39 +51,39 @@
 
 <div class="content d-flex flex-column flex-column-fluid">
 
-    <div class="@(await GetContainerClass())">
-        <div class="row">
-            <div class="col-8">
-                <div class="row">
+    <div class="@(await GetContainerClass())  heigth-100">
+        <div class="row heigth-100">
+            <div class="col-8 heigth-100">
+                <div class="row heigth-100">
                     <div class="col-4 min-width-property-grid">
-                        <div class="card card-custom gutter-b">
-                            <div class="card-body">
-                                <div id="iamTabPanel"></div>
+                        <div class="card card-custom gutter-b heigth-100">
+                            <div class="card-body heigth-100">
+                                <div id="iamWidgetAttributesPropertyGrid" class="heigth-100"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-8">
-                        <div class="card card-custom">
+                    <div class="col-8 heigth-100">
+                        <div class="card card-custom heigth-100">
                             <div class="card-header">
                                 <div class="card-toolbar">
                                     <ul class="nav nav-light-danger nav-bold nav-pills">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_5_1">
+                                        <li class="nav-item" id="html-btn">
+                                            <a class="nav-link active" data-toggle="tab" href="#iamWidgetCustomHTML">
                                                 <span class="nav-text">HTML</span>
                                             </a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_5_2">
+                                        <li class="nav-item" id="css-btn">
+                                            <a class="nav-link" data-toggle="tab" href="#iamWidgetCustomCSS">
                                                 <span class="nav-text">CSS</span>
                                             </a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_5_3">
+                                        <li class="nav-item" id="js-btn">
+                                            <a class="nav-link" data-toggle="tab" href="#iamWidgetCustomJS">
                                                 <span class="nav-text">JavaScript</span>
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_5_4">
+                                            <a class="nav-link" data-toggle="tab" href="#iamWidgetSettingAttributes">
                                                 <span class="nav-icon"><i class="flaticon2-gear"></i></span>
                                                 <span class="nav-text">Attributes</span>
                                             </a>
@@ -88,7 +103,7 @@
                                         </li> -->
                                     </ul>
                                 </div>
-                                <div class="card-toolbar">
+                                <!-- <div class="card-toolbar">
                                     <div class="dropdown dropdown-inline">
                                         <button type="button" class="btn btn-hover-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="ki ki-bold-more-hor "></i>
@@ -101,21 +116,20 @@
                                             <a class="dropdown-item" href="#">Separated link</a>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
-                            <div class="card-body">
-                                <div class="tab-content">
-                                    <div class="tab-pane fade show active" id="kt_tab_pane_5_1" role="tabpanel" aria-labelledby="kt_tab_pane_5_1">
-                                        HTML
+                            <div class="card-body p-0">
+                                <div class="tab-content heigth-100">
+                                    <div class="tab-pane fade show active heigth-100" id="iamWidgetCustomHTML" role="tabpanel">
                                     </div>
-                                    <div class="tab-pane fade" id="kt_tab_pane_5_2" role="tabpanel" aria-labelledby="kt_tab_pane_5_2">
-                                        CSS
+                                    <div class="tab-pane fade show active heigth-100" id="iamWidgetCustomCSS" role="tabpanel">
+
                                     </div>
-                                    <div class="tab-pane fade" id="kt_tab_pane_5_3" role="tabpanel" aria-labelledby="kt_tab_pane_5_3">
-                                        JS
+                                    <div class="tab-pane fade show active heigth-100" id="iamWidgetCustomJS" role="tabpanel">
+
                                     </div>
-                                    <div class="tab-pane fade" id="kt_tab_pane_5_4" role="tabpanel" aria-labelledby="kt_tab_pane_5_4">
-                                        Attributes
+                                    <div class="tab-pane fade show active heigth-100" id="iamWidgetSettingAttributes" role="tabpanel">
+
                                     </div>
                                 </div>
                             </div>
@@ -123,19 +137,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-4 heigth-100">
                 <div class="card card-custom card-border">
                     <div class="card-header">
                         <div class="card-title">
                             <h3 class="card-label">
-                                <a class="btn btn-sm btn-light-success font-weight-bold">
+                                <a class="btn btn-sm btn-light-success font-weight-bold" id="iamWidgetRunButton">
                                     <i class="fas fa-play"></i> Run
                                 </a>
                             </h3>
                         </div>
                     </div>
-                    <div class="card-body">
-                        ...
+                    <div class="card-body p-2 heigth-100">
+                        <iframe class="width-100 heigth-100 border-0" id="iamWidgetPreviewWindow"></iframe>
                     </div>
                 </div>
             </div>
