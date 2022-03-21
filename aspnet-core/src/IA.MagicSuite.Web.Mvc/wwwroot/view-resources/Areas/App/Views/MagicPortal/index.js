@@ -122,8 +122,9 @@ var iamGridStack = {
         this.grids = GridStack.initAll();
     },
     grids: null,
-    currentGrid: 0,
+    //currentGrid: 0,
     pages: [],
+    currentPage:0,
     items : [
         { x: 0, y: 0, w: 4, h: 2, content: '1' },
         { x: 4, y: 0, w: 4, h: 4, content: '2' },
@@ -179,25 +180,12 @@ var iamGridStack = {
 
 `.replace("{tool-bar-right}", iamGridStack.templateHtml.gridstackTabsRight());
         },
-        gridstackTabsLeft: function () {
-            return `
-
-
-                          
-                                <ul class="nav nav-tabs nav-bold nav-tabs-line" role="tablist" id="pagesContainerId">
-                                        
-                                </ul>
-                            
-
-
-`;
-        },
         gridstackTabsRight: function () {
             return `
 
                             <div class="d-flex align-items-center">
-                                <a href="#" class="font-weight-bold ml-2 mr-2" id="ia-gridstack-add-page" style="font-size: 1.7rem;">
-                                    <i class="flaticon2-plus-1"></i>
+                                <a href="#" class="font-weight-bold ml-2 mr-2" id="ia-gridstack-add-page" >
+                                    <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
                                 </a>
 
 
@@ -234,10 +222,13 @@ var iamGridStack = {
 
             return id;
         },
-        setToactive: function (id) {
+        setToActive: function (id) {
             $("[data-page-id] > a").removeClass("active").attr("aria-selected", "false");
             $(`[data-page-id="${id}"] > a`).addClass("active").attr("aria-selected", "true");
         },
+        getPagePosition: function (id) {
+            return iamGridStack.pages.findIndex(el=>el.id===id);
+        }
     },
     events: {
         addNewPage: function (e) {
@@ -251,6 +242,7 @@ var iamGridStack = {
                 id: id,
                 displayName: "",
             })
+            
 
 
             const showPage = (e) => { iamGridStack.events.showActivePage(e); }
@@ -261,7 +253,7 @@ var iamGridStack = {
 
             $(`[data-page-id="${id}"]`).trigger("click");
 
-            iamGridStack.methods.setToactive(id);
+            iamGridStack.methods.setToActive(id);
 
         },
         
@@ -274,10 +266,11 @@ var iamGridStack = {
             $(`[data-grid-id]`).hide();
             $(`[data-grid-id="${id}"]`).show();
 
-
-            console.log("test !!  !! ! !! !",id);
+            iamGridStack.currentPage = iamGridStack.methods.getPagePosition(id);
+            //console.log("test !!  !! ! !! !",id);
 
         },
+
         
     }
 
