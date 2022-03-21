@@ -96,10 +96,18 @@ var iamGridStack = {
         const addNewpage = (e) => {
             that.events.addNewPage(e);
         };
+        const toggleMoreSetting = (e) => {
+            that.events.showMoreSetting(e);
+        };
+
 
         //Ajouter une nouvelle page
         this.createEvent($("#ia-gridstack-add-page"), {
             "click": addNewpage,
+        });
+        //Afficher ou masque les options
+        this.createEvent($(".btn-show-more-setting"), {
+            "click": toggleMoreSetting,
         });
 
         $("#ia-gridstack-add-page00").on("click", function () {
@@ -124,6 +132,7 @@ var iamGridStack = {
     grids: null,
     //currentGrid: 0,
     pages: [],
+    widgets: null,
     currentPage:0,
     items : [
         { x: 0, y: 0, w: 4, h: 2, content: '1' },
@@ -151,22 +160,26 @@ var iamGridStack = {
 
 
     <h1>Header</h1>
-        <div id="ia-gridstack-toolbar" class="mb-5">
+        <div id="ia-gridstack-toolbar" class="mb-3">
 
                     <div class="card card-custom">
                                 <div class="card-header card-header-tabs-line">
                                         <div class="card-toolbar">
-
                                             <ul class="nav nav-tabs nav-bold nav-tabs-line" role="tablist" id="pagesContainerId">
                                         
                                             </ul>
-
                                         </div>
                                         <div class="d-flex align-items-center">
                                              {tool-bar-right}
                                         </div>
-
                                 </div>
+
+
+                                <div role="alert" id="ia-gridstack-toolbar-more-setting" class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b" style="display:none;">
+									    <div class="alert-icon">
+										
+									    </div>
+								</div>
                     </div>
         </div>
         <div id="ia-gridstack-container" class="">
@@ -184,10 +197,16 @@ var iamGridStack = {
             return `
 
                             <div class="d-flex align-items-center">
-                                <a href="#" class="font-weight-bold ml-2 mr-2" id="ia-gridstack-add-page" >
+                                <a href="#" class="font-weight-bold ml-2 mr-3"  >
                                     <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
                                 </a>
-
+                                <a href="#" class="font-weight-bold ml-2 mr-2" id="ia-gridstack-add-page" >
+                                    <i class="fas fa-stream" style="font-size: 1.7rem;"></i>
+                                </a>
+                                <span class="mr-5 ml-5"></span>
+                                <a href="#" class="font-weight-bold ml-2 btn-show-more-setting">
+                                    <i class="flaticon2-down" style="font-size: 1.0rem;"></i>
+                                </a>
 
 
                             </div> 
@@ -256,7 +275,6 @@ var iamGridStack = {
             iamGridStack.methods.setToActive(id);
 
         },
-        
         showActivePage: function (e) {
             e.preventDefault();
             
@@ -270,9 +288,15 @@ var iamGridStack = {
             //console.log("test !!  !! ! !! !",id);
 
         },
+        showMoreSetting: function (e) {
+            $(".btn-show-more-setting > i").toggleClass("flaticon2-up");
+            $(".btn-show-more-setting > i").toggleClass("flaticon2-down");
+            $("#ia-gridstack-toolbar-more-setting").toggle();
+        }
+
 
         
-    }
+    },
 
 };
 
