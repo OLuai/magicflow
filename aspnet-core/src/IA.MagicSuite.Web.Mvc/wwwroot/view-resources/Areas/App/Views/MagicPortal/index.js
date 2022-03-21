@@ -1,7 +1,7 @@
 ﻿//const { GridStack } = require("../../../../../gridstack/dist/gridstack");
 
 //import('../../../../../view-resources/Areas/App/Views/_Bundles/gridstack.min.js');
-alert('test !!!!!!!!!!');
+alert('test0 !!!!!!!!!!');
 $(function () {
     
     iamGridStack.init();
@@ -68,8 +68,6 @@ var iamGridStack = {
         //this.grid = GridStack.init();
 
         this.build();
-        //let grid = GridStack.init();
-        //let grid = $('.grid-stack').gridstack;
 
        
         //grid.load(items);
@@ -87,7 +85,16 @@ var iamGridStack = {
     },
     initEvent: function () {
         const that = this;
-        $("#ia-gridstack-add-page").on("click", function () {
+        const addNewpage = (e) => {
+            that.events.addNewPage(e);
+        };
+
+        //Ajouter une nouvelle page
+        this.createEvent($("#ia-gridstack-add-page"), {
+            "click": addNewpage,
+        });
+
+        $("#ia-gridstack-add-page00").on("click", function () {
             console.log("Clique !");
 //            $(".page-list").append(`
 //                                        <li class="nav-item">
@@ -183,7 +190,7 @@ var iamGridStack = {
             return `
 
                             <div class="d-flex align-items-center">
-                                <a href="#" class="btn btn-success font-weight-bold mr-2 ia-gridstack-add-page">
+                                <a href="#" class="btn btn-success font-weight-bold mr-2" id="ia-gridstack-add-page">
                                     <i class="flaticon2-plus"></i>
                                 </a>
                             </div> 
@@ -207,6 +214,14 @@ var iamGridStack = {
     methods: {
 
     },
+    events: {
+        addNewPage: function (e) {
+
+            $("#pagesContainerId").append(iamGridStack.templateHtml.pageTab());
+
+            $("#ia-gridstack-container").append(iamGridStack.templateHtml.gridstackContainer());
+        }
+    }
 
 };
 
