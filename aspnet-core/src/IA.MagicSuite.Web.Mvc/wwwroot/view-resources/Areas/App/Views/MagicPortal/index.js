@@ -82,6 +82,10 @@ var iamGridStack = {
 
 
         this.initEvent();
+
+
+        iamGridStack.refresh();
+        iamGridStack.methods.bindId();
     },
     initEvent: function () {
         const that = this;
@@ -175,7 +179,7 @@ var iamGridStack = {
 
                           
                                 <ul class="nav nav-tabs nav-bold nav-tabs-line" role="tablist" id="pagesContainerId">
-                                        <li class="nav-item">
+                                        <li class="nav-item newpagetab" data-page-id="">
                                             <a class="nav-link active" data-toggle="tab" href="" role="tab" aria-selected="true">
                                                 Page 1
                                             </a>
@@ -202,31 +206,46 @@ var iamGridStack = {
 `;
         },
         gridstackContainer: function () {
-            return `<div class="grid-stack" style="min-height:40vh;"></div>`;
+            return `<div class="grid-stack newgrid" style="min-height:40vh;" data-grid-id=""></div>`;
         },
         pageTab: function (obj) {
+            obj = obj || {name:"page 1"}
             return `
-                                       <li class="nav-item">
+                                       <li class="nav-item newpagetab" data-page-id="">
                                             <a class="nav-link" data-toggle="tab" href="" role="tab">
-                                                Page 1
+                                                ${obj.name}
                                             </a>
                                         </li>
 `;
         }
     },
     methods: {
+        bindId: function () {
+            let classes = $(".grid-stack").attr("class").split(" ");
+            let classInstance = classes.filter(el => el.includes("grid-stack-instance"));
+            const id = classInstance[0].substr(20);
+            const pageSelector = $(".newpagetab");
+            const gridSelector = $(".newgrid");
 
+            pageSelector.attr("data-page-id", id).removeClass("newpagetab");
+            gridSelector.attr("data-grid-id", id).removeClass("newgrid");
+
+        },
     },
     events: {
         addNewPage: function (e) {
 
             $("#pagesContainerId").append(iamGridStack.templateHtml.pageTab());
-
             $("#ia-gridstack-container").append(iamGridStack.templateHtml.gridstackContainer());
+
+            iamGridStack.refresh();
+            iamGridStack.methods.bindId();
+
         },
         showActivePage: function (e) {
 
         },
+        
     }
 
 };
