@@ -18,13 +18,17 @@
             /*min-width: 350px;*/
             height: 100%;
         }
-/*        .heigth-100 {
+        /*        .heigth-100 {
             height: 100%;
         }*/
-        .width-100{
-            width:100%;
+        .width-100 {
+            width: 100%;
         }
-/*        .CodeMirror {
+
+        #widgetAttributesGridList {
+            max-width: 600px;
+        }
+        /*        .CodeMirror {
             height: 100%;
         }*/
     </style>
@@ -33,10 +37,12 @@
 
 @section Scripts{
     <script src="~/lib/codemirror/lib/codemirror.js"></script>
-    <script src="~/lib/codemirror/addon/selection/selection-pointer.js"></script>
     <script src="~/lib/codemirror/mode/xml/xml.js"></script>
     <script src="~/lib/codemirror/mode/javascript/javascript.js"></script>
     <script src="~/lib/codemirror/mode/css/css.js"></script>
+    <script src="~/lib/codemirror/mode/htmlembedded/htmlembedded.js"></script>
+    <script src="~/lib/codemirror/addon/mode/multiplex.js"></script>
+    <script src="~/lib/ejs.js"></script>
     <script src="~/view-resources/Areas/App/Views/MagicWidget/iamWidget.js"></script>
 }
 
@@ -128,15 +134,17 @@
                                     <div class="tab-pane fade show active heigth-100" id="iamWidgetCustomJS" role="tabpanel">
 
                                     </div>
-                                    <div class="tab-pane fade show active heigth-100" id="iamWidgetSettingAttributes"  role="tabpanel">
+                                    <div class="tab-pane fade show active heigth-100" id="iamWidgetSettingAttributes" role="tabpanel">
                                         <div class="d-flex flex-column flex-column-fluid m-5">
                                             <div class="d-flex flex-row justify-content-end align-items-center">
                                                 <div id="Add-attribute-btn">
                                                     <button id="CreateNewWidgetAttributeButton" class="btn btn-primary blue mb-4"><i class="fa fa-plus"></i> @L("CreateNewWidgetAttribute")</button>
                                                 </div>
                                             </div>
-                                            <div class="d-flex align-items-center" id="widgetAttributesGridList">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <div id="widgetAttributesGridList">
 
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -158,7 +166,7 @@
                         </div>
                     </div>
                     <div class="card-body p-2 heigth-100">
-                        <iframe class="width-100 heigth-100 border-0" id="iamWidgetPreviewWindow"></iframe>
+                        <div class="width-100 heigth-100 border-0" id="iamWidgetPreviewWindow"></div>
                     </div>
                 </div>
             </div>
