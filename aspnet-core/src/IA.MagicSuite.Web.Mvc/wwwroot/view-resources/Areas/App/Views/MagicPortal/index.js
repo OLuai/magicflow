@@ -1,7 +1,7 @@
 ﻿//const { GridStack } = require("../../../../../gridstack/dist/gridstack");
 
 //import('../../../../../view-resources/Areas/App/Views/_Bundles/gridstack.min.js');
-alert('test8mm !!!!!!!!!!');
+alert('test !!!!!!!!!!');
 $(function () {
     
     iamGridStack.init();
@@ -88,8 +88,8 @@ var iamGridStack = {
         this.initEvent();
 
 
-        iamGridStack.refresh();
-        iamGridStack.methods.bindId();
+        //iamGridStack.refresh();
+        //iamGridStack.methods.bindId();
     },
     initEvent: function () {
         const that = this;
@@ -123,7 +123,7 @@ var iamGridStack = {
     },
     grids: null,
     currentGrid: 0,
-    pages: null,
+    pages: [],
     items : [
         { x: 0, y: 0, w: 4, h: 2, content: '1' },
         { x: 4, y: 0, w: 4, h: 4, content: '2' },
@@ -170,14 +170,14 @@ var iamGridStack = {
         </div>
         <div id="ia-gridstack-container" class="">
 
-                {grid-content-item}
+               
 
         </div>
 
 
 
 
-`.replace("{tool-bar-right}", iamGridStack.templateHtml.gridstackTabsRight()).replace("{grid-content-item}", iamGridStack.templateHtml.gridstackContainer());
+`.replace("{tool-bar-right}", iamGridStack.templateHtml.gridstackTabsRight());
         },
         gridstackTabsLeft: function () {
             return `
@@ -234,6 +234,10 @@ var iamGridStack = {
 
             return id;
         },
+        setToactive: function (id) {
+            $("[data-page-id] > a").removeClass("active").attr("aria-selected", "false");
+            $(`[data-page-id="${id}"] > a`).addClass("active").attr("aria-selected", "true");
+        },
     },
     events: {
         addNewPage: function (e) {
@@ -243,6 +247,10 @@ var iamGridStack = {
 
             iamGridStack.refresh();
             id = iamGridStack.methods.bindId();
+            iamGridStack.push({
+                id: id,
+                displayName: "",
+            })
 
 
             const showPage = (e) => { iamGridStack.events.showActivePage(e); }
@@ -251,18 +259,19 @@ var iamGridStack = {
                 "click":showPage,
             });
 
-            //$(`[data-page-id="${id}"]`).trigger("click");
+            $(`[data-page-id="${id}"]`).trigger("click");
 
-            console.log($(`[data-page-id="${id}"]`));
+            iamGridStack.methods.setToactive(id);
 
         },
+        
         showActivePage: function (e) {
             e.preventDefault();
-            $(`[data-grid-id]`).hide();
+            
             const selector = $(e.currentTarget);
             const id = selector.attr("data-page-id");
 
-            
+            $(`[data-grid-id]`).hide();
             $(`[data-grid-id="${id}"]`).show();
 
 
