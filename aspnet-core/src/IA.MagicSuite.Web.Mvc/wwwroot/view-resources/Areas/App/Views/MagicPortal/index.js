@@ -66,12 +66,13 @@ var iamGridStack = {
         //this.grid = GridStack.init();
 
         this.build();
-        let grid = GridStack.init();
+        //let grid = GridStack.init();
         //let grid = $('.grid-stack').gridstack;
 
        
-        grid.load(items);
-        
+        //grid.load(items);
+
+        GridStack.initAll()
 
         //grid.on('added removed change', function (e, items) {
         //    let str = '';
