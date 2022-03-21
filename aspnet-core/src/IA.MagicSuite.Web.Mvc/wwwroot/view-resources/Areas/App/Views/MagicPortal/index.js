@@ -10,8 +10,10 @@ $(function () {
 
 var iamGridStack = {
     build: function () {
+        const that = this;
+        $("#iamdashboard").html(that.templateHtml.initContainer());
 
-        $("#iamdashboard").html(`
+        $("#iamdashboard0").html(`
     <h1>Header</h1>
     <div id="ia-gridstack-config" class="mb-5">
 
@@ -72,7 +74,7 @@ var iamGridStack = {
        
         //grid.load(items);
 
-        GridStack.initAll()
+        //GridStack.initAll()
 
         //grid.on('added removed change', function (e, items) {
         //    let str = '';
@@ -101,6 +103,9 @@ var iamGridStack = {
 
         });
     },
+    refresh: function () {
+        this.grids = GridStack.initAll();
+    },
     grids: null,
     currentGrid: 0,
     pages: null,
@@ -125,41 +130,51 @@ var iamGridStack = {
     },
     //Tous les templates
     templateHtml: {
-        gridstackHheader: function () {
+        initContainer: function () {
             return `
-            <div id="ia-gridstack-config" class="mb-5">
+
+
+    <h1>Header</h1>
+        <div id="ia-gridstack-toolbar" class="mb-5">
 
                     <div class="card card-custom">
-                        <div class="card-header card-header-tabs-line">
-                            
+                                <div class="card-header card-header-tabs-line">
+                                        <div class="card-toolbar">
 
+                                                {tool-bar-left}
 
-                                                       
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                             {tool-bar-right}
+                                        </div>
 
-
-                        </div>
+                                </div>
                     </div>
         </div>
+        <div id="ia-gridstack-container" class="">
+
+                {grid-content-item}
+
+        </div>
+
+
+
+
 `;
         },
         gridstackTabsLeft: function () {
             return `
 
 
-                          <div class="card-toolbar">
-                                <ul class="nav nav-tabs nav-bold nav-tabs-line" role="tablist">
+                          
+                                <ul class="nav nav-tabs nav-bold nav-tabs-line" role="tablist" id="pagesContainerId">
                                         <li class="nav-item">
                                             <a class="nav-link active" data-toggle="tab" href="" role="tab" aria-selected="true">
                                                 Page 1
                                             </a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="" role="tab" aria-selected="false">
-                                                000
-                                            </a>
-                                        </li>
                                 </ul>
-                            </div>
+                            
 
 
 `;
@@ -179,6 +194,15 @@ var iamGridStack = {
         gridstackContainer: function () {
             return `<div class="grid-stack"></div>`;
         },
+        pageTab: function (obj) {
+            return `
+                                       <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="" role="tab">
+                                                Page 1
+                                            </a>
+                                        </li>
+`;
+        }
     },
 
 };
