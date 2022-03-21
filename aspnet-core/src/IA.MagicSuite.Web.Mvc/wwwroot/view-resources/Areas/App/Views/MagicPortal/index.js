@@ -96,6 +96,9 @@ var iamGridStack = {
         const addNewpage = (e) => {
             that.events.addNewPage(e);
         };
+        const addNewWidget = (e) => {
+            that.events.addNewWidget(e);
+        };
         const toggleMoreSetting = (e) => {
             that.events.showMoreSetting(e);
         };
@@ -105,6 +108,11 @@ var iamGridStack = {
         this.createEvent($("#ia-gridstack-add-page"), {
             "click": addNewpage,
         });
+        //Ajouter une nouveau widget
+        this.createEvent($("#ia-gridstack-add-widget"), {
+            "click": addNewWidget,
+        });
+
         //Afficher ou masque les options
         this.createEvent($(".btn-show-more-setting"), {
             "click": toggleMoreSetting,
@@ -197,7 +205,7 @@ var iamGridStack = {
             return `
 
                             <div class="d-flex align-items-center">
-                                <a href="#" class="font-weight-bold ml-2 mr-3"  >
+                                <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-add-widget" >
                                     <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
                                 </a>
                                 <a href="#" class="font-weight-bold ml-2 mr-2" id="ia-gridstack-add-page" >
@@ -274,6 +282,9 @@ var iamGridStack = {
 
             iamGridStack.methods.setToActive(id);
 
+        },
+        addNewWidget: function () {
+            iamGridStack.grids[iamGridStack.currentPage].addWidget({ content: "ceci est un test" });
         },
         showActivePage: function (e) {
             e.preventDefault();
