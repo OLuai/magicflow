@@ -247,7 +247,7 @@ var iamGridStack = {
 
             iamGridStack.refresh();
             id = iamGridStack.methods.bindId();
-            iamGridStack.push({
+            iamGridStack.pages.push({
                 id: id,
                 displayName: "",
             })
