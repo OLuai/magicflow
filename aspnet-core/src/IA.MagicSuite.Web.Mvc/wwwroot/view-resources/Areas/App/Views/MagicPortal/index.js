@@ -190,9 +190,12 @@ var iamGridStack = {
             return `
 
                             <div class="d-flex align-items-center">
-                                <a href="#" class="btn btn-success font-weight-bold mr-2" id="ia-gridstack-add-page">
-                                    <i class="flaticon2-plus"></i>
+                                <a href="#" class="font-weight-bold ml-2 mr-2" id="ia-gridstack-add-page" style="font-size: 1.7rem;">
+                                    <i class="flaticon2-plus-1"></i>
                                 </a>
+
+
+
                             </div> 
 
 
@@ -220,7 +223,10 @@ var iamGridStack = {
             $("#pagesContainerId").append(iamGridStack.templateHtml.pageTab());
 
             $("#ia-gridstack-container").append(iamGridStack.templateHtml.gridstackContainer());
-        }
+        },
+        showActivePage: function (e) {
+
+        },
     }
 
 };
