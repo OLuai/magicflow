@@ -160,7 +160,7 @@ var iamGridStack = {
 
 
 
-`;
+`.replace("{tool-bar-left}", iamGridStack.templateHtml.gridstackTabsLeft()).replace("{tool-bar-right}", iamGridStack.templateHtml.gridstackTabsRight()).replace("{grid-content-item}", iamGridStack.templateHtml.gridstackContainer());
         },
         gridstackTabsLeft: function () {
             return `
@@ -192,7 +192,7 @@ var iamGridStack = {
 `;
         },
         gridstackContainer: function () {
-            return `<div class="grid-stack"></div>`;
+            return `<div class="grid-stack" style="min-height:40vh;"></div>`;
         },
         pageTab: function (obj) {
             return `
@@ -203,6 +203,9 @@ var iamGridStack = {
                                         </li>
 `;
         }
+    },
+    methods: {
+
     },
 
 };
