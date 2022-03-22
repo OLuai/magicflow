@@ -2,6 +2,7 @@
 
 //import('../../../../../view-resources/Areas/App/Views/_Bundles/gridstack.min.js');
 alert('test1 !!!!!!!!!!');
+var test;
 $(function () {
     
     iamGridStack.init();
@@ -80,7 +81,9 @@ var iamGridStack = {
         this.grids = GridStack.initAll();
     },
     grids: null,
-    //currentGrid: 0,
+    options: {
+        isEditMode:true,
+    },
     pages: [],
     widgets: [],
     currentPage:0,
@@ -171,7 +174,7 @@ var iamGridStack = {
         widgetOptionBar: function () {
             return `
                     <div style="height: 20px;" class="d-flex justify-content-end m-2 ia-widget-toolbar">
-                            <a href="#" class="btn-delete-widget">
+                            <a href="#" class="btn-delete-widget" style="display:none">
                                   <i class="flaticon2-delete text-danger"></i>
                             </a>
                     </div>
@@ -205,9 +208,9 @@ var iamGridStack = {
         addWidget: function (obj) {
             iamGridStack.widgets.push(obj);
         },
-        deleteWidget: function () {
+        deleteWidget: function (id) {
 
-        }
+        },
     },
     events: {
         //Ajouter une nouvelle page
@@ -247,12 +250,15 @@ var iamGridStack = {
                 content: content,
                 type:"widget",
             };
+
+            
             iamGridStack.grids[iamGridStack.currentPage].addWidget({
                 h: 4,
                 w: 4,
                 content:content,
             });
             iamGridStack.methods.addWidget(obj);
+            $(`.grid-stack-item:has([data-w-id="${id}"])`).attr("data-widget-id", id);
             iamGridStack.bindTo(obj);
         },
         //Afficher la page active
@@ -276,7 +282,8 @@ var iamGridStack = {
             $("#ia-gridstack-toolbar-more-setting").toggle();
         },
         showWidgetToobar: function (e) {
-            console.log("clique !!!!")
+            let selector = $(e.currentTarget).find(".btn-delete-widget");
+            selector.toggle();
         },
         //Supprimer page
         deletePage: function (e) {
@@ -284,7 +291,9 @@ var iamGridStack = {
         },
         //Supprimer widget 
         deleteWidget: function (e) {
-            
+            const el = $(e.currentTarget);
+            const id = el.attr("data-widget-id");
+            iamGridStack.methods.deleteWidget(id);
         },
 
 
@@ -299,12 +308,18 @@ var iamGridStack = {
             const showToolbar = (e) => {
                 that.events.showWidgetToobar(e);
             };
+            const deleteWidget = (e) => {
+                that.events.deleteWidget(e);
+            };
 
-
-            //Supprimer widget
+            //Afficher toolbar de la widget
             this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
                 "mouseover": showToolbar,
                 "mouseout": showToolbar,
+            });
+            //Supprimer widget
+            this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
+                "click": deleteWidget,
             });
         }
 
