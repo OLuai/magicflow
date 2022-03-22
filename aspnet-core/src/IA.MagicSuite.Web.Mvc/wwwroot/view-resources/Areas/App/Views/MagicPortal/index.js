@@ -131,18 +131,49 @@ var iamGridStack = {
                                                     </label>
                                                     </span>
 									            </div>
+                                                
+
                                                 <div class="alert-icon">                        
-						                            <a href="#" class="btn text-dark btn-light-secondary btn-hover-bg-light">Renommer</a>				
+						                            <div class="dropdown dropdown-inline mr-4">
+                                                        <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn text-dark">
+                                                        <i class="fas fa-stream" style="font-size: 1.7rem;"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 36px, 0px);">
+                                                        
+                                                           
+                                                        
+                                                    </div>
+                                                </div>				
+
+
+
 									            </div>
+
+
                                             </div>
 
 
                                             <div class="d-flex align-items-center">                    
                                                 <div class="alert-icon">                        
-                                                        <a href="#" class="btn btn-icon btn-light-danger btn-clear-all">
-                                                            <i class="flaticon2-rubbish-bin-delete-button icon-lg"></i>
+                                                        <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-add-widget" >
+                                                              <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
                                                         </a>									
                                                 </div>
+
+
+                                                <div class="alert-icon">                        
+                                                          <div class="dropdown dropdown-inline">
+                                                        <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ki ki-bold-more-ver icon-lg"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(-5px, 32px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                <a class="dropdown-item" href="#">Exporter</a>
+                                                                <a class="dropdown-item" href="#">Importer</a>
+                                                        </div>
+                                                        </div>									
+                                               </div>
+
+
                                             </div>
                                 </div>
         </div>
@@ -163,12 +194,24 @@ var iamGridStack = {
             return `
 
                             <div class="d-flex align-items-center">
-                                <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-add-widget" >
-                                    <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
-                                </a>
-                                <a href="#" class="font-weight-bold ml-2 mr-2" id="ia-gridstack-add-page" >
-                                    <i class="fas fa-stream" style="font-size: 1.7rem;"></i>
-                                </a>
+                                
+                                
+                                <div class="dropdown dropdown-inline mr-4">
+                                                        <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn">
+                                                        <i class="fas fa-stream" style="font-size: 1.7rem;"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                                                        
+                                                            <div class="px-4 py-3">
+                                                                <div class="form-group">
+                                                                <label for="PageRenameInput">Nom de la page</label>
+                                                                <input type="text" class="form-control" id="PageRenameInput">
+                                                                </div>
+                                                                <button class="btn btn-block btn-sm btn-primary" id="">Renommer</button>
+                                                                <button class="btn btn-block btn-sm btn-primary ml-0" id="ia-gridstack-add-page">Créer nouveau</button>
+                                                            </div>
+                                    </div>
+                                </div>
                                 <a href="#" class="btn btn-icon btn-light-danger btn-delete-page ml-2 mr-2">
                                     <i class="flaticon2-rubbish-bin-delete-button icon-lg"></i>
                                 </a>
