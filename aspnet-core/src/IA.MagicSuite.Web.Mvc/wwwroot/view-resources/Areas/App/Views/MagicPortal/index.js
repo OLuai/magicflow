@@ -118,23 +118,39 @@ var iamGridStack = {
                                         </div>
                                 </div>
 
+        <div id="ia-gridstack-toolbar-more-setting" style="display:none;">
+                                <div role="alert"  class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b d-flex justify-content-between" >
 
-                                <div role="alert" id="ia-gridstack-toolbar-more-setting" class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b" style="display:none;">
-									<div class="alert-icon">
-                                        <span class="mr-2">Mode édition</span>
-										<span class="switch">
-                                              <label>
-                                                    <input type="checkbox" name="select" class="switch-edit-mode">
-                                                    <span></span>
-                                              </label>
-                                        </span>
-									</div>
-								</div>
-                    </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="alert-icon">
+                                                    <span class="mr-2">Mode édition</span>
+										            <span class="switch">
+                                                    <label>
+                                                            <input type="checkbox" name="select" class="switch-edit-mode">
+                                                            <span></span>
+                                                    </label>
+                                                    </span>
+									            </div>
+                                                <div class="alert-icon">                        
+						                            <a href="#" class="btn text-dark btn-light-secondary btn-hover-bg-light">Renommer</a>				
+									            </div>
+                                            </div>
+
+
+                                            <div class="d-flex align-items-center">                    
+                                                <div class="alert-icon">                        
+                                                        <a href="#" class="btn btn-icon btn-light-danger btn-clear-all">
+                                                            <i class="flaticon2-rubbish-bin-delete-button icon-lg"></i>
+                                                        </a>									
+                                                </div>
+                                            </div>
+                                </div>
+        </div>
+                    
+
+        </div>
         </div>
         <div id="ia-gridstack-container" class="">
-
-               
 
         </div>
 
@@ -153,10 +169,17 @@ var iamGridStack = {
                                 <a href="#" class="font-weight-bold ml-2 mr-2" id="ia-gridstack-add-page" >
                                     <i class="fas fa-stream" style="font-size: 1.7rem;"></i>
                                 </a>
+                                <a href="#" class="btn btn-icon btn-light-danger btn-delete-page ml-2 mr-2">
+                                    <i class="flaticon2-rubbish-bin-delete-button icon-lg"></i>
+                                </a>
                                 <span class="mr-5 ml-5"></span>
                                 <a href="#" class="font-weight-bold ml-2 btn-show-more-setting">
                                     <i class="flaticon2-down" style="font-size: 1.0rem;"></i>
                                 </a>
+
+                                
+
+
 
 
                             </div> 
@@ -165,7 +188,7 @@ var iamGridStack = {
 `;
         },
         gridstackContainer: function () {
-            return `<div class="grid-stack newgrid" style="min-height:40vh;" data-grid-id="">1</div>`;
+            return `<div class="grid-stack newgrid" style="min-height:40vh;" data-grid-id=""></div>`;
         },
         pageTab: function (obj) {
             obj = obj || {name:"page 1"}
