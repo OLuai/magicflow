@@ -17,7 +17,7 @@ var iamGridStack = {
         $("#iamdashboard").html(that.templateHtml.initContainer());
 
         //Ajout de la 1ere page par défaut
-        iamGridStack.events.addNewPage();
+        iamGridStack.events.addNewPage("Page 1");
 
     },
     init: function () {
@@ -52,7 +52,9 @@ var iamGridStack = {
     initEvent: function () {
         const that = this;
         const addNewpage = (e) => {
-            that.events.addNewPage(e);
+            const name = $("#PageRenameInput").val();
+            that.events.addNewPage(name);
+            $("#PageRenameInput").val("");
         };
         const addNewWidget = (e) => {
             that.events.addNewWidget(e);
@@ -60,20 +62,33 @@ var iamGridStack = {
         const toggleMoreSetting = (e) => {
             that.events.showMoreSetting(e);
         };
-
+        const renamePage = (e) => {
+            that.events.renamePage(e);
+        }
+        const deletePage = (e) => {
+            that.events.deletePage(e);
+        }
+        
 
         //Ajouter une nouvelle page
         this.createEvent($("#ia-gridstack-add-page"), {
             "click": addNewpage,
         });
+        //Supprimer page
+        this.createEvent($(".btn-delete-page"), {
+            "click": deletePage,
+        });
         //Ajouter une nouveau widget
         this.createEvent($("#ia-gridstack-add-widget"), {
             "click": addNewWidget,
         });
-
         //Afficher ou masque les options
         this.createEvent($(".btn-show-more-setting"), {
             "click": toggleMoreSetting,
+        });
+        //Renommer page
+        this.createEvent($("#ia-gridstack-rename-page"), {
+            "click": renamePage,
         });
 
     },
@@ -134,20 +149,7 @@ var iamGridStack = {
                                                 
 
                                                 <div class="alert-icon">                        
-						                            <div class="dropdown dropdown-inline mr-4">
-                                                        <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn text-dark">
-                                                        <i class="fas fa-stream" style="font-size: 1.7rem;"></i>
-                                                        </button>
-                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 36px, 0px);">
-                                                        
-                                                           
-                                                        
-                                                    </div>
-                                                </div>				
-
-
-
-									            </div>
+						                        </div>
 
 
                                             </div>
@@ -196,7 +198,7 @@ var iamGridStack = {
                             <div class="d-flex align-items-center">
                                 
                                 
-                                <div class="dropdown dropdown-inline mr-4">
+                                <div class="dropdown dropdown-inline mr-1">
                                                         <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn">
                                                         <i class="fas fa-stream" style="font-size: 1.7rem;"></i>
                                                         </button>
@@ -207,7 +209,7 @@ var iamGridStack = {
                                                                 <label for="PageRenameInput">Nom de la page</label>
                                                                 <input type="text" class="form-control" id="PageRenameInput">
                                                                 </div>
-                                                                <button class="btn btn-block btn-sm btn-primary" id="">Renommer</button>
+                                                                <button class="btn btn-block btn-sm btn-primary" id="ia-gridstack-rename-page">Renommer</button>
                                                                 <button class="btn btn-block btn-sm btn-primary ml-0" id="ia-gridstack-add-page">Créer nouveau</button>
                                                             </div>
                                     </div>
@@ -283,12 +285,23 @@ var iamGridStack = {
         deleteWidget: function (id) {
 
         },
+        renamePage: function (id) {
+
+        },
     },
     events: {
+        //Renommer page
+        renamePage: function (e) {
+            const newName = $("#PageRenameInput").val();
+            const id = iamGridStack.pages[iamGridStack.currentPage].id;
+
+            $(`[data-page-id="${id}"]`).find("a").html(newName);
+            $("#PageRenameInput").val("");
+        },
         //Ajouter une nouvelle page
-        addNewPage: function (e) {
+        addNewPage: function (name) {
             let id;
-            $("#pagesContainerId").append(iamGridStack.templateHtml.pageTab());
+            $("#pagesContainerId").append(iamGridStack.templateHtml.pageTab({name:name}));
             $("#ia-gridstack-container").append(iamGridStack.templateHtml.gridstackContainer());
 
             iamGridStack.refresh();
@@ -359,6 +372,11 @@ var iamGridStack = {
         },
         //Supprimer page
         deletePage: function (e) {
+            if (iamGridStack.pages.length == 1) return;
+            const id = iamGridStack.pages[iamGridStack.currentPage].id;
+            iamGridStack.grids[iamGridStack.currentPage].destroy();
+            $(`[data-page-id="${id}"]`).remove();
+           // iamGridStack.methods.setToActive(id);
 
         },
         //Supprimer widget 
@@ -369,6 +387,8 @@ var iamGridStack = {
             iamGridStack.grids[iamGridStack.currentPage].removeWidget($(`[data-widget-id="${id}"]`)["0"]);
             iamGridStack.methods.deleteWidget(id);
         },
+        
+
 
 
 
