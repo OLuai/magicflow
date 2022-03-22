@@ -1,7 +1,7 @@
 ﻿//const { GridStack } = require("../../../../../gridstack/dist/gridstack");
 
 //import('../../../../../view-resources/Areas/App/Views/_Bundles/gridstack.min.js');
-alert('test1 !!!!!!!!!!');
+alert('test2 !!!!!!!!!!');
 var test;
 $(function () {
     
@@ -120,9 +120,15 @@ var iamGridStack = {
 
 
                                 <div role="alert" id="ia-gridstack-toolbar-more-setting" class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b" style="display:none;">
-									    <div class="alert-icon">
-										
-									    </div>
+									<div class="alert-icon">
+                                        <span class="mr-2">Mode édition</span>
+										<span class="switch">
+                                              <label>
+                                                    <input type="checkbox" name="select" class="switch-edit-mode">
+                                                    <span></span>
+                                              </label>
+                                        </span>
+									</div>
 								</div>
                     </div>
         </div>
@@ -291,8 +297,10 @@ var iamGridStack = {
         },
         //Supprimer widget 
         deleteWidget: function (e) {
-            const el = $(e.currentTarget);
-            const id = el.attr("data-widget-id");
+            
+            const id = $(e.currentTarget).parent().siblings(`[data-w-id]`).attr("data-w-id");
+            
+            iamGridStack.grids[iamGridStack.currentPage].removeWidget($(`[data-widget-id="${id}"]`)["0"]);
             iamGridStack.methods.deleteWidget(id);
         },
 
@@ -312,13 +320,13 @@ var iamGridStack = {
                 that.events.deleteWidget(e);
             };
 
-            //Afficher toolbar de la widget
+            //Afficher toolbar widget
             this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
                 "mouseover": showToolbar,
                 "mouseout": showToolbar,
             });
             //Supprimer widget
-            this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
+            this.createEvent($(`[data-widget-id="${obj.id}"]`).find(".btn-delete-widget"), {
                 "click": deleteWidget,
             });
         }
