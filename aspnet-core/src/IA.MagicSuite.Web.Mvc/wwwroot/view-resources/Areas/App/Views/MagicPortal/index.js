@@ -1,7 +1,7 @@
 ﻿//const { GridStack } = require("../../../../../gridstack/dist/gridstack");
 
 //import('../../../../../view-resources/Areas/App/Views/_Bundles/gridstack.min.js');
-alert('test !!!!!!!!!!');
+alert('test1 !!!!!!!!!!');
 $(function () {
     
     iamGridStack.init();
@@ -12,55 +12,12 @@ var iamGridStack = {
     build: function () {
         const that = this;
 
-
+        //Ajout du container dans le DOM
         $("#iamdashboard").html(that.templateHtml.initContainer());
-        //Ajout de la page par défaut
+
+        //Ajout de la 1ere page par défaut
         iamGridStack.events.addNewPage();
 
-        $("#iamdashboard0").html(`
-    <h1>Header</h1>
-    <div id="ia-gridstack-config" class="mb-5">
-
-        <div class="card card-custom">
-                        <div class="card-header card-header-tabs-line">
-                            <div class="card-toolbar">
-                                <ul class="nav nav-tabs nav-bold nav-tabs-line page-list" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="tab" href="" role="tab" aria-selected="true">
-                                                Page 1
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="" role="tab" aria-selected="false">
-                                                000
-                                            </a>
-                                        </li>
-                                </ul>
-                            </div>
-
-
-                            <div class="d-flex align-items-center">
-                                <a href="#" class="btn btn-success font-weight-bold mr-2 ia-gridstack-add-page" id="ia-gridstack-add-page">
-                                    <i class="flaticon2-plus"></i>
-                                </a>
-                            </div>                            
-
-
-                        </div>
-                    </div>
-        </div>
-    <div id="ia-gridstack-container" class="grid-stack"></div>
- <div id="ia-gridstack-container" class="grid-stack">
-
-<div class="grid-stack-item">
-    <div class="grid-stack-item-content">Item 1</div>
-  </div>
-  <div class="grid-stack-item" data-gs-width="2">
-    <div class="grid-stack-item-content">Item 2 wider</div>
-  </div>
-
-</div>
-`);
     },
     init: function () {
         let items = [
@@ -118,21 +75,6 @@ var iamGridStack = {
             "click": toggleMoreSetting,
         });
 
-        $("#ia-gridstack-add-page00").on("click", function () {
-            console.log("Clique !");
-//            $(".page-list").append(`
-//                                        <li class="nav-item">
-//                                            <a class="nav-link" data-toggle="tab" href="" role="tab" aria-selected="false">
-//                                                New page
-//                                            </a>
-//                                        </li>
-
-//`);   
-            that.grids = GridStack.initAll()
-            console.log("00->", that.grids);
-            
-
-        });
     },
     refresh: function () {
         this.grids = GridStack.initAll();
@@ -140,20 +82,11 @@ var iamGridStack = {
     grids: null,
     //currentGrid: 0,
     pages: [],
-    widgets: null,
+    widgets: [],
     currentPage:0,
     items : [
         { x: 0, y: 0, w: 4, h: 2, content: '1' },
         { x: 4, y: 0, w: 4, h: 4, content: '2' },
-        //{ x: 8, y: 0, w: 2, h: 2, content: '<p class="card-text text-center" style="margin-bottom: 0">Drag me!<p class="card-text text-center"style="margin-bottom: 0"><ion-icon name="hand" style="font-size: 300%"></ion-icon><p class="card-text text-center" style="margin-bottom: 0">' },
-        //{ x: 10, y: 0, w: 2, h: 2, content: '4' },
-        //{ x: 0, y: 2, w: 2, h: 2, content: '5' },
-        //{ x: 2, y: 2, w: 2, h: 4, content: '6' },
-        //{ x: 8, y: 2, w: 4, h: 2, content: '7' },
-        //{ x: 0, y: 4, w: 2, h: 2, content: '8' },
-        //{ x: 4, y: 4, w: 4, h: 2, content: '9' },
-        //{ x: 8, y: 4, w: 2, h: 2, content: '10' },
-        //{ x: 10, y: 4, w: 2, h: 2, content: '11' },
     ],
     //Créer l'evenement d'un element || selector : l'element sur lequel doit se declencher l'event, eventObj: l'ensemble des events qui seront lié à l'element
     createEvent: function (selector, eventObj) {
@@ -234,9 +167,20 @@ var iamGridStack = {
                                             </a>
                                         </li>
 `;
-        }
+        },
+        widgetOptionBar: function () {
+            return `
+                    <div style="height: 20px;" class="d-flex justify-content-end m-2 ia-widget-toolbar">
+                            <a href="#" class="btn-delete-widget">
+                                  <i class="flaticon2-delete text-danger"></i>
+                            </a>
+                    </div>
+`;
+        },
+
     },
     methods: {
+        //Obtebir l'id de chaque page créée
         bindId: function () {
             let classes = $(".newgrid").attr("class").split(" ");
             let classInstance = classes.filter(el => el.includes("grid-stack-instance"));
@@ -249,15 +193,24 @@ var iamGridStack = {
 
             return id;
         },
+        //Rendre la page active
         setToActive: function (id) {
             $("[data-page-id] > a").removeClass("active").attr("aria-selected", "false");
             $(`[data-page-id="${id}"] > a`).addClass("active").attr("aria-selected", "true");
         },
+        //Obtenir l'index de la page active
         getPagePosition: function (id) {
             return iamGridStack.pages.findIndex(el=>el.id===id);
+        },
+        addWidget: function (obj) {
+            iamGridStack.widgets.push(obj);
+        },
+        deleteWidget: function () {
+
         }
     },
     events: {
+        //Ajouter une nouvelle page
         addNewPage: function (e) {
             let id;
             $("#pagesContainerId").append(iamGridStack.templateHtml.pageTab());
@@ -267,6 +220,7 @@ var iamGridStack = {
             id = iamGridStack.methods.bindId();
             iamGridStack.pages.push({
                 id: id,
+                name:"",
                 displayName: "",
             })
             
@@ -283,9 +237,25 @@ var iamGridStack = {
             iamGridStack.methods.setToActive(id);
 
         },
-        addNewWidget: function () {
-            iamGridStack.grids[iamGridStack.currentPage].addWidget({ content: "ceci est un test" });
+        //Ajouter un nouveau widget
+        addNewWidget: function (e) {
+            const id = new Date().getTime() + "";
+            const content = `<span data-w-id="${id}"></span>` + iamGridStack.templateHtml.widgetOptionBar() + "ceci est un test";
+            const obj = {
+                id: id,
+                pageId: iamGridStack.pages[iamGridStack.currentPage].id,
+                content: content,
+                type:"widget",
+            };
+            iamGridStack.grids[iamGridStack.currentPage].addWidget({
+                h: 4,
+                w: 4,
+                content:content,
+            });
+            iamGridStack.methods.addWidget(obj);
+            iamGridStack.bindTo(obj);
         },
+        //Afficher la page active
         showActivePage: function (e) {
             e.preventDefault();
             
@@ -299,15 +269,46 @@ var iamGridStack = {
             //console.log("test !!  !! ! !! !",id);
 
         },
+        //Afficher la zone d'options
         showMoreSetting: function (e) {
             $(".btn-show-more-setting > i").toggleClass("flaticon2-up");
             $(".btn-show-more-setting > i").toggleClass("flaticon2-down");
             $("#ia-gridstack-toolbar-more-setting").toggle();
-        }
+        },
+        showWidgetToobar: function (e) {
+            console.log("clique !!!!")
+        },
+        //Supprimer page
+        deletePage: function (e) {
+
+        },
+        //Supprimer widget 
+        deleteWidget: function (e) {
+            
+        },
+
 
 
         
     },
+    bindTo: function (obj) {
+        if (!obj) return;
+        const that = this;
+
+        if (obj.type == "widget") {
+            const showToolbar = (e) => {
+                that.events.showWidgetToobar(e);
+            };
+
+
+            //Supprimer widget
+            this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
+                "mouseover": showToolbar,
+                "mouseout": showToolbar,
+            });
+        }
+
+    }
 
 };
 
