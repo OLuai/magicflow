@@ -57,7 +57,7 @@ var iamGridStack = {
             $("#PageRenameInput").val("");
         };
         const addNewWidget = (e) => {
-            that.events.addNewWidget(e);
+            that.events.addNewWidget(null);
         };
         const toggleMoreSetting = (e) => {
             that.events.showMoreSetting(e);
@@ -67,6 +67,9 @@ var iamGridStack = {
         }
         const deletePage = (e) => {
             that.events.deletePage(e);
+        }
+        const importWidget = (e) => {
+            that.events.importWidget(e);
         }
         
         $('[data-toggle="tooltip"]').tooltip();
@@ -90,7 +93,10 @@ var iamGridStack = {
         this.createEvent($("#ia-gridstack-rename-page"), {
             "click": renamePage,
         });
-
+        //Importer widget
+        this.createEvent($("#ia-gridstack-import-widget"), {
+            "click": importWidget,
+        });
     },
     refresh: function () {
         this.grids = GridStack.initAll();
@@ -190,6 +196,10 @@ var iamGridStack = {
         <div id="ia-gridstack-container" class="">
 
         </div>
+        <div id="test" class="">
+
+        </div>
+
 
 
 
@@ -299,6 +309,30 @@ var iamGridStack = {
             iamGridStack.pages = newPageList;
             iamGridStack.widgets = newWidgetList;
         },
+        importFromJSON: function (resolve, reject) {
+            //alert('import');
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+
+            input.onchange = e => {
+                // getting a hold of the file reference
+                let file = e.target.files[0];
+
+                // setting up the reader
+                let reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+
+                // here we tell the reader what to do when it's done reading...
+                reader.onload = readerEvent => {
+                    var content = readerEvent.target.result; // this is the content!
+                    let widget = JSON.parse(content);
+                    resolve(widget);
+                }
+            }
+
+            input.click();
+        },
     },
     events: {
         //Renommer page
@@ -337,25 +371,36 @@ var iamGridStack = {
 
         },
         //Ajouter un nouveau widget
-        addNewWidget: function (e) {
+        addNewWidget: function (something) {
+            const contentHtml = something || "";
             const id = new Date().getTime() + "";
-            const content = `<span data-w-id="${id}"></span>` + iamGridStack.templateHtml.widgetOptionBar() + "ceci est un test";
+            const content = `<span data-w-id="${id}"></span>` + iamGridStack.templateHtml.widgetOptionBar() + contentHtml;
             const obj = {
                 id: id,
                 pageId: iamGridStack.pages[iamGridStack.currentPage].id,
-                content: content,
+                content: contentHtml,
                 type:"widget",
             };
 
+            if (something==null) {
+                iamGridStack.grids[iamGridStack.currentPage].addWidget({
+                    h: Math.floor(10 * Math.random()),
+                    w: Math.floor(10 * Math.random()),
+                    content: content,
+                });
+            } else {
+                iamGridStack.grids[iamGridStack.currentPage].addWidget({
+                    h: 3,
+                    w:3,
+                    content: content,
+                });
+            }
             
-            iamGridStack.grids[iamGridStack.currentPage].addWidget({
-                h: 4,
-                w: 4,
-                content:content,
-            });
+            
             iamGridStack.methods.addWidget(obj);
             $(`.grid-stack-item:has([data-w-id="${id}"])`).attr("data-widget-id", id);
             iamGridStack.bindTo(obj);
+            return id;
         },
         //Afficher la page active
         showActivePage: function (e) {
@@ -377,6 +422,7 @@ var iamGridStack = {
             $(".btn-show-more-setting > i").toggleClass("flaticon2-down");
             $("#ia-gridstack-toolbar-more-setting").toggle();
         },
+        //
         showWidgetToobar: function (e) {
             let selector = $(e.currentTarget).find(".btn-delete-widget");
             selector.toggle();
@@ -419,12 +465,18 @@ var iamGridStack = {
             iamGridStack.grids[iamGridStack.currentPage].removeWidget($(`[data-widget-id="${id}"]`)["0"]);
             iamGridStack.methods.deleteWidget(id);
         },
-        
-
-
-
-
-        
+        //
+        importWidget: function (e) {
+            const buildWidget = (widget) => {
+               const myWidgetHtml = iamWidget.render(widget);
+                const id = iamGridStack.events.addNewWidget("");
+                $(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(myWidgetHtml);
+                console.log("widget", myWidgetHtml);
+                iamGridStack.refresh();
+            };
+            iamGridStack.methods.importFromJSON(buildWidget);
+        },
+    
     },
     bindTo: function (obj) {
         if (!obj) return;
