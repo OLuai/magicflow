@@ -253,14 +253,29 @@
         }
     },
     //la fonction renvoie une chaine html si selector est null
-    render: function (widget, selector) {
+    render: function (elementId,widget, selector) {
 
         let codeCSS = `<style>${widget.widgetCSS}</style>`;
         let codeHTML = ejs.render(widget.widgetHTML, widget.attributesVal);
-        let codeJS = `<script>var widgetVariables = ${JSON.stringify(widget.attributesVal)};${widget.widgetJS}</script>`.replaceAll("widgetVariables", `${widget.id}_widgetVariables`);
+        let codeJS = `<script>var widgetVariables = ${JSON.stringify(widget.attributesVal)};${widget.widgetJS}</script>`.replaceAll("widgetVariables", `${elementId}_widgetVariables`);
         let code = `${codeCSS} ${codeHTML} ${codeJS}`;
-        if (!selector) return code;
-        return $(selector).append(code);
+        let html = $(`<div id='widget_${elementId}'>${codeHTML}</div>`);
+        let elements = html.find('*');
+        $.each(elements, (i, e) => {
+            if (e.id) {
+                let beforeId = e.id;
+                alert(beforeId);
+                html.find(`#${e.id}`).attr('id', `${elementId}_${beforeId}`);
+                codeCSS = codeCSS.replaceAll(`#${beforeId}`, `#${elementId}_${beforeId}`);
+                codeJS = codeJS.replaceAll(`#${beforeId}`, `#${elementId}_${beforeId}`);
+                alert(`${elementId}_${beforeId}`);
+            }
+        });
+
+        html.prepend(codeCSS);
+        html.append(codeJS);
+        if (!selector) return html;
+        return $(selector).append(html);
     },
     saveWidget: function () {
         let edi = iamWidget.codeEditor;
@@ -272,15 +287,10 @@
     runPreview: function () {
         let v = iamWidget.variables;
         iamWidget.saveWidget();
-        let code = iamWidget.render(iamWidget.widget);
+        let code = iamWidget.render('test',iamWidget.widget);
 
         $(`#${v.widgetPreviewId}`).html("");
         $(`#${v.widgetPreviewId}`).html(code);
-        //let previewWindow = document.getElementById(v.widgetPreviewId).contentWindow.document;
-
-        //previewWindow.open();
-        //previewWindow.write(code);
-        //previewWindow.close();
     },
     importFromJSON: function(resolve, reject){
         let input = document.createElement('input');
