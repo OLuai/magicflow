@@ -282,7 +282,8 @@
         //previewWindow.write(code);
         //previewWindow.close();
     },
-    importWidget: function () {
+    importFromJSON: function(resolve, reject){
+        alert('import');
         let input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json';
@@ -299,21 +300,26 @@
             reader.onload = readerEvent => {
                 var content = readerEvent.target.result; // this is the content!
                 let widget = JSON.parse(content);
-
-                iamWidget.widget = widget;
-
-                //Lister les attributs dans le propertyGrid et le gridView
-                iamWidget.attributes.showAttributesListGrid();
-                iamWidget.attributes.showAttributesPropertyGrid();
-
-                iamWidget.codeEditor.css.setValue(widget.widgetCSS);
-                iamWidget.codeEditor.html.setValue(widget.widgetHTML);
-                iamWidget.codeEditor.js.setValue(widget.widgetJS);
-                iamShared.messages.showSuccessMsg("Imported !")
+                resolve(widget);
             }
         }
 
         input.click();
+    },
+    importWidget: function () {
+        alert('click');
+        iamWidget.importFromJSON(widget => {
+            iamWidget.widget = widget;
+
+            //Lister les attributs dans le propertyGrid et le gridView
+            iamWidget.attributes.showAttributesListGrid();
+            iamWidget.attributes.showAttributesPropertyGrid();
+
+            iamWidget.codeEditor.css.setValue(widget.widgetCSS);
+            iamWidget.codeEditor.html.setValue(widget.widgetHTML);
+            iamWidget.codeEditor.js.setValue(widget.widgetJS);
+            iamShared.messages.showSuccessMsg("Imported !")
+        });
     },
     exportWidget: function () {
         iamShared.files.stringToFileDownload("Widget_"+iamWidget.widget.name + ".json", JSON.stringify(iamWidget.widget));
