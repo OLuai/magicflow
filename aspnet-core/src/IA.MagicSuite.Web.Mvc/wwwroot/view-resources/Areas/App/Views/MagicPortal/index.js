@@ -283,10 +283,17 @@ var iamGridStack = {
             iamGridStack.widgets.push(obj);
         },
         deleteWidget: function (id) {
-
+            let newWidgetList = iamGridStack.widgets.filter(widget => widget.pageId != id);
+            iamGridStack.widgets = newWidgetList;
         },
         renamePage: function (id) {
 
+        },
+        deletePage: function (id) {
+            let newPageList = iamGridStack.pages.filter(page => page.id != id);
+            let newWidgetList = iamGridStack.widgets.filter(widget => widget.pageId != id);
+            iamGridStack.pages = newPageList;
+            iamGridStack.widgets = newWidgetList;
         },
     },
     events: {
@@ -374,14 +381,41 @@ var iamGridStack = {
         deletePage: function (e) {
             if (iamGridStack.pages.length == 1) return;
             const id = iamGridStack.pages[iamGridStack.currentPage].id;
-            iamGridStack.grids[iamGridStack.currentPage].destroy();
-            $(`[data-page-id="${id}"]`).remove();
-           // iamGridStack.methods.setToActive(id);
+            const pageIndex = iamGridStack.methods.getPagePosition(id);
+            let newId;
+            
 
+            iamGridStack.grids[iamGridStack.currentPage].destroy();
+            //iamGridStack.methods.deletePage(id);
+            $(`[data-page-id="${id}"]`).remove();
+
+            if (pageIndex == 0) {
+                const nextPageId = iamGridStack.pages[1].id;
+                iamGridStack.methods.setToActive(nextPageId);
+                
+                $(`[data-page-id="${nextPageId}"]`).trigger("click");
+                newId = nextPageId;
+                //iamGridStack.currentPage = iamGridStack.methods.getPagePosition(nextPageId);
+                //iamGridStack.currentPage = 1;
+
+            }
+            else {
+                const prevPageId = iamGridStack.pages[iamGridStack.currentPage-1].id;
+                iamGridStack.methods.setToActive(prevPageId);
+
+                $(`[data-page-id="${prevPageId}"]`).trigger("click");
+                newId = prevPageId;
+                //iamGridStack.currentPage = iamGridStack.methods.getPagePosition(prevPageId);
+                //iamGridStack.currentPage = iamGridStack.currentPage - 1;
+            }
+           // iamGridStack.methods.setToActive(id);
+            iamGridStack.methods.deletePage(id);
+            iamGridStack.refresh();
+            iamGridStack.currentPage = iamGridStack.methods.getPagePosition(newId);
+            console.log("555555",iamGridStack.pages, "id",iamGridStack.currentPage)
         },
         //Supprimer widget 
         deleteWidget: function (e) {
-            
             const id = $(e.currentTarget).parent().siblings(`[data-w-id]`).attr("data-w-id");
             
             iamGridStack.grids[iamGridStack.currentPage].removeWidget($(`[data-widget-id="${id}"]`)["0"]);
