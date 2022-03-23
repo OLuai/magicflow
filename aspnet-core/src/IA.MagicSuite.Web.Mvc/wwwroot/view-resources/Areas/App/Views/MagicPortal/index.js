@@ -69,7 +69,7 @@ var iamGridStack = {
             that.events.deletePage(e);
         }
         
-
+        $('[data-toggle="tooltip"]').tooltip();
         //Ajouter une nouvelle page
         this.createEvent($("#ia-gridstack-add-page"), {
             "click": addNewpage,
@@ -137,10 +137,10 @@ var iamGridStack = {
                                 <div role="alert"  class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b d-flex justify-content-between" >
 
                                             <div class="d-flex align-items-center">
-                                                <div class="alert-icon">
+                                                <div class="alert-icon" data-toggle="tooltip" title="Mode édition">
                                                     <span class="mr-2">Mode édition</span>
 										            <span class="switch">
-                                                    <label>
+                                                    <label >
                                                             <input type="checkbox" name="select" class="switch-edit-mode">
                                                             <span></span>
                                                     </label>
@@ -156,12 +156,16 @@ var iamGridStack = {
 
 
                                             <div class="d-flex align-items-center">                    
-                                                <div class="alert-icon">                        
+                                                <div class="alert-icon" data-toggle="tooltip" title="Ajouter widget">                        
                                                         <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-add-widget" >
                                                               <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
                                                         </a>									
                                                 </div>
-
+                                                <div class="alert-icon" data-toggle="tooltip" title="Importer widget">                        
+                                                        <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-import-widget" >
+                                                              <i class="fas fa-download" style="font-size: 1.7rem;"></i>
+                                                        </a>									
+                                                </div>
 
                                                 <div class="alert-icon">                        
                                                           <div class="dropdown dropdown-inline">
@@ -214,11 +218,11 @@ var iamGridStack = {
                                                             </div>
                                     </div>
                                 </div>
-                                <a href="#" class="btn btn-icon btn-light-danger btn-delete-page ml-2 mr-2">
+                                <a href="#" class="btn btn-icon btn-light-danger btn-delete-page ml-2 mr-2" data-toggle="tooltip" title=Supprimer la page">
                                     <i class="flaticon2-rubbish-bin-delete-button icon-lg"></i>
                                 </a>
                                 <span class="mr-5 ml-5"></span>
-                                <a href="#" class="font-weight-bold ml-2 btn-show-more-setting">
+                                <a href="#" class="font-weight-bold ml-2 btn-show-more-setting" data-toggle="tooltip" title="Dévélopper/Réduire">
                                     <i class="flaticon2-down" style="font-size: 1.0rem;"></i>
                                 </a>
 
@@ -386,7 +390,6 @@ var iamGridStack = {
             
 
             iamGridStack.grids[iamGridStack.currentPage].destroy();
-            //iamGridStack.methods.deletePage(id);
             $(`[data-page-id="${id}"]`).remove();
 
             if (pageIndex == 0) {
@@ -395,8 +398,6 @@ var iamGridStack = {
                 
                 $(`[data-page-id="${nextPageId}"]`).trigger("click");
                 newId = nextPageId;
-                //iamGridStack.currentPage = iamGridStack.methods.getPagePosition(nextPageId);
-                //iamGridStack.currentPage = 1;
 
             }
             else {
@@ -405,10 +406,7 @@ var iamGridStack = {
 
                 $(`[data-page-id="${prevPageId}"]`).trigger("click");
                 newId = prevPageId;
-                //iamGridStack.currentPage = iamGridStack.methods.getPagePosition(prevPageId);
-                //iamGridStack.currentPage = iamGridStack.currentPage - 1;
             }
-           // iamGridStack.methods.setToActive(id);
             iamGridStack.methods.deletePage(id);
             iamGridStack.refresh();
             iamGridStack.currentPage = iamGridStack.methods.getPagePosition(newId);
