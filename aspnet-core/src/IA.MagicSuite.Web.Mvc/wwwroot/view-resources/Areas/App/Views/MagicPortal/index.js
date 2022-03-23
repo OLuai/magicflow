@@ -71,7 +71,10 @@ var iamGridStack = {
         const importWidget = (e) => {
             that.events.importWidget(e);
         }
-        
+        const editmode = (e) => {
+            that.events.editMode(e);
+        };
+
         $('[data-toggle="tooltip"]').tooltip();
         //Ajouter une nouvelle page
         this.createEvent($("#ia-gridstack-add-page"), {
@@ -97,13 +100,19 @@ var iamGridStack = {
         this.createEvent($("#ia-gridstack-import-widget"), {
             "click": importWidget,
         });
+        //Activer mode edition de widget
+        this.createEvent($("#ia-gridstack-editmode"), {
+            "change": editmode,
+        });
     },
     refresh: function () {
         this.grids = GridStack.initAll();
+        this.methods.addOptions();
     },
     grids: null,
     options: {
-        isEditMode:true,
+        editMode: false,
+        float:false
     },
     pages: [],
     widgets: [],
@@ -147,7 +156,7 @@ var iamGridStack = {
                                                     <span class="mr-2">Mode édition</span>
 										            <span class="switch">
                                                     <label >
-                                                            <input type="checkbox" name="select" class="switch-edit-mode">
+                                                            <input type="checkbox" name="select" class="switch-edit-mode" id="ia-gridstack-editmode">
                                                             <span></span>
                                                     </label>
                                                     </span>
@@ -333,6 +342,14 @@ var iamGridStack = {
 
             input.click();
         },
+        //Ajouter les options
+        addOptions: function () {
+            iamGridStack.pages.forEach((el, i) => {
+                iamGridStack.grids[i].enableMove(iamGridStack.options.editMode);
+                iamGridStack.grids[i].enableResize(iamGridStack.options.editMode);
+                iamGridStack.grids[i].float(iamGridStack.options.float);
+            })
+        },
     },
     events: {
         //Renommer page
@@ -368,7 +385,7 @@ var iamGridStack = {
             $(`[data-page-id="${id}"]`).trigger("click");
 
             iamGridStack.methods.setToActive(id);
-
+            iamGridStack.methods.addOptions();
         },
         //Ajouter un nouveau widget
         addNewWidget: function (something) {
@@ -384,8 +401,8 @@ var iamGridStack = {
 
             if (something==null) {
                 iamGridStack.grids[iamGridStack.currentPage].addWidget({
-                    h: Math.floor(10 * Math.random()),
-                    w: Math.floor(10 * Math.random()),
+                    h: 3,//Math.floor(1+3 * Math.random()),
+                    w: 3,//Math.floor(1+3 * Math.random()),
                     content: content,
                 });
             } else {
@@ -424,8 +441,11 @@ var iamGridStack = {
         },
         //
         showWidgetToobar: function (e) {
-            let selector = $(e.currentTarget).find(".btn-delete-widget");
-            selector.toggle();
+            if (iamGridStack.options.editMode) {
+                let selector = $(e.currentTarget).find(".btn-delete-widget");
+                selector.toggle();
+            };
+            
         },
         //Supprimer page
         deletePage: function (e) {
@@ -471,11 +491,15 @@ var iamGridStack = {
                const myWidgetHtml = iamWidget.render(widget);
                 const id = iamGridStack.events.addNewWidget("");
                 $(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(myWidgetHtml);
-                console.log("widget", myWidgetHtml);
                 iamGridStack.refresh();
             };
             iamGridStack.methods.importFromJSON(buildWidget);
         },
+        //Mode d'edition des widgets
+        editMode: function (e) {
+            iamGridStack.options.editMode = $(e.currentTarget).prop("checked");
+            iamGridStack.methods.addOptions();
+        }
     
     },
     bindTo: function (obj) {
