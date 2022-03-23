@@ -516,7 +516,22 @@ var iamGridStack = {
         },
         //Importer des Grids
         importGrid: function (e) {
-            console.log("Imported");
+            
+            //iamGridStack.refresh();
+
+            iamGridStack.methods.importFromJSON((obj) => {
+
+                $("#ia-gridstack-container, #pagesContainerId").html("");
+                iamGridStack.widgets = [];
+                iamGridStack.pages = [];
+                iamGridStack.options = {
+                    editMode: false,
+                    float: false
+                };
+                iamGridStack.importGrids(obj);
+                console.log("importtttt99999999999999", obj);
+            });
+
         }
     
     },
@@ -564,7 +579,11 @@ var iamGridStack = {
     },
     //Importer des grids
     importGrids: function (obj) {
-
+        const that = this;
+        obj.pages.forEach((el, i) => {
+            that.events.addNewPage(el.name);
+            that.grids[that.grids.length - 1].load(el.widgets);
+        });
     }
 
 };
