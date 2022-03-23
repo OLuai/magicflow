@@ -283,7 +283,6 @@
         //previewWindow.close();
     },
     importFromJSON: function(resolve, reject){
-        alert('import');
         let input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json';
@@ -307,7 +306,6 @@
         input.click();
     },
     importWidget: function () {
-        alert('click');
         iamWidget.importFromJSON(widget => {
             iamWidget.widget = widget;
 
@@ -325,5 +323,3 @@
         iamShared.files.stringToFileDownload("Widget_"+iamWidget.widget.name + ".json", JSON.stringify(iamWidget.widget));
     },
 };
-
-iamWidget.init();
