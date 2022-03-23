@@ -372,6 +372,8 @@ var iamGridStack = {
 
             $(`[data-page-id="${id}"]`).find("a").html(newName);
             $("#PageRenameInput").val("");
+            const pageIndex = iamGridStack.methods.getPagePosition(id);
+            iamGridStack.pages[pageIndex].name = newName;
         },
         //Ajouter une nouvelle page
         addNewPage: function (name) {
@@ -401,7 +403,7 @@ var iamGridStack = {
         },
         //Ajouter un nouveau widget
         addNewWidget: function (something) {
-            const contentHtml = something || "";
+            const contentHtml = something ? something.name : "";
             const id = new Date().getTime() + "";
             const content = `<span data-w-id="${id}"></span>` + iamGridStack.templateHtml.widgetOptionBar() + contentHtml;
             const obj = {
@@ -420,8 +422,8 @@ var iamGridStack = {
             }
             else {
                 iamGridStack.grids[iamGridStack.currentPage].addWidget({
-                    h: 3,
-                    w:3,
+                    h:something.h || 3,
+                    w:something.w || 3,
                     content: content,
                 });
             }
@@ -586,7 +588,7 @@ var iamGridStack = {
             that.events.addNewPage(el.name);
             //that.grids[that.grids.length - 1].load(el.widgets);
             el.widgets.forEach((widget) => {
-                const id = iamGridStack.events.addNewWidget("");
+                const id = iamGridStack.events.addNewWidget({name:"",w:widget.w,h:widget.h,});
                 //that.grids[that.grids.length - 1].addWidget(widget);
                 $(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(widget.content);
             });
