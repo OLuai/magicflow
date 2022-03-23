@@ -75,8 +75,10 @@ var iamGridStack = {
             that.events.editMode(e);
         };
         const exportGrid = (e) => {
-            console.log("222");
             iamGridStack.exportGrids();
+        };
+        const importGrid = (e) => {
+            iamGridStack.events.importGrid(e);
         };
 
         $('[data-toggle="tooltip"]').tooltip();
@@ -114,7 +116,7 @@ var iamGridStack = {
         });
         //Importer le projet
         this.createEvent($("#ia-gridstack-import"), {
-            "click": null,
+            "click": importGrid,
         });
     },
     refresh: function () {
@@ -318,7 +320,7 @@ var iamGridStack = {
             iamGridStack.widgets.push(obj);
         },
         deleteWidget: function (id) {
-            let newWidgetList = iamGridStack.widgets.filter(widget => widget.pageId != id);
+            let newWidgetList = iamGridStack.widgets.filter(widget => widget.id != id);
             iamGridStack.widgets = newWidgetList;
         },
         renamePage: function (id) {
@@ -382,8 +384,7 @@ var iamGridStack = {
             id = iamGridStack.methods.bindId();
             iamGridStack.pages.push({
                 id: id,
-                name:"",
-                displayName: "",
+                name:name,
             })
             
 
@@ -512,6 +513,10 @@ var iamGridStack = {
         editMode: function (e) {
             iamGridStack.options.editMode = $(e.currentTarget).prop("checked");
             iamGridStack.methods.addOptions();
+        },
+        //Importer des Grids
+        importGrid: function (e) {
+            console.log("Imported");
         }
     
     },
@@ -539,15 +544,26 @@ var iamGridStack = {
         }
 
     },
+    //Exporter les grids
     exportGrids: function () {
-        console.log("333");
-        let obj = {
-            test:"test"
-        };
         const guid = new Date().getTime() + "";
+        let obj = {
+            id:guid,
+            pages:[],
+        };
+        $("[data-w-id]").remove();
+        iamGridStack.refresh();
+        iamGridStack.pages.forEach((page,i) => {
+            obj.pages.push({
+                ...page,
+                widgets: iamGridStack.grids[i].save(),
+            })
+        });
+        console.log("exported!", obj);
         iamShared.files.stringToFileDownload("Grids_" + guid + ".json", JSON.stringify(obj));
     },
-    importGrids: function () {
+    //Importer des grids
+    importGrids: function (obj) {
 
     }
 
