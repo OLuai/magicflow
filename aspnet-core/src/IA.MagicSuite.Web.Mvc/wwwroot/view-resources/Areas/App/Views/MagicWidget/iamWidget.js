@@ -257,18 +257,32 @@
 
         let codeCSS = `<style>${widget.widgetCSS}</style>`;
         let codeHTML = ejs.render(widget.widgetHTML, widget.attributesVal);
-        let codeJS = `<script>var widgetVariables = ${JSON.stringify(widget.attributesVal)};${widget.widgetJS}</script>`.replaceAll("widgetVariables", `${elementId}_widgetVariables`);
+        let codeJS = `<script>var widgetVariables = ${JSON.stringify(widget.attributesVal)};${widget.widgetJS}</script>`;
+        //Recup vars
+        let jsVar = new Set();
+        const recupVar = (str, decl) => {
+            let firstStep = str.split("=");
+            firstStep.pop();
+            let secondStep = firstStep.filter(str => str.includes(decl)) || [];
+            return secondStep.map(el => { let tab = el.split(decl); return tab[tab.length - 1].trim() });
+        };
+        ['let ', 'var ', 'const '].forEach(decl => {
+            jsVar = new Set(recupVar(codeJS, decl));
+            jsVar.forEach(elt => {
+                codeJS = codeJS.replaceAll(elt, `${elementId}_${elt}`)
+            });
+        });
+
+        //
         let code = `${codeCSS} ${codeHTML} ${codeJS}`;
         let html = $(`<div id='widget_${elementId}'>${codeHTML}</div>`);
         let elements = html.find('*');
         $.each(elements, (i, e) => {
             if (e.id) {
                 let beforeId = e.id;
-                alert(beforeId);
                 html.find(`#${e.id}`).attr('id', `${elementId}_${beforeId}`);
                 codeCSS = codeCSS.replaceAll(`#${beforeId}`, `#${elementId}_${beforeId}`);
                 codeJS = codeJS.replaceAll(`#${beforeId}`, `#${elementId}_${beforeId}`);
-                alert(`${elementId}_${beforeId}`);
             }
         });
 
