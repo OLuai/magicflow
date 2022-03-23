@@ -260,14 +260,14 @@
         let codeJS = `<script>var widgetVariables = ${JSON.stringify(widget.attributesVal)};${widget.widgetJS}</script>`;
         //Recup vars
         let jsVar = new Set();
-        const recupVar = (str, decl) => {
-            let firstStep = str.split("=");
+        const recupVar = (str, inf, sup) => {
+            let firstStep = str.split(sup);
             firstStep.pop();
-            let secondStep = firstStep.filter(str => str.includes(decl)) || [];
-            return secondStep.map(el => { let tab = el.split(decl); return tab[tab.length - 1].trim() });
+            let secondStep = firstStep.filter(str => str.includes(inf)) || [];
+            return secondStep.map(el => { let tab = el.split(inf); return tab[tab.length - 1].trim() });
         };
-        ['let ', 'var ', 'const '].forEach(decl => {
-            jsVar = new Set(recupVar(codeJS, decl));
+        [['let ', "="], ['var ',"="], ['const ', "="], ['function ','(']].forEach(seps => {
+            jsVar = new Set(recupVar(codeJS, seps[0],seps[1]));
             jsVar.forEach(elt => {
                 codeJS = codeJS.replaceAll(elt, `${elementId}_${elt}`)
             });
