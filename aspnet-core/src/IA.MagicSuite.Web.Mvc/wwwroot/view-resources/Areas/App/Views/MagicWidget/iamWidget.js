@@ -269,7 +269,7 @@
         [['let ', "="], ['var ',"="], ['const ', "="], ['function ','(']].forEach(seps => {
             jsVar = new Set(recupVar(codeJS, seps[0],seps[1]));
             jsVar.forEach(elt => {
-                codeJS = codeJS.replaceAll(elt, `${elementId}_${elt}`)
+                codeJS = codeJS.replaceAll(elt, `${elt}_${elementId}`)
             });
         });
 
@@ -280,9 +280,9 @@
         $.each(elements, (i, e) => {
             if (e.id) {
                 let beforeId = e.id;
-                html.find(`#${e.id}`).attr('id', `${elementId}_${beforeId}`);
-                codeCSS = codeCSS.replaceAll(`#${beforeId}`, `#${elementId}_${beforeId}`);
-                codeJS = codeJS.replaceAll(`#${beforeId}`, `#${elementId}_${beforeId}`);
+                html.find(`#${e.id}`).attr('id', `${beforeId}_${elementId}`);
+                codeCSS = codeCSS.replaceAll(`#${beforeId}`, `#${beforeId}_${elementId}`);
+                codeJS = codeJS.replaceAll(`#${beforeId}`, `#${beforeId}_${elementId}`);
             }
         });
 
