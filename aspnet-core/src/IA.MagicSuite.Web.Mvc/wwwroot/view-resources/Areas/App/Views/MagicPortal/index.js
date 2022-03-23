@@ -57,7 +57,7 @@ var iamGridStack = {
             $("#PageRenameInput").val("");
         };
         const addNewWidget = (e) => {
-            that.events.addNewWidget(e);
+            that.events.addNewWidget(null);
         };
         const toggleMoreSetting = (e) => {
             that.events.showMoreSetting(e);
@@ -68,7 +68,19 @@ var iamGridStack = {
         const deletePage = (e) => {
             that.events.deletePage(e);
         }
-        
+        const importWidget = (e) => {
+            that.events.importWidget(e);
+        }
+        const editmode = (e) => {
+            that.events.editMode(e);
+        };
+        const exportGrid = (e) => {
+            iamGridStack.exportGrids();
+        };
+        const importGrid = (e) => {
+            iamGridStack.events.importGrid(e);
+        };
+
         $('[data-toggle="tooltip"]').tooltip();
         //Ajouter une nouvelle page
         this.createEvent($("#ia-gridstack-add-page"), {
@@ -90,14 +102,31 @@ var iamGridStack = {
         this.createEvent($("#ia-gridstack-rename-page"), {
             "click": renamePage,
         });
-
+        //Importer widget
+        this.createEvent($("#ia-gridstack-import-widget"), {
+            "click": importWidget,
+        });
+        //Activer mode edition de widget
+        this.createEvent($("#ia-gridstack-editmode"), {
+            "change": editmode,
+        });
+        //Exporter le projet
+        this.createEvent($("#ia-gridstack-export"), {
+            "click": exportGrid,
+        });
+        //Importer le projet
+        this.createEvent($("#ia-gridstack-import"), {
+            "click": importGrid,
+        });
     },
     refresh: function () {
         this.grids = GridStack.initAll();
+        this.methods.addOptions();
     },
     grids: null,
     options: {
-        isEditMode:true,
+        editMode: false,
+        float:false
     },
     pages: [],
     widgets: [],
@@ -141,7 +170,7 @@ var iamGridStack = {
                                                     <span class="mr-2">Mode édition</span>
 										            <span class="switch">
                                                     <label >
-                                                            <input type="checkbox" name="select" class="switch-edit-mode">
+                                                            <input type="checkbox" name="select" class="switch-edit-mode" id="ia-gridstack-editmode">
                                                             <span></span>
                                                     </label>
                                                     </span>
@@ -173,8 +202,8 @@ var iamGridStack = {
                                                         <i class="ki ki-bold-more-ver icon-lg"></i>
                                                         </button>
                                                         <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(-5px, 32px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                                                <a class="dropdown-item" href="#">Exporter</a>
-                                                                <a class="dropdown-item" href="#">Importer</a>
+                                                                <a class="dropdown-item" href="#" id="ia-gridstack-export">Exporter</a>
+                                                                <a class="dropdown-item" href="#" id="ia-gridstack-import">Importer</a>
                                                         </div>
                                                         </div>									
                                                </div>
@@ -190,6 +219,10 @@ var iamGridStack = {
         <div id="ia-gridstack-container" class="">
 
         </div>
+        <div id="test" class="">
+
+        </div>
+
 
 
 
@@ -287,7 +320,7 @@ var iamGridStack = {
             iamGridStack.widgets.push(obj);
         },
         deleteWidget: function (id) {
-            let newWidgetList = iamGridStack.widgets.filter(widget => widget.pageId != id);
+            let newWidgetList = iamGridStack.widgets.filter(widget => widget.id != id);
             iamGridStack.widgets = newWidgetList;
         },
         renamePage: function (id) {
@@ -298,6 +331,38 @@ var iamGridStack = {
             let newWidgetList = iamGridStack.widgets.filter(widget => widget.pageId != id);
             iamGridStack.pages = newPageList;
             iamGridStack.widgets = newWidgetList;
+        },
+        importFromJSON: function (resolve, reject) {
+            //alert('import');
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+
+            input.onchange = e => {
+                // getting a hold of the file reference
+                let file = e.target.files[0];
+
+                // setting up the reader
+                let reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+
+                // here we tell the reader what to do when it's done reading...
+                reader.onload = readerEvent => {
+                    var content = readerEvent.target.result; // this is the content!
+                    let widget = JSON.parse(content);
+                    resolve(widget);
+                }
+            }
+
+            input.click();
+        },
+        //Ajouter les options
+        addOptions: function () {
+            iamGridStack.pages.forEach((el, i) => {
+                iamGridStack.grids[i].enableMove(iamGridStack.options.editMode);
+                iamGridStack.grids[i].enableResize(iamGridStack.options.editMode);
+                iamGridStack.grids[i].float(iamGridStack.options.float);
+            })
         },
     },
     events: {
@@ -319,8 +384,7 @@ var iamGridStack = {
             id = iamGridStack.methods.bindId();
             iamGridStack.pages.push({
                 id: id,
-                name:"",
-                displayName: "",
+                name:name,
             })
             
 
@@ -334,28 +398,40 @@ var iamGridStack = {
             $(`[data-page-id="${id}"]`).trigger("click");
 
             iamGridStack.methods.setToActive(id);
-
+            iamGridStack.methods.addOptions();
         },
         //Ajouter un nouveau widget
-        addNewWidget: function (e) {
+        addNewWidget: function (something) {
+            const contentHtml = something || "";
             const id = new Date().getTime() + "";
-            const content = `<span data-w-id="${id}"></span>` + iamGridStack.templateHtml.widgetOptionBar() + "ceci est un test";
+            const content = `<span data-w-id="${id}"></span>` + iamGridStack.templateHtml.widgetOptionBar() + contentHtml;
             const obj = {
                 id: id,
                 pageId: iamGridStack.pages[iamGridStack.currentPage].id,
-                content: content,
+                content: contentHtml,
                 type:"widget",
             };
 
+            if (something==null) {
+                iamGridStack.grids[iamGridStack.currentPage].addWidget({
+                    h: 3,//Math.floor(1+3 * Math.random()),
+                    w: 3,//Math.floor(1+3 * Math.random()),
+                    content: content,
+                });
+            }
+            else {
+                iamGridStack.grids[iamGridStack.currentPage].addWidget({
+                    h: 3,
+                    w:3,
+                    content: content,
+                });
+            }
             
-            iamGridStack.grids[iamGridStack.currentPage].addWidget({
-                h: 4,
-                w: 4,
-                content:content,
-            });
+            
             iamGridStack.methods.addWidget(obj);
             $(`.grid-stack-item:has([data-w-id="${id}"])`).attr("data-widget-id", id);
             iamGridStack.bindTo(obj);
+            return id;
         },
         //Afficher la page active
         showActivePage: function (e) {
@@ -377,9 +453,13 @@ var iamGridStack = {
             $(".btn-show-more-setting > i").toggleClass("flaticon2-down");
             $("#ia-gridstack-toolbar-more-setting").toggle();
         },
+        //
         showWidgetToobar: function (e) {
-            let selector = $(e.currentTarget).find(".btn-delete-widget");
-            selector.toggle();
+            if (iamGridStack.options.editMode) {
+                let selector = $(e.currentTarget).find(".btn-delete-widget");
+                selector.toggle();
+            };
+            
         },
         //Supprimer page
         deletePage: function (e) {
@@ -419,12 +499,26 @@ var iamGridStack = {
             iamGridStack.grids[iamGridStack.currentPage].removeWidget($(`[data-widget-id="${id}"]`)["0"]);
             iamGridStack.methods.deleteWidget(id);
         },
-        
-
-
-
-
-        
+        //
+        importWidget: function (e) {
+            const buildWidget = (widget) => {
+               const myWidgetHtml = iamWidget.render(widget);
+                const id = iamGridStack.events.addNewWidget("");
+                $(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(myWidgetHtml);
+                iamGridStack.refresh();
+            };
+            iamGridStack.methods.importFromJSON(buildWidget);
+        },
+        //Mode d'edition des widgets
+        editMode: function (e) {
+            iamGridStack.options.editMode = $(e.currentTarget).prop("checked");
+            iamGridStack.methods.addOptions();
+        },
+        //Importer des Grids
+        importGrid: function (e) {
+            console.log("Imported");
+        }
+    
     },
     bindTo: function (obj) {
         if (!obj) return;
@@ -448,6 +542,28 @@ var iamGridStack = {
                 "click": deleteWidget,
             });
         }
+
+    },
+    //Exporter les grids
+    exportGrids: function () {
+        const guid = new Date().getTime() + "";
+        let obj = {
+            id:guid,
+            pages:[],
+        };
+        $("[data-w-id]").remove();
+        iamGridStack.refresh();
+        iamGridStack.pages.forEach((page,i) => {
+            obj.pages.push({
+                ...page,
+                widgets: iamGridStack.grids[i].save(),
+            })
+        });
+        console.log("exported!", obj);
+        iamShared.files.stringToFileDownload("Grids_" + guid + ".json", JSON.stringify(obj));
+    },
+    //Importer des grids
+    importGrids: function (obj) {
 
     }
 
