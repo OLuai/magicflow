@@ -147,7 +147,6 @@ var iamGridStack = {
             return `
 
 
-    <h1>Header</h1>
         <div id="ia-gridstack-toolbar" class="mb-3">
 
                     <div class="card card-custom">
@@ -502,10 +501,12 @@ var iamGridStack = {
         //
         importWidget: function (e) {
             const buildWidget = (widget) => {
-               const myWidgetHtml = iamWidget.render(widget);
+               
                 const id = iamGridStack.events.addNewWidget("");
+                const myWidgetHtml = iamWidget.render(id,widget);
                 $(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(myWidgetHtml);
-                iamGridStack.refresh();
+               iamGridStack.refresh();
+                console.log("myWidgetHtml", myWidgetHtml);
             };
             iamGridStack.methods.importFromJSON(buildWidget);
         },
@@ -566,6 +567,7 @@ var iamGridStack = {
             id:guid,
             pages:[],
         };
+        $("[data-w-id]").siblings(".ia-widget-toolbar").remove();
         $("[data-w-id]").remove();
         iamGridStack.refresh();
         iamGridStack.pages.forEach((page,i) => {
@@ -582,7 +584,12 @@ var iamGridStack = {
         const that = this;
         obj.pages.forEach((el, i) => {
             that.events.addNewPage(el.name);
-            that.grids[that.grids.length - 1].load(el.widgets);
+            //that.grids[that.grids.length - 1].load(el.widgets);
+            el.widgets.forEach((widget) => {
+                const id = iamGridStack.events.addNewWidget("");
+                //that.grids[that.grids.length - 1].addWidget(widget);
+                $(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(widget.content);
+            });
         });
     }
 
