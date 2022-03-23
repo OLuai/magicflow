@@ -74,6 +74,10 @@ var iamGridStack = {
         const editmode = (e) => {
             that.events.editMode(e);
         };
+        const exportGrid = (e) => {
+            console.log("222");
+            iamGridStack.exportGrids();
+        };
 
         $('[data-toggle="tooltip"]').tooltip();
         //Ajouter une nouvelle page
@@ -103,6 +107,14 @@ var iamGridStack = {
         //Activer mode edition de widget
         this.createEvent($("#ia-gridstack-editmode"), {
             "change": editmode,
+        });
+        //Exporter le projet
+        this.createEvent($("#ia-gridstack-export"), {
+            "click": exportGrid,
+        });
+        //Importer le projet
+        this.createEvent($("#ia-gridstack-import"), {
+            "click": null,
         });
     },
     refresh: function () {
@@ -188,8 +200,8 @@ var iamGridStack = {
                                                         <i class="ki ki-bold-more-ver icon-lg"></i>
                                                         </button>
                                                         <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(-5px, 32px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                                                <a class="dropdown-item" href="#">Exporter</a>
-                                                                <a class="dropdown-item" href="#">Importer</a>
+                                                                <a class="dropdown-item" href="#" id="ia-gridstack-export">Exporter</a>
+                                                                <a class="dropdown-item" href="#" id="ia-gridstack-import">Importer</a>
                                                         </div>
                                                         </div>									
                                                </div>
@@ -405,7 +417,8 @@ var iamGridStack = {
                     w: 3,//Math.floor(1+3 * Math.random()),
                     content: content,
                 });
-            } else {
+            }
+            else {
                 iamGridStack.grids[iamGridStack.currentPage].addWidget({
                     h: 3,
                     w:3,
@@ -524,6 +537,17 @@ var iamGridStack = {
                 "click": deleteWidget,
             });
         }
+
+    },
+    exportGrids: function () {
+        console.log("333");
+        let obj = {
+            test:"test"
+        };
+        const guid = new Date().getTime() + "";
+        iamShared.files.stringToFileDownload("Grids_" + guid + ".json", JSON.stringify(obj));
+    },
+    importGrids: function () {
 
     }
 
