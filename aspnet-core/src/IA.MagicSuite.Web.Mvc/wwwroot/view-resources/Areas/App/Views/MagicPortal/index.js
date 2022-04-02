@@ -82,6 +82,7 @@ var iamGridStack = {
         };
 
         $('[data-toggle="tooltip"]').tooltip();
+        $("#ia-gridstack-editmode").prop("checked",false);
         //Ajouter une nouvelle page
         this.createEvent($("#ia-gridstack-add-page"), {
             "click": addNewpage,
@@ -161,18 +162,12 @@ var iamGridStack = {
                                         </div>
                                 </div>
 
-        <div id="ia-gridstack-toolbar-more-setting" style="display:none;">
+        <div id="ia-gridstack-toolbar-more-setting" style="display:none;" class="isNotEditMode">
                                 <div role="alert"  class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b d-flex justify-content-between" >
 
                                             <div class="d-flex align-items-center">
-                                                <div class="alert-icon" data-toggle="tooltip" title="Mode édition">
-                                                    <span class="mr-2">Mode édition</span>
-										            <span class="switch">
-                                                    <label >
-                                                            <input type="checkbox" name="select" class="switch-edit-mode" id="ia-gridstack-editmode">
-                                                            <span></span>
-                                                    </label>
-                                                    </span>
+                                                <div class="alert-icon">
+                                                    
 									            </div>
                                                 
 
@@ -231,7 +226,7 @@ var iamGridStack = {
         gridstackTabsRight: function () {
             return `
 
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center isNotEditMode" data-id="gridstackTabsRight">
                                 
                                 
                                 <div class="dropdown dropdown-inline mr-1">
@@ -512,9 +507,11 @@ var iamGridStack = {
             };
             iamGridStack.methods.importFromJSON(buildWidget);
         },
-        //Mode d'edition des widgets
+        //Mode d'edition des widgets et des pages
         editMode: function (e) {
             iamGridStack.options.editMode = $(e.currentTarget).prop("checked");
+
+            $(`[data-id="gridstackTabsRight"], #ia-gridstack-toolbar-more-setting`).toggleClass("isNotEditMode");
             iamGridStack.methods.addOptions();
         },
         //Importer des Grids
