@@ -346,7 +346,7 @@
     exportWidget: function () {
         iamShared.files.stringToFileDownload("Widget_"+iamWidget.widget.name + ".json", JSON.stringify(iamWidget.widget));
     },
-    getWidgetQFObject: function (widget, positionId) {
+    getWidgetQFObject: function (widget, callback, positionId) {
         return {
             AutoCreateEditors: false,
             Id: `iamQFWidget_${widget.id}`,
@@ -356,6 +356,7 @@
             OnValidated: function (data) {
                 abp.ui.setBusy('body');
                 widget.attributesVal = data;
+                callback();
                 //abp.notify.info(app.localize('SavedSuccessfully'));
                 abp.ui.clearBusy('body');
             },
