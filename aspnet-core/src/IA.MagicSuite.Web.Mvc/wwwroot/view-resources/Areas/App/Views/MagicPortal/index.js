@@ -48,6 +48,11 @@ var iamGridStack = {
 
         //iamGridStack.refresh();
         //iamGridStack.methods.bindId();
+
+        iamShared.ui.rightPanelCreate(null, false, null);
+        //iamShared.ui.wizardPopupHtmlCreate();
+        //iamShared.ui.popupWithIframeCreate();
+        
     },
     initEvent: function () {
         const that = this;
@@ -82,6 +87,7 @@ var iamGridStack = {
         };
 
         $('[data-toggle="tooltip"]').tooltip();
+        $("#ia-gridstack-editmode").prop("checked",false);
         //Ajouter une nouvelle page
         this.createEvent($("#ia-gridstack-add-page"), {
             "click": addNewpage,
@@ -161,18 +167,12 @@ var iamGridStack = {
                                         </div>
                                 </div>
 
-        <div id="ia-gridstack-toolbar-more-setting" style="display:none;">
+        <div id="ia-gridstack-toolbar-more-setting" style="display:none;" class="isNotEditMode">
                                 <div role="alert"  class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b d-flex justify-content-between" >
 
                                             <div class="d-flex align-items-center">
-                                                <div class="alert-icon" data-toggle="tooltip" title="Mode édition">
-                                                    <span class="mr-2">Mode édition</span>
-										            <span class="switch">
-                                                    <label >
-                                                            <input type="checkbox" name="select" class="switch-edit-mode" id="ia-gridstack-editmode">
-                                                            <span></span>
-                                                    </label>
-                                                    </span>
+                                                <div class="alert-icon">
+                                                    
 									            </div>
                                                 
 
@@ -222,6 +222,36 @@ var iamGridStack = {
 
         </div>
 
+<!-- Modal-->
+<div class="modal fade" id="ia-modal-widget-setting" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            
+
+
+
+<div class="modal-header">
+    <h5 class="modal-title">Paramètres</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <i aria-hidden="true" class="ki ki-close"></i>
+    </button>
+</div>
+<div class="modal-body" id="modal-test">
+    <p>Modal body text goes here.</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Enregistrer</button>
+</div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
 
 
 
@@ -231,7 +261,7 @@ var iamGridStack = {
         gridstackTabsRight: function () {
             return `
 
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center isNotEditMode" data-id="gridstackTabsRight">
                                 
                                 
                                 <div class="dropdown dropdown-inline mr-1">
@@ -283,14 +313,17 @@ var iamGridStack = {
         },
         widgetOptionBar: function () {
             return `
-                    <div style="height: 20px;" class="d-flex justify-content-end m-2 ia-widget-toolbar">
-                            <a href="#" class="btn-delete-widget" style="display:none">
+                    <div class="d-flex justify-content-end m-2 ia-widget-toolbar" style="height: 20px;z-index: 2;position: absolute;">
+                            <a href="#" class=" btn-delete-widget mr-5" style="display:none" >
                                   <i class="flaticon2-delete text-danger"></i>
+                            </a>
+                            <a href="#" class="btn-setting-widget mr-5" style="display:none" >
+                                  <i class="flaticon2-settings text-dark"></i>
                             </a>
                     </div>
 `;
         },
-
+        //data-toggle="modal" data-target="#ia-modal-widget-setting"
     },
     methods: {
         //Obtebir l'id de chaque page créée
@@ -458,7 +491,7 @@ var iamGridStack = {
         showWidgetToobar: function (e) {
             if (iamGridStack.options.editMode) {
                 let selector = $(e.currentTarget).find(".btn-delete-widget");
-                selector.toggle();
+                selector.parent().children().toggle();
             };
             
         },
@@ -503,18 +536,21 @@ var iamGridStack = {
         //
         importWidget: function (e) {
             const buildWidget = (widget) => {
-               
+                console.log("widget", widget);
                 const id = iamGridStack.events.addNewWidget("");
                 const myWidgetHtml = iamWidget.render(id,widget);
                 $(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(myWidgetHtml);
+                $(`#widget_${id}`).css("height", "100%");
                iamGridStack.refresh();
-                console.log("myWidgetHtml", myWidgetHtml);
+                //console.log("myWidgetHtml", myWidgetHtml);
             };
             iamGridStack.methods.importFromJSON(buildWidget);
         },
-        //Mode d'edition des widgets
+        //Mode d'edition des widgets et des pages
         editMode: function (e) {
             iamGridStack.options.editMode = $(e.currentTarget).prop("checked");
+
+            $(`[data-id="gridstackTabsRight"], #ia-gridstack-toolbar-more-setting`).toggleClass("isNotEditMode");
             iamGridStack.methods.addOptions();
         },
         //Importer des Grids
@@ -535,6 +571,14 @@ var iamGridStack = {
                 console.log("importtttt99999999999999", obj);
             });
 
+        },
+        //Faire apparaitre la QuickForm des parametres
+        settingWidget: function (e) {
+            iamShared.ui.rightPanelShow();
+            //iamShared.ui.popupWithIframeShow();
+            console.log("ok !!!!!!!");
+
+            iamQF.createForm(iamQFObjects.flowCreate, null, true, "rightpanel", true, null, null, true, true, null);
         }
     
     },
@@ -549,6 +593,9 @@ var iamGridStack = {
             const deleteWidget = (e) => {
                 that.events.deleteWidget(e);
             };
+            const settingWidget = (e) => {
+                iamGridStack.events.settingWidget(e);
+            }
 
             //Afficher toolbar widget
             this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
@@ -559,6 +606,11 @@ var iamGridStack = {
             this.createEvent($(`[data-widget-id="${obj.id}"]`).find(".btn-delete-widget"), {
                 "click": deleteWidget,
             });
+            //Afficher setting des parametres widget
+            this.createEvent($(`.btn-setting-widget`), {
+                "click": settingWidget,
+            });
+
         }
 
     },
@@ -582,7 +634,7 @@ var iamGridStack = {
         iamShared.files.stringToFileDownload("Grids_" + guid + ".json", JSON.stringify(obj));
     },
     //Importer des grids
-    importGrids: function (obj) {
+   importGrids: function (obj) {
         const that = this;
         obj.pages.forEach((el, i) => {
             that.events.addNewPage(el.name);
@@ -600,11 +652,266 @@ var iamGridStack = {
 
 
 
+var iamGridStack2 = {
+    //initialisation du Grid
+    init: function () {
+
+    },
+    //Rafraichir
+    refresh: function () {
+
+    },
+    //Page Active
+    activePage: null,
+    //Widget Actif
+    activeWidget: null,
+    //Liste des pages
+    pages: null,
+    //Liste des widgets
+    widgets: null,
+    //Les options d'un portal
+    options: {
+        editMode: false,
+        float: false,
+    },
+    //Les proprietes et methodes d'une page
+    page: {
+        getAll: function () {
+
+        },
+        get: function (id) {
+
+        },
+    },
+    //Les proprietes et methodes d'un widget
+    widget: {
+        getAll: function () {
+
+        },
+        get: function (id) {
+
+        },
+    },
+    //Le portal actif
+    portal: {
+        get: function () {
+
+        },
+    },
+    //Chargement du projet
+    load: function (obj) {
+
+    },
+    //Créer l'evenement d'un element || selector : l'element sur lequel doit se declencher l'event, eventObj: l'ensemble des events qui seront lié à l'element
+    createEvent: function (selector, eventObj) {
+        for (const event in eventObj) {
+            selector.on(event, eventObj[event]);
+        }
+    },
+    //Tous les templates
+    templateHtml: {
+        initContainer: function () {
+            return `
+
+
+        <div id="ia-gridstack-toolbar" class="mb-3">
+
+                    <div class="card card-custom">
+                                <div class="card-header card-header-tabs-line">
+                                        <div class="card-toolbar">
+                                            <ul class="nav nav-tabs nav-bold nav-tabs-line" role="tablist" id="pagesContainerId">
+                                        
+                                            </ul>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                             {tool-bar-right}
+                                        </div>
+                                </div>
+
+        <div id="ia-gridstack-toolbar-more-setting" style="display:none;" class="isNotEditMode">
+                                <div role="alert"  class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b d-flex justify-content-between" >
+
+                                            <div class="d-flex align-items-center">
+                                                <div class="alert-icon">
+                                                    
+									            </div>
+                                                
+
+                                                <div class="alert-icon">                        
+						                        </div>
+
+
+                                            </div>
+
+
+                                            <div class="d-flex align-items-center">                    
+                                                <div class="alert-icon" data-toggle="tooltip" title="Ajouter widget">                        
+                                                        <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-add-widget" >
+                                                              <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
+                                                        </a>									
+                                                </div>
+                                                <div class="alert-icon" data-toggle="tooltip" title="Importer widget">                        
+                                                        <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-import-widget" >
+                                                              <i class="fas fa-download" style="font-size: 1.7rem;"></i>
+                                                        </a>									
+                                                </div>
+
+                                                <div class="alert-icon">                        
+                                                          <div class="dropdown dropdown-inline">
+                                                        <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ki ki-bold-more-ver icon-lg"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(-5px, 32px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                <a class="dropdown-item" href="#" id="ia-gridstack-export">Exporter</a>
+                                                                <a class="dropdown-item" href="#" id="ia-gridstack-import">Importer</a>
+                                                        </div>
+                                                        </div>									
+                                               </div>
+
+
+                                            </div>
+                                </div>
+        </div>
+                    
+
+        </div>
+        </div>
+        <div id="ia-gridstack-container" class="">
+
+        </div>
+        <div id="test" class="">
+
+        </div>
 
 
 
 
 
+`.replace("{tool-bar-right}", iamGridStack.templateHtml.gridstackTabsRight());
+        },
+        gridstackTabsRight: function () {
+            return `
+
+                            <div class="d-flex align-items-center isNotEditMode" data-id="gridstackTabsRight">
+                                
+                                
+                                <div class="dropdown dropdown-inline mr-1">
+                                                        <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn">
+                                                        <i class="fas fa-stream" style="font-size: 1.7rem;"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                                                        
+                                                            <div class="px-4 py-3">
+                                                                <div class="form-group">
+                                                                <label for="PageRenameInput">Nom de la page</label>
+                                                                <input type="text" class="form-control" id="PageRenameInput">
+                                                                </div>
+                                                                <button class="btn btn-block btn-sm btn-primary" id="ia-gridstack-rename-page">Renommer</button>
+                                                                <button class="btn btn-block btn-sm btn-primary ml-0" id="ia-gridstack-add-page">Créer nouveau</button>
+                                                            </div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-icon btn-light-danger btn-delete-page ml-2 mr-2" data-toggle="tooltip" title=Supprimer la page">
+                                    <i class="flaticon2-rubbish-bin-delete-button icon-lg"></i>
+                                </a>
+                                <span class="mr-5 ml-5"></span>
+                                <a href="#" class="font-weight-bold ml-2 btn-show-more-setting" data-toggle="tooltip" title="Dévélopper/Réduire">
+                                    <i class="flaticon2-down" style="font-size: 1.0rem;"></i>
+                                </a>
+
+                                
+
+
+
+
+                            </div> 
+
+
+`;
+        },
+        gridstackContainer: function () {
+            return `<div class="grid-stack newgrid" style="min-height:40vh;" data-grid-id=""></div>`;
+        },
+        pageTab: function (obj) {
+            obj = obj || { name: "page 1" }
+            return `
+                                       <li class="nav-item newpagetab" data-page-id="">
+                                            <a class="nav-link" data-toggle="tab" href="" role="tab">
+                                                ${obj.name}
+                                            </a>
+                                        </li>
+`;
+        },
+        widgetOptionBar: function () {
+            return `
+                    <div class="d-flex justify-content-end m-2 ia-widget-toolbar" style="height: 20px;z-index: 2;position: absolute;">
+                            <a href="#" class="btn-delete-widget" style="display:none">
+                                  <i class="flaticon2-delete text-danger"></i>
+                            </a>
+                    </div>
+`;
+        },
+
+    },
+}
+
+
+
+
+iamQFObjects = {
+    flowCreate: {
+        AutoCreateEditors: false,
+        Id: "iamQFFlowCreate",
+        Name: "Paramètres",
+        DisplayName: null,
+        PositionId: "rightpanel",
+
+        //fonction exécutée quand le quickform est globalement validé (terminé).   
+        OnValidated: function (data) {
+            
+        },
+        Data: null,
+        IgnoreStepsOrderNumber: false, //Ignore le numéro d'ordre attribué et ordonne par ordre de position dans le tableau des steps
+        IgnoreItemsOrderNumber: true,
+        
+        Steps: [
+            {
+                Id: "0001",
+                Name: null,
+                DisplayName: null,
+                DenyBack: false,
+                OrderNumber: 1
+            }
+        ],
+        Items: [
+            {
+                Id: "item_Name",
+                StepId: "0001",
+                OrderNumber: 1,
+                DataField: "name",
+                DisplayName: "Name",
+                IsRequired: true,
+                EditorType: "dxTextBox",
+                ValidationRules: [
+                    {
+                        type: 'pattern', //require, email,compare,range,stringLength
+                        pattern: '^[0-9A-Za-z_ ]+$',
+                        message: app.localize("InvalidDataInput")
+                    }
+                ],
+            },
+            {
+                Id: "item_Description",
+                StepId: "0001",
+                OrderNumber: null,
+                DataField: "description",
+                DisplayName: "Description",
+                IsRequired: false,
+                EditorType: "dxTextArea",
+            },
+        ]
+    },
+}
 
 
 
