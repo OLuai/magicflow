@@ -346,4 +346,49 @@
     exportWidget: function () {
         iamShared.files.stringToFileDownload("Widget_"+iamWidget.widget.name + ".json", JSON.stringify(iamWidget.widget));
     },
+    getWidgetQFObject: function (widget, positionId) {
+        return {
+            AutoCreateEditors: false,
+            Id: `iamQFWidget_${widget.id}`,
+            Name: widget.name,
+            DisplayName: null,
+            PositionId: positionId || "rightpanel",
+            OnValidated: function (data) {
+                abp.ui.setBusy('body');
+                widget.attributesVal = data;
+                //abp.notify.info(app.localize('SavedSuccessfully'));
+                abp.ui.clearBusy('body');
+            },
+            Data: null,
+            IgnoreStepsOrderNumber: false, //Ignore le numéro d'ordre attribué et ordonne par ordre de position dans le tableau des steps
+            IgnoreItemsOrderNumber: true,
+            Steps: [
+                {
+                    Id: "0001",
+                    Name: null,
+                    DisplayName: null,
+                    DenyBack: false,
+                    OrderNumber: 1
+                }
+            ],
+            Items: widget.attributes.map((attr,i) => {
+                return {
+                    Id: `item_${widget.id}_${attr.Name}`,
+                    StepId: "0001",
+                    OrderNumber: i+1,
+                    DataField: attr.Name,
+                    DisplayName: attr.Name,
+                    IsRequired: true,
+                    EditorType: "dxTextBox",
+                    ValidationRules: [
+                        {
+                            type: 'pattern', //require, email,compare,range,stringLength
+                            pattern: '^[0-9A-Za-z_ ]+$',
+                            message: app.localize("InvalidDataInput")
+                        }
+                    ],
+                };
+            }),
+        };
+    },
 };
