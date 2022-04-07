@@ -9,7 +9,7 @@ $(function () {
 })
 
 
-var iamGridStack = {
+var iamGridStack2 = {
     build: function () {
         const that = this;
 
@@ -497,8 +497,10 @@ var iamGridStack = {
             }
             else {
                 iamGridStack.grids[iamGridStack.currentPage].addWidget({
-                    h:something.h || 3,
-                    w:something.w || 3,
+                    h: something.h || 3,
+                    w: something.w || 3,
+                    x: something.x || 0,
+                    y: something.y || 0,
                     content: content,
                 });
             }
@@ -713,12 +715,98 @@ var iamGridStack = {
 
 
 
-var iamGridStack2 = {
+var iamGridStack = {
     //Id du container
     id:"iamdashboard",
-    //initialisation du projet
+    //Point d'entrée : initialisation du projet
     init: function () {
+        const that = this;
 
+        //Ajout du container dans le DOM
+        $("#"+this.id).html(this.ui.initContainer());
+
+        //Ajout de la 1ere page par défaut
+        //iamGridStack.events.addNewPage("Page 1");
+
+
+        this.initEvent();
+        //Initialisation du rightPannel
+        iamShared.ui.rightPanelCreate(null, false, null);
+
+        this.portal.options.editMode = $("#ia-gridstack-editmode").prop("checked");
+    },
+    //initialisation des Evenemmnts du projet
+    initEvent: function () {
+        const that = this;
+        const addNewpage = (e) => {
+            const name = $("#PageRenameInput").val();
+            that.events.addNewPage(name);
+            $("#PageRenameInput").val("");
+        };
+        const addNewWidget = (e) => {
+            that.events.addNewWidget(null);
+        };
+        const toggleMoreSetting = (e) => {
+            that.events.showMoreSetting(e);
+        };
+        const renamePage = (e) => {
+            that.events.renamePage(e);
+        }
+        const deletePage = (e) => {
+            that.events.deletePage(e);
+        }
+        const importWidget = (e) => {
+            that.events.importWidget(e);
+        }
+        const editmode = (e) => {
+            that.events.portal.activeEditMode(e);
+        };
+        const exportGrid = (e) => {
+            iamGridStack.exportGrids();
+        };
+        const importGrid = (e) => {
+            iamGridStack.events.importGrid(e);
+        };
+
+        $('[data-toggle="tooltip"]').tooltip();
+        //$("#ia-gridstack-editmode").prop("checked", false);
+        //Ajouter une nouvelle page
+        this.createEvent($("#ia-gridstack-add-page"), {
+            "click": addNewpage,
+        });
+        //Supprimer page
+        this.createEvent($(".btn-delete-page"), {
+            "click": deletePage,
+        });
+        //Ajouter une nouveau widget
+        this.createEvent($("#ia-gridstack-add-widget"), {
+            "click": addNewWidget,
+        });
+        //Afficher ou masque les options
+        this.createEvent($(".btn-show-more-setting"), {
+            "click": toggleMoreSetting,
+        });
+        //Renommer page
+        this.createEvent($("#ia-gridstack-rename-page"), {
+            "click": renamePage,
+        });
+        //Importer widget
+        this.createEvent($("#ia-gridstack-import-widget"), {
+            "click": importWidget,
+        });
+        //Activer mode edition de widget
+        this.createEvent($("#ia-gridstack-editmode"), {
+            "load":editmode,
+            "change": editmode,
+        });
+        //Exporter le projet
+        this.createEvent($("#ia-gridstack-export"), {
+            "click": exportGrid,
+        });
+        //Importer le projet
+        this.createEvent($("#ia-gridstack-import"), {
+            "click": importGrid,
+        });
     },
     //Rafraichir
     refresh: function () {
@@ -728,32 +816,70 @@ var iamGridStack2 = {
     activePage: null,
     //Les proprietes d'un portal
     portal: {
-        id: "",
+        id: iamShared.utils.guidString(),
         //Les options d'un portal
         options: {
             editMode: false,
             float: false,
         },
+        pages: [],
     },
     //Les proprietes d'une page 
     page: {
         id: iamShared.utils.guidString(),
         name: "Page",
-        positionId:""
+        positionId: "",
+        widgets: [],
     },
     //Les proprietesd'un widget 
     widget: {
         id: iamShared.utils.guidString(),
         name: "Page",
         pageId: "",
-        positionId: ""
     },
+    //L'ensemble des grids
+    grids: null,
     //Liste des pages
     pages: null,
     //Liste des widgets
     widgets: null,
+    //Lier tous les evenemments d'un objet specifique
+    bindTo: function (obj) {
+        if (!obj) return;
+        const that = this;
+
+        if (obj.type == "widget") {
+            const showToolbar = (e) => {
+                that.events.showWidgetToobar(e);
+            };
+            const deleteWidget = (e) => {
+                that.events.deleteWidget(e);
+            };
+            const settingWidget = (e) => {
+                iamGridStack.events.settingWidget(e);
+            }
+
+            //Afficher toolbar widget
+            this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
+                "mouseover": showToolbar,
+                "mouseout": showToolbar,
+            });
+            //Supprimer widget
+            this.createEvent($(`[data-widget-id="${obj.id}"]`).find(".btn-delete-widget"), {
+                "click": deleteWidget,
+            });
+            //Afficher setting des parametres widget
+            this.createEvent($(`.btn-setting-widget`), {
+                "click": settingWidget,
+            });
+
+        }
+        if (obj.type == "portal") {
+
+        }
+    },
     //Chargement du projet
-    load: function (obj) {
+    load: function (portal) {
 
     },
     //Créer l'evenement d'un element || selector : l'element sur lequel doit se declencher l'event, eventObj: l'ensemble des events qui seront lié à l'element
@@ -763,7 +889,7 @@ var iamGridStack2 = {
         }
     },
     //Tous les templates
-    templateHtml: {
+    ui: {
         initContainer: function () {
             return `
 
@@ -777,12 +903,12 @@ var iamGridStack2 = {
                                         
                                             </ul>
                                         </div>
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center" data-id="right-toolbar-id">
                                              {tool-bar-right}
                                         </div>
                                 </div>
 
-        <div id="ia-gridstack-toolbar-more-setting" style="display:none;" class="isNotEditMode">
+        <div id="ia-gridstack-toolbar-more-setting" style="" class="isNotEditMode">
                                 <div role="alert"  class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b d-flex justify-content-between" >
 
                                             <div class="d-flex align-items-center">
@@ -841,12 +967,12 @@ var iamGridStack2 = {
 
 
 
-`.replace("{tool-bar-right}", iamGridStack.templateHtml.gridstackTabsRight());
+`;
         },
-        gridstackTabsRight: function () {
+        rightToolBar: function () {
             return `
 
-                            <div class="d-flex align-items-center isNotEditMode" data-id="gridstackTabsRight">
+                            <div class="d-flex align-items-center" data-id="gridstackTabsRight">
                                 
                                 
                                 <div class="dropdown dropdown-inline mr-1">
@@ -952,7 +1078,8 @@ var iamGridStack2 = {
             },
             import: function (obj) {
 
-            }
+            },
+            
         },
     },
     //L'ensemble de tous les evenemments
@@ -976,69 +1103,25 @@ var iamGridStack2 = {
 
             }
         },
+        portal: {
+            activeEditMode: function (e) {
+                iamGridStack.portal.options.editMode = $(e.currentTarget).prop("checked"); 
+                //$(`[data-id="right-toolbar-id"]`).html(iamGridStack.ui.rightToolBar());
+
+                if (iamGridStack.portal.options.editMode) {
+                    $(`[data-id="right-toolbar-id"]`).html(iamGridStack.ui.rightToolBar());
+                    iamGridStack.bindTo({
+                        type: "portal",
+                    });
+                } else {
+                    $(`[data-id="right-toolbar-id"]`).html("");
+                }
+
+            },
+
+        }
     }
 }
-
-
-
-
-iamQFObjects = {
-    flowCreate: {
-        AutoCreateEditors: false,
-        Id: "iamQFFlowCreate",
-        Name: "Paramètres",
-        DisplayName: null,
-        PositionId: "rightpanel",
-
-        //fonction exécutée quand le quickform est globalement validé (terminé).   
-        OnValidated: function (data) {
-            
-        },
-        Data: null,
-        IgnoreStepsOrderNumber: false, //Ignore le numéro d'ordre attribué et ordonne par ordre de position dans le tableau des steps
-        IgnoreItemsOrderNumber: true,
-        
-        Steps: [
-            {
-                Id: "0001",
-                Name: null,
-                DisplayName: null,
-                DenyBack: false,
-                OrderNumber: 1
-            }
-        ],
-        Items: [
-            {
-                Id: "item_Name",
-                StepId: "0001",
-                OrderNumber: 1,
-                DataField: "name",
-                DisplayName: "Name",
-                IsRequired: true,
-                EditorType: "dxTextBox",
-                ValidationRules: [
-                    {
-                        type: 'pattern', //require, email,compare,range,stringLength
-                        pattern: '^[0-9A-Za-z_ ]+$',
-                        message: app.localize("InvalidDataInput")
-                    }
-                ],
-            },
-            {
-                Id: "item_Description",
-                StepId: "0001",
-                OrderNumber: null,
-                DataField: "description",
-                DisplayName: "Description",
-                IsRequired: false,
-                EditorType: "dxTextArea",
-            },
-        ]
-    },
-}
-
-
-
 
 
 
