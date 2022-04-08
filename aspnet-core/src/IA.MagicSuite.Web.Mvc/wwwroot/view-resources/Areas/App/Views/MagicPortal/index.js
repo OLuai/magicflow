@@ -724,6 +724,7 @@ var iamGridStack = {
 
         //Ajout du container dans le DOM
         $("#"+this.id).html(this.ui.initContainer());
+        this.portal.options.editMode = $("#ia-gridstack-editmode").prop("checked");
 
         //Ajout de la 1ere page par défaut
         //iamGridStack.events.addNewPage("Page 1");
@@ -733,7 +734,7 @@ var iamGridStack = {
         //Initialisation du rightPannel
         iamShared.ui.rightPanelCreate(null, false, null);
 
-        this.portal.options.editMode = $("#ia-gridstack-editmode").prop("checked");
+        
     },
     //initialisation des Evenemmnts du projet
     initEvent: function () {
@@ -769,7 +770,10 @@ var iamGridStack = {
         };
 
         $('[data-toggle="tooltip"]').tooltip();
-        //$("#ia-gridstack-editmode").prop("checked", false);
+        $("#ia-gridstack-editmode").prop("checked", false);
+
+        iamGridStack.events.page.add("Page 1");
+
         //Ajouter une nouvelle page
         this.createEvent($("#ia-gridstack-add-page"), {
             "click": addNewpage,
@@ -796,7 +800,7 @@ var iamGridStack = {
         });
         //Activer mode edition de widget
         this.createEvent($("#ia-gridstack-editmode"), {
-            "load":editmode,
+            "ready":editmode,
             "change": editmode,
         });
         //Exporter le projet
@@ -810,10 +814,11 @@ var iamGridStack = {
     },
     //Rafraichir
     refresh: function () {
-
+        this.grids = GridStack.initAll();
+        //this.methods.addOptions();
     },
     //Page Active
-    activePage: null,
+    activePagePositionId: null,
     //Les proprietes d'un portal
     portal: {
         id: iamShared.utils.guidString(),
@@ -821,32 +826,20 @@ var iamGridStack = {
         options: {
             editMode: false,
             float: false,
+            resizeable: false,
+            moveable:false,
         },
         pages: [],
     },
-    //Les proprietes d'une page 
-    page: {
-        id: iamShared.utils.guidString(),
-        name: "Page",
-        positionId: "",
-        widgets: [],
-    },
-    //Les proprietesd'un widget 
-    widget: {
-        id: iamShared.utils.guidString(),
-        name: "Page",
-        pageId: "",
-    },
     //L'ensemble des grids
     grids: null,
-    //Liste des pages
-    pages: null,
-    //Liste des widgets
-    widgets: null,
     //Lier tous les evenemments d'un objet specifique
     bindTo: function (obj) {
         if (!obj) return;
         const that = this;
+        const showSubHeader = (e) => {
+            that.events.portal.showToolBarSubHeader(e);
+        }
 
         if (obj.type == "widget") {
             const showToolbar = (e) => {
@@ -868,15 +861,63 @@ var iamGridStack = {
             this.createEvent($(`[data-widget-id="${obj.id}"]`).find(".btn-delete-widget"), {
                 "click": deleteWidget,
             });
-            //Afficher setting des parametres widget
-            this.createEvent($(`.btn-setting-widget`), {
-                "click": settingWidget,
+            
+
+        }
+        if (obj.type == "page") {
+            const addPage = (e) => {
+                
+                const name = $("#PageRenameInput").val();
+                if (name.trim() == "") return;
+
+                iamGridStack.events.page.add(name);
+                $("#PageRenameInput").val("");
+            }
+            const renamePage = (e) => {
+                
+
+                iamGridStack.events.page.rename(e);
+                $("#PageRenameInput").val("");
+            }
+            const deletePage = (e) => {
+                e.preventDefault;
+                iamGridStack.events.page.delete(e);
+            }
+            const show = (e) => {
+                e.preventDefault();
+
+                const selector = $(e.currentTarget);
+                const id = selector.attr("data-page-id");
+                that.actions.page.show(id);
+            }
+
+
+            //ajouter page
+            this.createEvent($("#ia-gridstack-add-page"), {
+                "click": addPage,
+            });
+            //renommer page
+            this.createEvent($("#ia-gridstack-rename-page"), {
+                "click": renamePage,
+            });
+            //supprimer page
+            this.createEvent($(".btn-delete-page"), {
+                "click": deletePage,
+            });
+            //selectionner page
+            this.createEvent($(`[data-page-id]`), {
+                "click": show,
             });
 
         }
         if (obj.type == "portal") {
+            //Afficher setting des parametres widget
+            this.createEvent($(`.btn-show-more-setting`), {
+                "click": showSubHeader,
+            });
 
         }
+        
     },
     //Chargement du projet
     load: function (portal) {
@@ -908,49 +949,8 @@ var iamGridStack = {
                                         </div>
                                 </div>
 
-        <div id="ia-gridstack-toolbar-more-setting" style="" class="isNotEditMode">
-                                <div role="alert"  class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b d-flex justify-content-between" >
-
-                                            <div class="d-flex align-items-center">
-                                                <div class="alert-icon">
-                                                    
-									            </div>
-                                                
-
-                                                <div class="alert-icon">                        
-						                        </div>
-
-
-                                            </div>
-
-
-                                            <div class="d-flex align-items-center">                    
-                                                <div class="alert-icon" data-toggle="tooltip" title="Ajouter widget">                        
-                                                        <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-add-widget" >
-                                                              <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
-                                                        </a>									
-                                                </div>
-                                                <div class="alert-icon" data-toggle="tooltip" title="Importer widget">                        
-                                                        <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-import-widget" >
-                                                              <i class="fas fa-download" style="font-size: 1.7rem;"></i>
-                                                        </a>									
-                                                </div>
-
-                                                <div class="alert-icon">                        
-                                                          <div class="dropdown dropdown-inline">
-                                                        <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="ki ki-bold-more-ver icon-lg"></i>
-                                                        </button>
-                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(-5px, 32px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                                                <a class="dropdown-item" href="#" id="ia-gridstack-export">Exporter</a>
-                                                                <a class="dropdown-item" href="#" id="ia-gridstack-import">Importer</a>
-                                                        </div>
-                                                        </div>									
-                                               </div>
-
-
-                                            </div>
-                                </div>
+        <div id="ia-gridstack-toolbar-more-setting"  style="display:none" class="">
+                                {subheader}
         </div>
                     
 
@@ -1009,13 +1009,59 @@ var iamGridStack = {
 
 `;
         },
+        subHeaderToolBar: function () {
+            return `
+<div role="alert"  class="alert mb-1 alert-custom alert-white alert-shadow fade show gutter-b d-flex justify-content-between" >
+
+                                            <div class="d-flex align-items-center">
+                                                <div class="alert-icon">
+                                                    
+									            </div>
+                                                
+
+                                                <div class="alert-icon">                        
+						                        </div>
+
+
+                                            </div>
+
+
+                                            <div class="d-flex align-items-center">                    
+                                                <div class="alert-icon" data-toggle="tooltip" title="Ajouter widget">                        
+                                                        <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-add-widget" >
+                                                              <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
+                                                        </a>									
+                                                </div>
+                                                <div class="alert-icon" data-toggle="tooltip" title="Importer widget">                        
+                                                        <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-import-widget" >
+                                                              <i class="fas fa-download" style="font-size: 1.7rem;"></i>
+                                                        </a>									
+                                                </div>
+
+                                                <div class="alert-icon">                        
+                                                          <div class="dropdown dropdown-inline">
+                                                        <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ki ki-bold-more-ver icon-lg"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(-5px, 32px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                <a class="dropdown-item" href="#" id="ia-gridstack-export">Exporter</a>
+                                                                <a class="dropdown-item" href="#" id="ia-gridstack-import">Importer</a>
+                                                        </div>
+                                                        </div>									
+                                               </div>
+
+
+                                            </div>
+</div>
+`
+        },
         gridstackContainer: function () {
             return `<div class="grid-stack newgrid" style="min-height:40vh;" data-grid-id=""></div>`;
         },
         pageTab: function (obj) {
             obj = obj || { name: "page 1" }
             return `
-                                       <li class="nav-item newpagetab" data-page-id="">
+                                       <li class="nav-item pagetab newpagetab" data-page-id="">
                                             <a class="nav-link" data-toggle="tab" href="" role="tab">
                                                 ${obj.name}
                                             </a>
@@ -1037,20 +1083,56 @@ var iamGridStack = {
     actions: {
         page: {
             getAll: function () {
-
+                return iamGridStack.portal.pages;
             },
             get: function (id) {
 
             },
-            setToActive: function (id) {
-
-            },
             delete: function (id) {
-
+                iamGridStack.portal.pages = iamGridStack.portal.pages.filter(page => page.id != id);
             },
-            add: function (obj) {
+            add: function (o) {
+                let obj = {
+                    id: o.id,
+                    name: o.name,
+                    widgets: [],
+                    positionId: iamGridStack.portal.pages.length,
+                };
+                iamGridStack.portal.pages.push(obj);
+                iamGridStack.activePagePositionId = obj.positionId;
+                return obj;
+            },
+            show: function (id) {
 
-            }
+                $(`[data-grid-id]`).hide();
+                $(`[data-grid-id="${id}"]`).show();
+                iamGridStack.activePagePositionId = iamGridStack.actions.page._getPosition(id);
+            },
+            //Rendre la page active
+            setToActive: function (id) {
+                $("[data-page-id] > a").removeClass("active").attr("aria-selected", "false");
+                $(`[data-page-id="${id}"] > a`).addClass("active").attr("aria-selected", "true");
+                iamGridStack.actions.page.show(id);
+            },
+            rename: function (name) {
+                iamGridStack.portal.pages[iamGridStack.activePagePositionId].name = name;
+            },
+            //Obtenir l'id de chaque page créée
+            _bindId: function () {
+                let classes = $(".newgrid").attr("class").split(" ");
+                let classInstance = classes.filter(el => el.includes("grid-stack-instance"));
+                const id = classInstance[0].substr(20);
+                const pageSelector = $(".newpagetab");
+                const gridSelector = $(".newgrid");
+
+                pageSelector.attr("data-page-id", id).removeClass("newpagetab");
+                gridSelector.attr("data-grid-id", id).removeClass("newgrid");
+
+                return id;
+            },
+            _getPosition: function (id) {
+                return iamGridStack.portal.pages.findIndex(el => el.id === id)
+            },
         },
         widget: {
             getAll: function () {
@@ -1086,14 +1168,74 @@ var iamGridStack = {
     events: {
         page: {
             delete: function (e) {
+                console.log("deleted !");
 
+                if (iamGridStack.portal.pages.length == 1) return;
+                const id = iamGridStack.portal.pages[iamGridStack.activePagePositionId].id;
+                const pageIndex = iamGridStack.activePagePositionId;
+                let newId;
+
+
+                iamGridStack.grids[iamGridStack.activePagePositionId].destroy();
+                $(`[data-page-id="${id}"]`).remove();
+                iamGridStack.actions.page.delete(id);
+
+                if (pageIndex == 0) {
+                    const nextPageId = iamGridStack.portal.pages[1].id;
+
+                    iamGridStack.actions.page.setToActive(nextPageId);
+                    
+
+                }
+                else {
+                    const prevPageId = iamGridStack.portal.pages[iamGridStack.activePagePositionId - 1].id;
+
+                    iamGridStack.actions.page.setToActive(prevPageId);
+                    
+                }
+                iamGridStack.refresh();
+                iamGridStack.portal.pages.forEach((el, i) => {
+                    el.positionId = i;
+                });
             },
-            add: function (e) {
+            add: function (name) {
+                console.log("added !");
+                let id;
+                $("#pagesContainerId").append(iamGridStack.ui.pageTab({ name: name }));
+                $("#ia-gridstack-container").append(iamGridStack.ui.gridstackContainer());
 
+                iamGridStack.refresh();
+                id = iamGridStack.actions.page._bindId();
+                iamGridStack.actions.page.add({
+                    id, name,
+                })
+                iamGridStack.actions.page.setToActive(id);
+                iamGridStack.bindTo({id, type: "page" });
+
+
+                console.log("id",id)
+                const showPage = (e) => {
+                    //iamGridStack.events.showActivePage(e);
+                }
+                //Afficher la page
+                //iamGridStack.createEvent($(`[data-page-id="${id}"]`), {
+                //    "click": showPage,
+                //});
+
+               // $(`[data-page-id="${id}"]`).trigger("click");
+
+                //iamGridStack.methods.setToActive(id);
+               // iamGridStack.methods.addOptions();
             },
             rename: function (e) {
+                const name = $("#PageRenameInput").val();
+                if (name.trim() == "") return;
+                const id = iamGridStack.portal.pages[iamGridStack.activePagePositionId].id;
 
-            }
+                iamGridStack.actions.page.rename(name);
+                $(`[data-page-id="${id}"]`).find("a").html(name)
+
+            },
         },
         widget: {
             delete: function (e) {
@@ -1106,17 +1248,26 @@ var iamGridStack = {
         portal: {
             activeEditMode: function (e) {
                 iamGridStack.portal.options.editMode = $(e.currentTarget).prop("checked"); 
-                //$(`[data-id="right-toolbar-id"]`).html(iamGridStack.ui.rightToolBar());
 
                 if (iamGridStack.portal.options.editMode) {
                     $(`[data-id="right-toolbar-id"]`).html(iamGridStack.ui.rightToolBar());
-                    iamGridStack.bindTo({
-                        type: "portal",
-                    });
-                } else {
-                    $(`[data-id="right-toolbar-id"]`).html("");
+                    iamGridStack.bindTo({type:"portal"});
+                    iamGridStack.bindTo({type:"page"});
+                }
+                else {
+                    $(`[data-id="right-toolbar-id"], #ia-gridstack-toolbar-more-setting`).html("");
                 }
 
+            },
+            showToolBarSubHeader: function (e) {
+                $(".btn-show-more-setting > i").toggleClass("flaticon2-up");
+                $(".btn-show-more-setting > i").toggleClass("flaticon2-down");
+                if ($(".btn-show-more-setting > i").hasClass("flaticon2-up")) {
+                    $("#ia-gridstack-toolbar-more-setting").html(iamGridStack.ui.subHeaderToolBar()).show();   
+                }
+                else {
+                    $("#ia-gridstack-toolbar-more-setting").html("").hide();
+                }
             },
 
         }
