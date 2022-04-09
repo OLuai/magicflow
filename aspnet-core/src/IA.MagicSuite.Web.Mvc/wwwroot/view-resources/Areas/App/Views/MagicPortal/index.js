@@ -837,42 +837,7 @@ var iamGridStack = {
     bindTo: function (obj) {
         if (!obj) return;
         const that = this;
-        const showSubHeader = (e) => {
-            that.events.portal.showToolBarSubHeader(e);
-        }
         
-        if (obj.type == "widget") {
-            const showToolbar = (e) => {
-                that.events.showWidgetToobar(e);
-            };
-            const deleteWidget = (e) => {
-                that.events.deleteWidget(e);
-            };
-            const settingWidget = (e) => {
-                iamGridStack.events.settingWidget(e);
-            }
-
-            //Afficher toolbar widget
-            this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
-                "mouseover": showToolbar,
-                "mouseout": showToolbar,
-            });
-            //Supprimer widget
-            this.createEvent($(`[data-widget-id="${obj.id}"]`).find(".btn-delete-widget"), {
-                "click": deleteWidget,
-            });
-            
-
-        }
-        if (obj.type == "page") {
-            
-        }
-        if (obj.type == "portal") {
-            
-
-
-
-        }
         switch (obj.type) {
             case "widget":
 
@@ -899,6 +864,10 @@ var iamGridStack = {
                     e.stopPropagaton;
                     iamGridStack.events.page.delete(e);
                 }
+                const showSubHeader = (e) => {
+                    that.events.portal.showToolBarSubHeader(e);
+                }
+
 
                 //ajouter page
                 that.createEvent($("#ia-gridstack-add-page"), {
@@ -1088,11 +1057,17 @@ var iamGridStack = {
     //Liste des actions
     actions: {
         page: {
+            set: function (id,obj) {
+                
+                const i = iamGridStack.actions.page._getPosition(id);
+                iamGridStack.portal.pages[i] = { ...iamGridStack.portal.pages[i],...obj};
+            },
             getAll: function () {
                 return iamGridStack.portal.pages;
             },
             get: function (id) {
-
+                const i = iamGridStack.actions.page._getPosition(id);
+                return iamGridStack.portal.pages[i];
             },
             delete: function (id) {
                 iamGridStack.portal.pages = iamGridStack.portal.pages.filter(page => page.id != id);
@@ -1120,6 +1095,7 @@ var iamGridStack = {
                 $(`[data-page-id="${id}"] > a`).addClass("active").attr("aria-selected", "true");
                 iamGridStack.actions.page.show(id);
             },
+            //Renommer page
             rename: function (name) {
                 iamGridStack.portal.pages[iamGridStack.activePagePositionId].name = name;
             },
@@ -1136,25 +1112,37 @@ var iamGridStack = {
 
                 return id;
             },
+            //Obtenir la position de la page
             _getPosition: function (id) {
                 return iamGridStack.portal.pages.findIndex(el => el.id === id)
             },
         },
         widget: {
+            
             getAll: function () {
-
+                let widgets = [];
+                iamGridStack.portal.pages.forEach((page) => {
+                    widgets = [...widgets, ...page.widgets];
+                });
+                return widgets;
             },
             get: function (id) {
 
             },
-            setToActive: function (id) {
-
+            getPageId: function (id) {
+                const widgets = iamGridStack.actions.widget.getAll();
+                const widget = widgets.find(el => el.id == id);
+                return widget.pageId;
             },
             delete: function (id) {
 
             },
             add: function (obj) {
-
+                //const pagePosition = iamGridStack.actions.page._getPosition(obj.pageId);
+                let pageWidgets = iamGridStack.actions.page.get(obj.pageId).widgets;
+                iamGridStack.actions.page.set(obj.pageId, {
+                    widgets:[...pageWidgets,obj]
+                })
             },
             build: function (widget) {
 
