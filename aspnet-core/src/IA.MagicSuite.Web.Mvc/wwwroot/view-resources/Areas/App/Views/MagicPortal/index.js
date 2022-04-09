@@ -865,58 +865,7 @@ var iamGridStack = {
 
         }
         if (obj.type == "page") {
-            const addPage = (e) => {
-
-                e.preventDefault();
-                const name = $("#PageRenameInput").val();
-                if (name.trim() == "") return;
-
-                iamGridStack.events.page.add(name);
-                $("#PageRenameInput").val("");
-            }
-            const renamePage = (e) => {
-
-                e.preventDefault();
-
-                iamGridStack.events.page.rename(e);
-                $("#PageRenameInput").val("");
-            }
-            const deletePage = (e) => {
-                e.preventDefault();
-                e.stopPropagaton;
-                iamGridStack.events.page.delete(e);
-            }
             
-            const show = (e) => {
-                e.preventDefault();
-
-                const selector = $(e.currentTarget);
-                const id = selector.attr("data-page-id");
-                that.actions.page.show(id);
-            }
-
-
-            //ajouter page
-            this.createEvent($("#ia-gridstack-add-page"), {
-                "click": addPage,
-            });
-            //renommer page
-            this.createEvent($("#ia-gridstack-rename-page"), {
-                "click": renamePage,
-            });
-            //supprimer page
-            this.createEvent($(".btn-delete-page"), {
-                "click": deletePage,
-            });
-            //selectionner page
-            this.createEvent($(`[data-page-id]`), {
-                "click": show,
-            });
-            //Afficher setting des parametres widget
-            this.createEvent($(`.btn-show-more-setting`), {
-                "click": showSubHeader,
-            });
-
         }
         if (obj.type == "portal") {
             
@@ -924,7 +873,57 @@ var iamGridStack = {
 
 
         }
-        
+        switch (obj.type) {
+            case "widget":
+
+                break;
+            case "page":
+                const addPage = (e) => {
+
+                    e.preventDefault();
+                    const name = $("#PageRenameInput").val();
+                    if (name.trim() == "") return;
+
+                    iamGridStack.events.page.add(name);
+                    $("#PageRenameInput").val("");
+                }
+                const renamePage = (e) => {
+
+                    e.preventDefault();
+
+                    iamGridStack.events.page.rename(e);
+                    $("#PageRenameInput").val("");
+                }
+                const deletePage = (e) => {
+                    e.preventDefault();
+                    e.stopPropagaton;
+                    iamGridStack.events.page.delete(e);
+                }
+
+                //ajouter page
+                that.createEvent($("#ia-gridstack-add-page"), {
+                    "click": addPage,
+                });
+                //renommer page
+                that.createEvent($("#ia-gridstack-rename-page"), {
+                    "click": renamePage,
+                });
+                //supprimer page
+                that.createEvent($(".btn-delete-page"), {
+                    "click": deletePage,
+                });
+                //Afficher setting des parametres widget
+                that.createEvent($(`.btn-show-more-setting`), {
+                    "click": showSubHeader,
+                });
+
+                console.log("ok !")
+                break;
+            case "portal":
+
+                break;
+            default:
+        }
     },
     //Chargement du projet
     load: function (portal) {
@@ -1214,8 +1213,6 @@ var iamGridStack = {
                     id, name,
                 })
 
-
-                console.log("id",id)
                 const showPage = (e) => {
                     const selector = $(e.currentTarget);
                     const id = selector.attr("data-page-id");
@@ -1226,10 +1223,8 @@ var iamGridStack = {
                 iamGridStack.createEvent($(`[data-page-id="${id}"]`), {
                     "click": showPage,
                 });
-
                 $(`[data-page-id="${id}"]`).trigger("click");
 
-                //iamGridStack.methods.setToActive(id);
                // iamGridStack.methods.addOptions();
             },
             rename: function (e) {
