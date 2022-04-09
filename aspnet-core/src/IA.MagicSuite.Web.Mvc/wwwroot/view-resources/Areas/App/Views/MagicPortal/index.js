@@ -840,7 +840,7 @@ var iamGridStack = {
         const showSubHeader = (e) => {
             that.events.portal.showToolBarSubHeader(e);
         }
-
+        
         if (obj.type == "widget") {
             const showToolbar = (e) => {
                 that.events.showWidgetToobar(e);
@@ -866,7 +866,8 @@ var iamGridStack = {
         }
         if (obj.type == "page") {
             const addPage = (e) => {
-                
+
+                e.preventDefault();
                 const name = $("#PageRenameInput").val();
                 if (name.trim() == "") return;
 
@@ -874,15 +875,18 @@ var iamGridStack = {
                 $("#PageRenameInput").val("");
             }
             const renamePage = (e) => {
-                
+
+                e.preventDefault();
 
                 iamGridStack.events.page.rename(e);
                 $("#PageRenameInput").val("");
             }
             const deletePage = (e) => {
-                e.preventDefault;
+                e.preventDefault();
+                e.stopPropagaton;
                 iamGridStack.events.page.delete(e);
             }
+            
             const show = (e) => {
                 e.preventDefault();
 
@@ -908,13 +912,16 @@ var iamGridStack = {
             this.createEvent($(`[data-page-id]`), {
                 "click": show,
             });
-
-        }
-        if (obj.type == "portal") {
             //Afficher setting des parametres widget
             this.createEvent($(`.btn-show-more-setting`), {
                 "click": showSubHeader,
             });
+
+        }
+        if (obj.type == "portal") {
+            
+
+
 
         }
         
@@ -1168,31 +1175,28 @@ var iamGridStack = {
     events: {
         page: {
             delete: function (e) {
+                //e.preventDefault();
+                
                 console.log("deleted !");
 
                 if (iamGridStack.portal.pages.length == 1) return;
                 const id = iamGridStack.portal.pages[iamGridStack.activePagePositionId].id;
                 const pageIndex = iamGridStack.activePagePositionId;
-                let newId;
+                let newId = iamGridStack.actions.page._getPosition(id);
 
 
                 iamGridStack.grids[iamGridStack.activePagePositionId].destroy();
                 $(`[data-page-id="${id}"]`).remove();
-                iamGridStack.actions.page.delete(id);
+                
 
                 if (pageIndex == 0) {
-                    const nextPageId = iamGridStack.portal.pages[1].id;
-
-                    iamGridStack.actions.page.setToActive(nextPageId);
-                    
-
+                    newId = iamGridStack.portal.pages[1].id;
                 }
                 else {
-                    const prevPageId = iamGridStack.portal.pages[iamGridStack.activePagePositionId - 1].id;
-
-                    iamGridStack.actions.page.setToActive(prevPageId);
-                    
+                    newId = iamGridStack.portal.pages[iamGridStack.activePagePositionId - 1].id;     
                 }
+                iamGridStack.actions.page.setToActive(newId);
+                iamGridStack.actions.page.delete(id);
                 iamGridStack.refresh();
                 iamGridStack.portal.pages.forEach((el, i) => {
                     el.positionId = i;
@@ -1209,20 +1213,21 @@ var iamGridStack = {
                 iamGridStack.actions.page.add({
                     id, name,
                 })
-                iamGridStack.actions.page.setToActive(id);
-                iamGridStack.bindTo({id, type: "page" });
 
 
                 console.log("id",id)
                 const showPage = (e) => {
-                    //iamGridStack.events.showActivePage(e);
+                    const selector = $(e.currentTarget);
+                    const id = selector.attr("data-page-id");
+
+                    iamGridStack.actions.page.setToActive(id);
                 }
                 //Afficher la page
-                //iamGridStack.createEvent($(`[data-page-id="${id}"]`), {
-                //    "click": showPage,
-                //});
+                iamGridStack.createEvent($(`[data-page-id="${id}"]`), {
+                    "click": showPage,
+                });
 
-               // $(`[data-page-id="${id}"]`).trigger("click");
+                $(`[data-page-id="${id}"]`).trigger("click");
 
                 //iamGridStack.methods.setToActive(id);
                // iamGridStack.methods.addOptions();
@@ -1251,7 +1256,6 @@ var iamGridStack = {
 
                 if (iamGridStack.portal.options.editMode) {
                     $(`[data-id="right-toolbar-id"]`).html(iamGridStack.ui.rightToolBar());
-                    iamGridStack.bindTo({type:"portal"});
                     iamGridStack.bindTo({type:"page"});
                 }
                 else {
