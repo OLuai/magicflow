@@ -840,6 +840,29 @@ var iamGridStack = {
         
         switch (obj.type) {
             case "widget":
+                const showToolbar = (e) => {
+                    that.events.widget.showOptions(e);
+                };
+                const deleteWidget = (e) => {
+                    //that.events.widget.delete(e);
+                };
+                const settingWidget = (e) => {
+                   // iamGridStack.events.settingWidget(e);
+                }
+
+                //Afficher toolbar widget
+                this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
+                    "mouseover": showToolbar,
+                    "mouseout": showToolbar,
+                });
+                //Supprimer widget
+                this.createEvent($(`[data-widget-id="${obj.id}"]`).find(".btn-delete-widget"), {
+                    "click": deleteWidget,
+                });
+                //Afficher setting des parametres widget
+                this.createEvent($(`.btn-setting-widget`), {
+                    "click": settingWidget,
+                });
 
                 break;
             case "page":
@@ -886,10 +909,21 @@ var iamGridStack = {
                     "click": showSubHeader,
                 });
 
-                console.log("ok !")
                 break;
             case "portal":
 
+                break;
+            case "subheader":
+                const addWidget = (e) => {
+                    iamGridStack.events.widget.add({});
+                };
+
+                //ajouter nouveau widget
+                that.createEvent($(`#ia-gridstack-add-widget`), {
+                    "click": addWidget,
+                });
+
+                console.log("subheader");
                 break;
             default:
         }
@@ -1046,9 +1080,14 @@ var iamGridStack = {
         widgetOptionBar: function () {
             return `
                     <div class="d-flex justify-content-end m-2 ia-widget-toolbar" style="height: 20px;z-index: 2;position: absolute;">
-                            <a href="#" class="btn-delete-widget" style="display:none">
+                        <div class="ia-widget-tb"  style="display:none">
+                            <a href="#" class="btn-delete-widget mr-5">
                                   <i class="flaticon2-delete text-danger"></i>
                             </a>
+                            <a href="#" class="btn-setting-widget mr-5" >
+                                  <i class="flaticon2-settings text-dark"></i>
+                            </a>
+                       </div>
                     </div>
 `;
         },
@@ -1135,13 +1174,14 @@ var iamGridStack = {
                 return widget.pageId;
             },
             delete: function (id) {
-
+                let newWidgetList = iamGridStack.widgets.filter(widget => widget.id != id);
+                iamGridStack.widgets = newWidgetList;
             },
             add: function (obj) {
-                //const pagePosition = iamGridStack.actions.page._getPosition(obj.pageId);
+                
                 let pageWidgets = iamGridStack.actions.page.get(obj.pageId).widgets;
                 iamGridStack.actions.page.set(obj.pageId, {
-                    widgets:[...pageWidgets,obj]
+                    widgets: [...pageWidgets, obj]
                 })
             },
             build: function (widget) {
@@ -1155,7 +1195,7 @@ var iamGridStack = {
             import: function (obj) {
 
             },
-            
+
         },
     },
     //L'ensemble de tous les evenemments
@@ -1229,9 +1269,45 @@ var iamGridStack = {
             delete: function (e) {
 
             },
-            add: function (e) {
+            add: function (obj) {
+                const contentHtml = obj.body || "";
+                const id = new Date().getTime() + "";
+                const content = `<span data-w-id="${id}"></span>` + iamGridStack.ui.widgetOptionBar() + contentHtml;
+                const widget = {
+                    id: id,
+                    pageId: iamGridStack.portal.pages[iamGridStack.activePagePositionId].id,
+                    content: content,
+                    type: "widget",
+                    objectQF: null,
+                    skeleton: null,
+                    x: obj.x || null,
+                    y: obj.y || null,
+                    w: obj.w || 3,
+                    h: obj.h || 3,
+                };
 
-            }
+                iamGridStack.grids[iamGridStack.activePagePositionId].addWidget({
+                    h: widget.h,
+                    w: widget.w,
+                    x: widget.x,
+                    y: widget.y,
+                    content: widget.content,
+                });
+               
+                iamGridStack.actions.widget.add(widget);
+                $(`.grid-stack-item:has([data-w-id="${id}"])`).attr("data-widget-id", id);
+                iamGridStack.bindTo(widget);
+                return id;
+            },
+            import: function (e) {
+
+            },
+            showOptions: function (e) {
+                if (iamGridStack.portal.options.editMode) {
+                    let selector = $(e.currentTarget).find(".ia-widget-tb");
+                    selector.toggle();
+                };
+            },
         },
         portal: {
             activeEditMode: function (e) {
@@ -1251,6 +1327,7 @@ var iamGridStack = {
                 $(".btn-show-more-setting > i").toggleClass("flaticon2-down");
                 if ($(".btn-show-more-setting > i").hasClass("flaticon2-up")) {
                     $("#ia-gridstack-toolbar-more-setting").html(iamGridStack.ui.subHeaderToolBar()).show();   
+                    iamGridStack.bindTo({ type: "subheader" });
                 }
                 else {
                     $("#ia-gridstack-toolbar-more-setting").html("").hide();
