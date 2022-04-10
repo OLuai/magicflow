@@ -823,6 +823,7 @@ var iamGridStack = {
     //Les proprietes d'un portal
     portal: {
         id: iamShared.utils.guidString(),
+        name:"",
         //Les options d'un portal
         options: {
             editMode: false,
@@ -921,6 +922,12 @@ var iamGridStack = {
                 const importWidget = (e) => {
                     iamGridStack.events.widget.import(e);
                 };
+                const importPortal = (e) => {
+                    iamGridStack.events.portal.import(e);
+                };
+                const exportPortal = (e) => {
+                    iamGridStack.events.portal.export(e);
+                };
 
                 //ajouter nouveau widget
                 that.createEvent($(`#ia-gridstack-add-widget`), {
@@ -930,15 +937,40 @@ var iamGridStack = {
                 that.createEvent($(`#ia-gridstack-import-widget`), {
                     "click": importWidget,
                 });
+                //importer portal
+                that.createEvent($(`#ia-gridstack-import`), {
+                    "click": importPortal,
+                });
+                //exporter portal
+                that.createEvent($(`#ia-gridstack-export`), {
+                    "click": exportPortal,
+                });
 
-                console.log("subheader");
                 break;
             default:
         }
     },
     //Chargement du projet
     load: function (portal) {
-
+        const that = this;
+        iamGridStack.portal ={
+            id: iamShared.utils.guidString(),
+                name: "",
+                options: {
+                    editMode: false,
+                    float: false,
+                    resizeable: false,
+                    moveable: false,
+        },
+                pages: [],
+    },
+        console.log(portal)
+        portal.pages.forEach((page, i) => {
+            that.events.page.add(page.name);
+            page.widgets.forEach((widget) => {
+                iamGridStack.actions.widget.build(widget);
+            });
+        });
     },
     //Créer l'evenement d'un element || selector : l'element sur lequel doit se declencher l'event, eventObj: l'ensemble des events qui seront lié à l'element
     createEvent: function (selector, eventObj) {
@@ -1243,10 +1275,27 @@ var iamGridStack = {
         },
         portal: {
             export: function () {
-
+                iamGridStack.portal.pages.forEach((page, i) => {
+                    page.widgets.forEach((widget, j) => {
+                        const el = $(`[data-w-id="${widget.id}"]`).parent().parent();
+                        const position = {
+                            x: el.attr("gs-x"),
+                            y: el.attr("gs-y"),
+                            h: el.attr("gs-h"),
+                            w: el.attr("gs-w"),
+                        }
+                        iamGridStack.portal.pages[i].widgets[j] = { ...widget, ...position };
+                    });
+                });
+                iamShared.files.stringToFileDownload("Portal_" + iamGridStack.portal.id + ".json", JSON.stringify(iamGridStack.portal));
             },
-            import: function (obj) {
+            import: function () {
+                iamGridStack.actions.importFromJSON((portal) => {
 
+                    $("#ia-gridstack-container, #pagesContainerId").html("");
+                    
+                    iamGridStack.load(portal);
+                });
             },
             _binOptions: function () {
                 iamGridStack.portal.pages.forEach((el, i) => {
@@ -1429,7 +1478,13 @@ var iamGridStack = {
                     $("#ia-gridstack-toolbar-more-setting").html("").hide();
                 }
             },
+            import: function (e) {
+                iamGridStack.actions.portal.import();
+            },
+            export: function (e) {
 
+                iamGridStack.actions.portal.export();
+            },
         }
     }
 }
