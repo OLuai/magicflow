@@ -956,19 +956,20 @@ var iamGridStack = {
         iamGridStack.portal ={
             id: iamShared.utils.guidString(),
                 name: "",
-                options: {
-                    editMode: false,
-                    float: false,
-                    resizeable: false,
-                    moveable: false,
-        },
+                options: {...iamGridStack.portal.options},
                 pages: [],
     },
         console.log(portal)
         portal.pages.forEach((page, i) => {
             that.events.page.add(page.name);
             page.widgets.forEach((widget) => {
-                iamGridStack.actions.widget.build(widget);
+                const position = {
+                    x:widget.x,
+                    y:widget.y,
+                    h:widget.h,
+                    w:widget.w,
+                }
+                iamGridStack.actions.widget.build({ ...widget.skeleton,...position});
             });
         });
     },
