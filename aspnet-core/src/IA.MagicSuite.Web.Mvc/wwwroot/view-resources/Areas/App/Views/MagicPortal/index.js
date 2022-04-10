@@ -844,7 +844,7 @@ var iamGridStack = {
                     that.events.widget.showOptions(e);
                 };
                 const deleteWidget = (e) => {
-                    //that.events.widget.delete(e);
+                    that.events.widget.delete(e);
                 };
                 const settingWidget = (e) => {
                    // iamGridStack.events.settingWidget(e);
@@ -1174,8 +1174,10 @@ var iamGridStack = {
                 return widget.pageId;
             },
             delete: function (id) {
-                let newWidgetList = iamGridStack.widgets.filter(widget => widget.id != id);
-                iamGridStack.widgets = newWidgetList;
+                const pageId = iamGridStack.actions.widget.getPageId(id);
+                const i = iamGridStack.actions.page._getPosition(pageId);
+                const newWidgetList = iamGridStack.portal.pages[i].widgets.filter(widget => widget.id != id);
+                iamGridStack.portal.pages[i].widgets = newWidgetList;
             },
             add: function (obj) {
                 
@@ -1267,7 +1269,9 @@ var iamGridStack = {
         },
         widget: {
             delete: function (e) {
-
+                const id = $(e.currentTarget).parent().parent().siblings(`[data-w-id]`).attr("data-w-id");
+                iamGridStack.grids[iamGridStack.activePagePositionId].removeWidget($(`[data-widget-id="${id}"]`)["0"]);
+                iamGridStack.actions.widget.delete(id);
             },
             add: function (obj) {
                 const contentHtml = obj.body || "";
