@@ -1217,20 +1217,26 @@ var iamGridStack = {
                         h: el.attr("gs-h"),
                         w: el.attr("gs-w"),
                     }
-                    let objArray = iamGridStack.widgets.filter(el => el.id == id);
-                    deleteBtn.trigger("click");
-                    let newId = iamGridStack.methods.buildWidget(objArray[0].skeleton);
+                    let widg = iamGridStack.actions.widget.get(id);
+                    
+                    let newId = iamGridStack.actions.widget.build({ ...widg.skeleton,...position});
                     let newEl = $(`[data-w-id="${newId}"]`).parent().parent();
-                    newEl.attr("gs-x", position.x).attr("gs-y", position.y).attr("gs-h", position.h).attr("gs-w", position.w);
-                    //console.log("el", el, position);
+                    //newEl.attr("gs-x", position.x).attr("gs-y", position.y).attr("gs-h", position.h).attr("gs-w", position.w);
+                    //iamGridStack.refresh();
+                    deleteBtn.trigger("click");
+                   
+
                 }
                 const content = iamWidget.render(id, widget);
                 const obj = {
                     id,
                     skeleton: widget,
                     objectQF: iamWidget.getWidgetQFObject(widget, callback),
+                    x: widget.x,
+                    y: widget.y,
+                    h: widget.h,
+                    w: widget.w,
                 }
-
 
                 iamGridStack.events.widget.add(obj);
                 $(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(content);
