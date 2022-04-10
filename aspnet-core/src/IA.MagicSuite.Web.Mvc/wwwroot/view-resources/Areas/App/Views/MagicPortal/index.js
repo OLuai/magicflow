@@ -642,6 +642,7 @@ var iamGridStack2 = {
             let objArray = iamGridStack.widgets.filter(el => el.id == id);
             //console.log("555", objArray[0].objectQF);
             iamGridStack.methods.showRightPanel(objArray[0].objectQF, objArray[0].skeleton.attributesVal);
+
         }
     
     },
@@ -846,8 +847,8 @@ var iamGridStack = {
                 const deleteWidget = (e) => {
                     that.events.widget.delete(e);
                 };
-                const settingWidget = (e) => {
-                   // iamGridStack.events.settingWidget(e);
+                const editWidget = (e) => {
+                    iamGridStack.events.widget.showRightPanel(e);
                 }
 
                 //Afficher toolbar widget
@@ -861,7 +862,7 @@ var iamGridStack = {
                 });
                 //Afficher setting des parametres widget
                 this.createEvent($(`.btn-setting-widget`), {
-                    "click": settingWidget,
+                    "click": editWidget,
                 });
 
                 break;
@@ -917,10 +918,17 @@ var iamGridStack = {
                 const addWidget = (e) => {
                     iamGridStack.events.widget.add({});
                 };
+                const importWidget = (e) => {
+                    iamGridStack.events.widget.import(e);
+                };
 
                 //ajouter nouveau widget
                 that.createEvent($(`#ia-gridstack-add-widget`), {
                     "click": addWidget,
+                });
+                //importer widget
+                that.createEvent($(`#ia-gridstack-import-widget`), {
+                    "click": importWidget,
                 });
 
                 console.log("subheader");
@@ -1157,7 +1165,9 @@ var iamGridStack = {
             },
         },
         widget: {
-            
+            set: function (id,obj) {
+
+            },
             getAll: function () {
                 let widgets = [];
                 iamGridStack.portal.pages.forEach((page) => {
@@ -1166,7 +1176,9 @@ var iamGridStack = {
                 return widgets;
             },
             get: function (id) {
-
+                const widgets = iamGridStack.actions.widget.getAll();
+                const widget = widgets.find(el => el.id == id);
+                return widget;
             },
             getPageId: function (id) {
                 const widgets = iamGridStack.actions.widget.getAll();
@@ -1187,7 +1199,36 @@ var iamGridStack = {
                 })
             },
             build: function (widget) {
+                const id = new Date().getTime() + "";
+                const callback = () => {
+                    let el = $(`[data-w-id="${id}"]`).parent().parent();
+                    let deleteBtn = el.find(".btn-delete-widget");
+                    let position = {
+                        x: el.attr("gs-x"),
+                        y: el.attr("gs-y"),
+                        h: el.attr("gs-h"),
+                        w: el.attr("gs-w"),
+                    }
+                    let objArray = iamGridStack.widgets.filter(el => el.id == id);
+                    deleteBtn.trigger("click");
+                    let newId = iamGridStack.methods.buildWidget(objArray[0].skeleton);
+                    let newEl = $(`[data-w-id="${newId}"]`).parent().parent();
+                    newEl.attr("gs-x", position.x).attr("gs-y", position.y).attr("gs-h", position.h).attr("gs-w", position.w);
+                    //console.log("el", el, position);
+                }
+                const content = iamWidget.render(id, widget);
+                const obj = {
+                    id,
+                    skeleton: widget,
+                    objectQF: iamWidget.getWidgetQFObject(widget, callback),
+                }
 
+
+                iamGridStack.events.widget.add(obj);
+                $(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(content);
+                $(`#widget_${id}`).css("height", "100%");
+                iamGridStack.refresh();
+                return id;
             }
         },
         portal: {
@@ -1198,6 +1239,30 @@ var iamGridStack = {
 
             },
 
+        },
+        importFromJSON: function (resolve, reject) {
+            //alert('import');
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+
+            input.onchange = e => {
+                // getting a hold of the file reference
+                let file = e.target.files[0];
+
+                // setting up the reader
+                let reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+
+                // here we tell the reader what to do when it's done reading...
+                reader.onload = readerEvent => {
+                    var content = readerEvent.target.result; // this is the content!
+                    let widget = JSON.parse(content);
+                    resolve(widget);
+                }
+            }
+
+            input.click();
         },
     },
     //L'ensemble de tous les evenemments
@@ -1274,16 +1339,16 @@ var iamGridStack = {
                 iamGridStack.actions.widget.delete(id);
             },
             add: function (obj) {
-                const contentHtml = obj.body || "";
-                const id = new Date().getTime() + "";
+                const contentHtml = obj.content || "";
+                const id = obj.id || new Date().getTime() + "";
                 const content = `<span data-w-id="${id}"></span>` + iamGridStack.ui.widgetOptionBar() + contentHtml;
                 const widget = {
                     id: id,
                     pageId: iamGridStack.portal.pages[iamGridStack.activePagePositionId].id,
                     content: content,
                     type: "widget",
-                    objectQF: null,
-                    skeleton: null,
+                    objectQF: obj.objectQF || null,
+                    skeleton: obj.skeleton || null,
                     x: obj.x || null,
                     y: obj.y || null,
                     w: obj.w || 3,
@@ -1304,13 +1369,22 @@ var iamGridStack = {
                 return id;
             },
             import: function (e) {
-
+                const buildWidget = (widget) => {
+                    iamGridStack.actions.widget.build(widget);
+                }
+                iamGridStack.actions.importFromJSON(buildWidget);
             },
             showOptions: function (e) {
                 if (iamGridStack.portal.options.editMode) {
                     let selector = $(e.currentTarget).find(".ia-widget-tb");
                     selector.toggle();
                 };
+            },
+            showRightPanel: function (e) {
+                const id = $(e.currentTarget).parent().parent().siblings(`[data-w-id]`).attr("data-w-id");
+                let widget = iamGridStack.actions.widget.get(id);
+                iamShared.ui.rightPanelShow();
+                iamQF.createForm(widget.objectQF, widget.skeleton.attributesVal, true, "rightpanel", true, null, null, true, true, null);
             },
         },
         portal: {
