@@ -1166,7 +1166,15 @@ var iamGridStack = {
         },
         widget: {
             set: function (id,obj) {
-
+                let widget = iamGridStack.actions.widget.get(id);
+                const i = iamGridStack.actions.page._getPosition(widget.id);
+                //iamGridStack.portal.pages[i] = { ...iamGridStack.portal.pages[i], ...obj };
+                iamGridStack.portal.pages[i].widgets.forEach((el,j) => {
+                    if (el.id==id) {
+                        iamGridStack.portal.pages[i].widgets[j] = { ...el, ...obj };
+                        return;
+                    }
+                });
             },
             getAll: function () {
                 let widgets = [];
