@@ -1217,12 +1217,8 @@ var iamGridStack = {
                         h: el.attr("gs-h"),
                         w: el.attr("gs-w"),
                     }
-                    let widg = iamGridStack.actions.widget.get(id);
-                    
+                    let widg = iamGridStack.actions.widget.get(id);                   
                     let newId = iamGridStack.actions.widget.build({ ...widg.skeleton,...position});
-                    let newEl = $(`[data-w-id="${newId}"]`).parent().parent();
-                    //newEl.attr("gs-x", position.x).attr("gs-y", position.y).attr("gs-h", position.h).attr("gs-w", position.w);
-                    //iamGridStack.refresh();
                     deleteBtn.trigger("click");
                    
 
@@ -1252,7 +1248,13 @@ var iamGridStack = {
             import: function (obj) {
 
             },
-
+            _binOptions: function () {
+                iamGridStack.portal.pages.forEach((el, i) => {
+                    iamGridStack.grids[i].enableMove(iamGridStack.portal.options.editMode);
+                    iamGridStack.grids[i].enableResize(iamGridStack.portal.options.editMode);
+                    iamGridStack.grids[i].float(iamGridStack.portal.options.float);
+                });
+            }
         },
         importFromJSON: function (resolve, reject) {
             //alert('import');
@@ -1407,11 +1409,13 @@ var iamGridStack = {
 
                 if (iamGridStack.portal.options.editMode) {
                     $(`[data-id="right-toolbar-id"]`).html(iamGridStack.ui.rightToolBar());
-                    iamGridStack.bindTo({type:"page"});
+                    iamGridStack.bindTo({ type: "page" });
                 }
                 else {
                     $(`[data-id="right-toolbar-id"], #ia-gridstack-toolbar-more-setting`).html("");
                 }
+
+                iamGridStack.actions.portal._binOptions();
 
             },
             showToolBarSubHeader: function (e) {
