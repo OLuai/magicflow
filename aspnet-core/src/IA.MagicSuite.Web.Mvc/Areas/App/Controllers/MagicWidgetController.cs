@@ -14,5 +14,9 @@ namespace IA.MagicSuite.Web.Areas.App.Controllers
         {
             return View();
         }
+        public ActionResult Test()
+        {
+            return View();
+        }
     }
 }

@@ -17,52 +17,141 @@
     var theme = await GetTheme(); }
 
 @section Styles{
-    <style>
-        .hidden-item {
-            display: none !important;
-        }
-    </style>
+    
     <link rel="stylesheet" href="@(ApplicationPath)metronic/themes/default/css/style.bundle@(CultureHelper.IsRtl ? ".rtl" : "").css" asp-append-version="true" />
     <link rel="stylesheet" href="@(ApplicationPath)metronic/themes/default/css/skins/header/base/@(theme.BaseSettings.Header.HeaderSkin)@(CultureHelper.IsRtl ? ".rtl" : "").css" asp-append-version="true" />
     <link rel="stylesheet" href="@(ApplicationPath)metronic/themes/default/css/skins/brand/@(theme.BaseSettings.Menu.AsideSkin)@(CultureHelper.IsRtl ? ".rtl" : "").css" asp-append-version="true" />
     <link rel="stylesheet" href="@(ApplicationPath)metronic/themes/default/css/skins/aside/@(theme.BaseSettings.Menu.AsideSkin)@(CultureHelper.IsRtl ? ".rtl" : "").css" asp-append-version="true" />
     <link rel="stylesheet" abp-href="/Common/Styles/Themes/default/metronic-customize.css" asp-append-version="true" />
     <link rel="stylesheet" href="@(ApplicationPath)metronic/assets/plugins/custom/datatables/datatables.bundle.css" asp-append-version="true" />
+    <style>
+
+        .hidden-item {
+            display: none !important;
+        }
+        .page {
+            padding: 20px;
+            /*height: calc(100% - 40px);*/
+            height:100%;
+        }
+        .flex-root{
+            height:calc(100% - 59px);
+        }
+        #iamWidgetDisplayName {
+            display: flex;
+            align-items: center;
+        }
+        #iamWidgetEditName {
+            display: none;
+        }
+        #iamWidgetEditName input {
+            margin-right: 10px;
+            font-weight: 200;
+            font-size: medium;
+            width: 200px;
+            max-width: 100%;
+            margin-bottom: 10px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid red;
+        }
+
+        #iamWidgetEditName input:focus {
+            outline: none;
+            color: darkred;
+        }
+
+            #iamWidgetEditName span:hover, #iamWidgetBtnEditWidgetName {
+                cursor: pointer
+            }
+
+        #iamWidgetNameSave {
+            width: 40px;
+            color: #fff !important;
+            text-decoration: none;
+            padding: 7px;
+            border-radius: 30px;
+            border: none;
+            transition: all 0.4s ease 0s;
+            margin-top: 10px;
+        }
+
+        #iamWidgetNameSave:hover {
+            text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+            -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+            -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+            transition: all 0.4s ease 0s;
+        }
+
+        #iamWidgetNameCancel {
+            width: 40px;
+            color: #fff !important;
+            text-decoration: none;
+            padding: 7px;
+            border-radius: 30px;
+            border: none;
+            transition: all 0.4s ease 0s;
+            margin-top: 10px;
+        }
+
+        #iamWidgetNameCancel:hover {
+            text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+            -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+            -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+            transition: all 0.4s ease 0s;
+        }
+    </style>
     @await RenderSectionAsync("Styles", false)
 }
 
 @section Scripts{
     <script abp-src="/metronic/themes/default/js/settings.js" asp-append-version="true"></script>
+    <script>
+        $('#iamWidgetBtnEditWidgetName, #iamWidgetName').on('click', function () {
+
+            var itemWrapper = $(this).closest('.item-container'),
+                currentItemLabel = itemWrapper.find('#iamWidgetName').text().trim();
+
+            itemWrapper.find('#iamWidgetDisplayName').hide();
+            itemWrapper.find('#iamWidgetEditName').show();
+            itemWrapper.find('#iamWidgetNameInput').val(currentItemLabel);
+            //itemWrapper.find('#iamWidgetNameInput').show();
+
+        });
+
+        $('#iamWidgetNameCancel, #iamWidgetNameSave').on('click', function () {
+            $('#iamWidgetDisplayName').show();
+            $('#iamWidgetEditName').hide();
+        });
+    </script>
     @await RenderSectionAsync("Scripts", false)
 }
 @* Bar d'outils pour le menu de gauche de l'application *@
 
 
 @* Header global de la page *@
-<div id="iamMainToolbarContainer" class="subheader subheader-solid py-3 m-0">
+<div id="iamMainToolbarContainer" class="subheader subheader-solid py-3">
     <div class="@(await GetContainerClass())  d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
         <div id="iamMainToolbar" class="d-flex align-items-center flex-wrap mr-2 ">
             <!--begin::Title-->
-            <h5 class="text-dark font-weight-bold mr-5 mb-0">
+            <h3 class="text-dark font-weight-bold mr-5 mb-0">
                 WidgetEditor
-            </h5>
+            </h3>
             <!--end::Title-->
             <!--begin::Separator-->
             <div class="subheader-separator subheader-separator-ver bg-gray-200">
             </div>
-            <!--end::Separator-->
-            <!--begin::Modifier le nom de la page-->
-            <div class="d-flex align-items-center mx-6">
+            <div class="item-container d-flex align-items-center mx-6">
 
-                <div class="d-flex align-items-center" id="iamWidgetDisplayName">
-                    <h4 class="text-dark font-weight-bold my-0 mx-5" id="iamWidgetName"
-                        style="">
+                <div id="iamWidgetDisplayName">
+                    <h4 class="text-dark font-weight-bold my-0 mx-5" id="iamWidgetName">
+                        New Widget
                     </h4>
-                    <a id="iamWidgetBtnEditWidgetName" class="mx-3 my-0">
+                    <span id="iamWidgetBtnEditWidgetName" class="mx-3 my-0">
                         <i class="fa fa-edit icon-1x text-primary"></i>
-                    </a>
+                    </span>
                 </div>
-                <div id="iamWidgetEditName" class="iamWidgetEditName" style="display:none;">
+                <div id="iamWidgetEditName" class="iamWidgetEditName">
                     <input id="iamWidgetNameInput" class="my-0 mx-5" type="text">
                     <span class="svg-icon svg-icon-success svg-icon-3x mx-3 my-0"
                           id="iamWidgetNameSave">
@@ -150,13 +239,6 @@
                     </ul>
                 </div>
             </div>
-            <!--end::Save-->
-            @*<a class="btn btn-success font-weight-bold mr-2" id="btn-import">
-                    <i class="flaticon-download"></i> Import
-                </a>
-                <a id="btn-export" class="btn btn-success font-weight-bold mr-2">
-                    <i class="flaticon-logout"></i> Export
-                </a>*@
 
         </div>
     </div>
