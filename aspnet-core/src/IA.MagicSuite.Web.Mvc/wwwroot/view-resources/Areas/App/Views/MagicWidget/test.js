@@ -325,9 +325,9 @@
                 });
             },
             //Afficher le QuickForm pour affecter des valeurs a nos attributs
-            setAttributes: function (widget, id, selector) {//, id, selector) {
+            setAttributes: function (widget, id, selector, callback) {//, id, selector) {
                 if (widget.attributes.length > 0) {
-                    let attributesQFObjet = iamWidget.widget.attributes.getSetAttributesQFObject(widget, id, selector)//, id, selector);
+                    let attributesQFObjet = iamWidget.widget.attributes.getSetAttributesQFObject(widget, id, selector, callback)//, id, selector);
                     iamShared.ui.rightPanelShow();
                     iamQF.createForm(attributesQFObjet, widget.attributesVal, false, null, true, app, abp.services.app.magicData, true, true, null);
                 }
@@ -346,7 +346,7 @@
                         abp.ui.setBusy('body');
                         widget.attributesVal = data;
                         iamWidget.widget.render(widget, id, selector);
-                        if(callback)callback();
+                        if(callback)callback(widget);
                         //abp.notify.info(app.localize('SavedSuccessfully'));
                         abp.ui.clearBusy('body');
                     },
