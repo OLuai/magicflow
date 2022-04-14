@@ -483,31 +483,31 @@ ${codeHTML}
                 }
             });
 
-            //Creation du bouton d'edition des attributes d'un widget
-            let editButton = '';
-            let toggleEditButton = function () { };
-            if (widget.attributes.length > 0) {
-                editButton = $(`
-<a class="btn-custom-widget btn btn-light-success" style="display:none;position:absolute;top:5px;right:5px;z-index: 1000;">
-    <i class="flaticon2-pen" ></i>
-</a>
-`);
-                editButton.on('click', () => iamWidget.widget.attributes.setAttributes(widget, id, selector));
-                toggleEditButton = function () {
-                    html.find('.btn-custom-widget').first().toggle();
-                };
-            }
-            //Ajout du bouton
-            html.prepend(editButton);
+//            //Creation du bouton d'edition des attributes d'un widget
+//            let editButton = '';
+//            let toggleEditButton = function () { };
+//            if (widget.attributes.length > 0) {
+//                editButton = $(`
+//<a class="btn-custom-widget btn btn-light-success" style="display:none;position:absolute;top:5px;right:5px;z-index: 1000;">
+//    <i class="flaticon2-pen" ></i>
+//</a>
+//`);
+//                editButton.on('click', () => iamWidget.widget.attributes.setAttributes(widget, id, selector));
+//                toggleEditButton = function () {
+//                    html.find('.btn-custom-widget').first().toggle();
+//                };
+//            }
+//            //Ajout du bouton
+//            html.prepend(editButton);
 
-            //Fonction d'apparition du bouton d'edition des attributes
-            html.on({
-                'mouseover': toggleEditButton,
-                'mouseout': toggleEditButton,
-            });
+//            //Fonction d'apparition du bouton d'edition des attributes
+//            html.on({
+//                'mouseover': toggleEditButton,
+//                'mouseout': toggleEditButton,
+//            });
 
-            //Ajout des elements de notre widget
-            html.prepend(editButton);
+//            //Ajout des elements de notre widget
+//            html.prepend(editButton);
             html.prepend(codeCSS);
             //let cssLine = codeCSS.split("\n");
             //cssLine.forEach(line => console.log(line));
