@@ -226,7 +226,7 @@
             create: function () {
                 $("#widgetAttributesGridList").toggleClass('open');
                 iamShared.ui.rightPanelShow();
-                iamQF.createForm(iamWidget.widget.attributes.QFObject(), null, true, null, true, app, abp.services.app.magicData, true, true, null);
+                iamQF.createForm(iamWidget.widget.attributes.QFObject(), null, false, null, true, app, abp.services.app.magicData, true, true, null);
             },
             //Modifier un attribut
             edit: function (data) {
@@ -329,7 +329,7 @@
 
                 let attributesQFObjet = iamWidget.widget.attributes.getSetAttributesQFObject(widget, id, selector)//, id, selector);
                 iamShared.ui.rightPanelShow();
-                iamQF.createForm(attributesQFObjet, widget.attributesVal, true, null, true, app, abp.services.app.magicData, true, true, null);
+                iamQF.createForm(attributesQFObjet, widget.attributesVal, false, null, true, app, abp.services.app.magicData, true, true, null);
             },
             //Retourne un Objet utiliser pour generer le Quickform
             getSetAttributesQFObject: function (widget, id, selector, callback, positionId) {//, id, selector, positionId) {
