@@ -326,10 +326,12 @@
             },
             //Afficher le QuickForm pour affecter des valeurs a nos attributs
             setAttributes: function (widget, id, selector) {//, id, selector) {
+                if (widget.attributes.length > 0) {
+                    let attributesQFObjet = iamWidget.widget.attributes.getSetAttributesQFObject(widget, id, selector)//, id, selector);
+                    iamShared.ui.rightPanelShow();
+                    iamQF.createForm(attributesQFObjet, widget.attributesVal, false, null, true, app, abp.services.app.magicData, true, true, null);
+                }
 
-                let attributesQFObjet = iamWidget.widget.attributes.getSetAttributesQFObject(widget, id, selector)//, id, selector);
-                iamShared.ui.rightPanelShow();
-                iamQF.createForm(attributesQFObjet, widget.attributesVal, false, null, true, app, abp.services.app.magicData, true, true, null);
             },
             //Retourne un Objet utiliser pour generer le Quickform
             getSetAttributesQFObject: function (widget, id, selector, callback, positionId) {//, id, selector, positionId) {
