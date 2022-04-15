@@ -860,7 +860,10 @@ var iamGridStack = {
                     that.events.widget.delete(e);
                 };
                 const editWidget = (e) => {
-                    iamGridStack.events.widget.showRightPanel(e);
+                    //iamGridStack.events.widget.showRightPanel(e);
+                    const id = $(e.currentTarget).parent().parent().siblings(`[data-w-id]`).attr("data-w-id");
+                    let widget = iamGridStack.actions.widget.get(id);
+                    iamWidget.widget.attributes.setAttributes(widget.skeleton, id, `[data-container-id="${id}"]`);
                 }
 
                 //Afficher toolbar widget
@@ -1290,11 +1293,12 @@ var iamGridStack = {
                    
 
                 }
-                const content = iamWidget.render(id, widget);
+                //const content = iamWidget.render(id, widget);
+                
                 const obj = {
                     id,
                     skeleton: widget,
-                    objectQF: iamWidget.getWidgetQFObject(widget, callback),
+                   // objectQF: iamWidget.getWidgetQFObject(widget, callback),
                     x: widget.x,
                     y: widget.y,
                     h: widget.h,
@@ -1302,7 +1306,9 @@ var iamGridStack = {
                 }
 
                 iamGridStack.events.widget.add(obj);
-                $(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(content);
+                //$(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(content);
+                //iamWidget.widget.create(widget, id, `[data-widget-id="${id}"] > .grid-stack-item-content`);
+                iamWidget.widget.create(widget, id, `[data-container-id="${id}"]`);
                 $(`#widget_${id}`).css("height", "100%");
                 iamGridStack.refresh();
                 return id;
@@ -1446,7 +1452,7 @@ var iamGridStack = {
             add: function (obj) {
                 const contentHtml = obj.content || "";
                 const id = obj.id || new Date().getTime() + "";
-                const content = `<span data-w-id="${id}"></span>` + iamGridStack.ui.widgetOptionBar() + contentHtml;
+                const content = `<span data-w-id="${id}"></span>` + iamGridStack.ui.widgetOptionBar() + `<div data-container-id=${id}>${contentHtml}</div>`;
                 const widget = {
                     id: id,
                     pageId: iamGridStack.portal.pages[iamGridStack.activePagePositionId].id,
