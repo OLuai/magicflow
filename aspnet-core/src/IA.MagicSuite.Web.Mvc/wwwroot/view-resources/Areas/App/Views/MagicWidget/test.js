@@ -78,8 +78,8 @@
             name: "New Widget",
             entityId: null,
             minSize: {
-                height: "auto",
-                width: "auto",
+                height: "100%",
+                width: "100%",
             },
             attributes: [
                 {

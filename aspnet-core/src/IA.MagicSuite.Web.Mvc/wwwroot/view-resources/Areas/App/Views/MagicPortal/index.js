@@ -1452,7 +1452,7 @@ var iamGridStack = {
             add: function (obj) {
                 const contentHtml = obj.content || "";
                 const id = obj.id || new Date().getTime() + "";
-                const content = `<span data-w-id="${id}"></span>` + iamGridStack.ui.widgetOptionBar() + `<div data-container-id=${id}>${contentHtml}</div>`;
+                const content = `<span data-w-id="${id}"></span>` + iamGridStack.ui.widgetOptionBar() + `<div style="height:100%" class="d-flex flex-column align-items-center justify-content-center" data-container-id=${id}>${contentHtml}</div>`;
                 const widget = {
                     id: id,
                     pageId: iamGridStack.portal.pages[iamGridStack.activePagePositionId].id,
