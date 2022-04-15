@@ -1171,7 +1171,7 @@ var iamGridStack = {
         },
 
     },
-    //Liste des actions
+    //Liste des actions (methodes specifiques)
     actions: {
         page: {
             set: function (id,obj) {
@@ -1358,6 +1358,7 @@ var iamGridStack = {
                 });
             }
         },
+        //Fonction d'import de JSON
         importFromJSON: function (resolve, reject) {
             //alert('import');
             let input = document.createElement('input');
@@ -1451,11 +1452,13 @@ var iamGridStack = {
             },
         },
         widget: {
+            //Supprimer widget
             delete: function (e) {
                 const id = $(e.currentTarget).parent().parent().siblings(`[data-w-id]`).attr("data-w-id");
                 iamGridStack.grids[iamGridStack.activePagePositionId].removeWidget($(`[data-widget-id="${id}"]`)["0"]);
                 iamGridStack.actions.widget.delete(id);
             },
+            //Ajouter Widget
             add: function (obj) {
                 const contentHtml = obj.content || "";
                 const id = obj.id || new Date().getTime() + "";
@@ -1486,12 +1489,14 @@ var iamGridStack = {
                 iamGridStack.bindTo(widget);
                 return id;
             },
+            //Importer Widget
             import: function (e) {
                 const buildWidget = (widget) => {
                     iamGridStack.actions.widget.build(widget);
                 }
                 iamGridStack.actions.importFromJSON(buildWidget);
             },
+            //Montrer les options sur le widget
             showOptions: function (e) {
                 if (iamGridStack.portal.options.editMode) {
                     let selector = $(e.currentTarget).find(".ia-widget-tb");
@@ -1504,11 +1509,13 @@ var iamGridStack = {
                 iamShared.ui.rightPanelShow();
                 iamQF.createForm(widget.objectQF, widget.skeleton.attributesVal, true, "rightpanel", true, null, null, true, true, null);
             },
+            //Compacter les widgets
             compact: function (e) {
                 iamGridStack.grids[iamGridStack.activePagePositionId].compact();
             }
         },
         portal: {
+            //Activer mode d'édition 
             activeEditMode: function (e) {
                 iamGridStack.portal.options.editMode = $(e.currentTarget).prop("checked"); 
 
@@ -1523,6 +1530,7 @@ var iamGridStack = {
                 iamGridStack.actions.portal._binOptions();
 
             },
+            //Montrer les options d'editions
             showToolBarSubHeader: function (e) {
                 $(".btn-show-more-setting > i").toggleClass("flaticon2-up");
                 $(".btn-show-more-setting > i").toggleClass("flaticon2-down");
@@ -1534,14 +1542,17 @@ var iamGridStack = {
                     $("#ia-gridstack-toolbar-more-setting").html("").hide();
                 }
             },
+            //Importer le portal
             import: function (e) {
                 iamGridStack.actions.portal.import();
                 
             },
+            //Exporter le portal
             export: function (e) {
 
                 iamGridStack.actions.portal.export();
             },
+            //Sauvegarder le portal
             save: function (e) {
                 iamGridStack.portal.pages.forEach((page, i) => {
                     page.widgets.forEach((widget, j) => {
