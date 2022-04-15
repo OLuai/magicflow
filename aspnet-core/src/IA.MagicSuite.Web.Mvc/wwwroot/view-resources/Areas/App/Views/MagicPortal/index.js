@@ -998,7 +998,7 @@ var iamGridStack = {
                     h:widget.h,
                     w:widget.w,
                 }
-                iamGridStack.actions.widget.build({ ...widget.skeleton,...position});
+                iamGridStack.actions.widget.build({ ...widget.skeleton,...position},false);
             });
         });
         iamGridStack.actions.portal._binOptions();
@@ -1276,7 +1276,7 @@ var iamGridStack = {
                     widgets: [...pageWidgets, obj]
                 })
             },
-            build: function (widget) {
+            build: function (widget,isCreation=true) {
                 const id = new Date().getTime() + "";
                 const callback = () => {
                     let el = $(`[data-w-id="${id}"]`).parent().parent();
@@ -1308,8 +1308,14 @@ var iamGridStack = {
                 iamGridStack.events.widget.add(obj);
                 //$(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(content);
                 //iamWidget.widget.create(widget, id, `[data-widget-id="${id}"] > .grid-stack-item-content`);
-                iamWidget.widget.create(widget, id, `[data-container-id="${id}"]`);
-                $(`#widget_${id}`).css("height", "100%");
+                if (isCreation) {
+                    iamWidget.widget.create(widget, id, `[data-container-id="${id}"]`);
+
+                } else {
+                    iamWidget.widget.render(widget, id, `[data-container-id="${id}"]`);
+
+                }
+                //$(`#widget_${id}`).css("height", "100%");
                 iamGridStack.refresh();
                 return id;
             }
