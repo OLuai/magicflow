@@ -1107,7 +1107,7 @@ var iamGridStack = {
 
 
                                             <div class="d-flex align-items-center">                    
-                                                <div class="alert-icon" data-toggle="tooltip" title="Ajouter widget">                        
+                                                <div class="alert-icon" data-toggle="tooltip" title="Ajouter widget" style="display:none;">                        
                                                         <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-add-widget" >
                                                               <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
                                                         </a>									
@@ -1342,6 +1342,7 @@ var iamGridStack = {
                     $("#ia-gridstack-container, #pagesContainerId").html("");
                     
                     iamGridStack.load(portal);
+                    iamShared.messages.showSuccessMsg("Imported");
                 });
             },
             save: function (portal) {
@@ -1535,6 +1536,7 @@ var iamGridStack = {
             },
             import: function (e) {
                 iamGridStack.actions.portal.import();
+                
             },
             export: function (e) {
 
@@ -1555,6 +1557,7 @@ var iamGridStack = {
                 });
                 iamGridStack.portal.options.editMode = false;
                 iamGridStack.actions.portal.save(iamGridStack.portal);
+                iamShared.messages.showSuccessMsg("Saved");
             },
         }
     }
