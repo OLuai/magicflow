@@ -102,11 +102,11 @@
             }
 
         },
-        create: function (widget, id, selector) {
-            if (widget.attributes.length > 0) {
-                iamWidget.widget.attributes.setAttributes(widget, id, selector);
+        create: function (widget, id, selector, attributesObject, showAttributeEditor = false) {
+            if (showAttributeEditor) {
+                iamWidget.widget.attributes.setAttributes(widget, id, selector, attributesObject);
             } else {
-                iamWidget.widget.render(widget, id, selector);
+                iamWidget.widget.render(widget, id, selector, attributesObject);
             }
             
         },
@@ -325,9 +325,16 @@
                 });
             },
             //Afficher le QuickForm pour affecter des valeurs a nos attributs
-            setAttributes: function (widget, id, selector, callback) {//, id, selector) {
+            setAttributes: function (widget, id, selector, attributesObject) {//, id, selector) {
+
+                //Verifier si lobjet nest pas vide
+                if (attributesObject) {
+                    for (let key in attributesObject) {
+                        widget.attributesVal[key] = attributesObject[key];
+                    }
+                }
                 if (widget.attributes.length > 0) {
-                    let attributesQFObjet = iamWidget.widget.attributes.getSetAttributesQFObject(widget, id, selector, callback)//, id, selector);
+                    let attributesQFObjet = iamWidget.widget.attributes.getSetAttributesQFObject(widget, id, selector, null)//, id, selector);
                     iamShared.ui.rightPanelShow();
                     iamQF.createForm(attributesQFObjet, widget.attributesVal, false, null, true, app, abp.services.app.magicData, true, true, null);
                 }
@@ -440,15 +447,22 @@
         preview: function () {
             let w = iamWidget.widget;
             w.localSave();
+            let prevWidget = JSON.parse(JSON.stringify(w));
             $("#iamWidgetPreviewContent").html("");
-            w.create(iamWidget.activeItem, 'test', "#iamWidgetPreviewContent");
+            w.create(prevWidget, 'test', "#iamWidgetPreviewContent");
         },
         //Fonction de generation d'un widegt
         //required {widget} l'objet ayant la strcture d'un widget
         //required {id} identifiant rendant unique le widget dans le DOM
         //required {selector} selecteur css (jQuery)
         //Cette fontion ajoute notre widget au DOM via le selecteur {selector}
-        render: function (widget, id, selector) {
+        render: function (widget, id, selector, attributesObject) {
+
+            if (attributesObject) {
+                for (let key in attributesObject) {
+                    widget.attributesVal[key] = attributesObject[key];
+                }
+            }
 
             $(selector).html("");
             let codeCSS = `<style scoped>
