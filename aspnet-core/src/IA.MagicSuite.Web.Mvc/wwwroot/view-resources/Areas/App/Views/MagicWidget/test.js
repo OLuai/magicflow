@@ -39,6 +39,7 @@
         this.#id = this.#attributes['id'] || new Date().getTime();
 
         if (showAttributesEditor) {
+            
             this.showAttributesForm();
         } else {
             this.render();
@@ -104,7 +105,7 @@ ${this.#model.template.css}
     })();
     (function(){
         var widgetVariables = ${JSON.stringify(this.#attributes)};
-        ${this.#attributes.customJs}
+        ${this.#model.template.customJs}
     })();
 </script>`;
 
@@ -137,18 +138,18 @@ ${this.#model.template.css}
         let that = this;
         return {
             AutoCreateEditors: false,
-            Id: `iamQFWidget_${that.#model.name.replaceAll(' ', "")}_${that.#id}`,
+            Id: `iamQFWidget_${that.#model.name.replaceAll(' ', "")}_${new Date().getTime()}`,
             Name: that.#model.name,
             DisplayName: null,
             PositionId: positionId || "rightpanel",
             OnValidated: function (data) {
-                abp.ui.setBusy('body');
+                //abp.ui.setBusy('body');
                 for (let attr in data) {
                     that.#attributes[attr] = data[attr];
                 }
                 that.render();
                 if (callback && typeof callback == 'function') callback(that);
-                abp.ui.clearBusy('body');
+                //abp.ui.clearBusy('body');
             },
             Data: null,
             IgnoreStepsOrderNumber: false, //Ignore le numéro d'ordre attribué et ordonne par ordre de position dans le tableau des steps
@@ -208,6 +209,7 @@ var iamWidget = {
 
         //Evenement de modification du nom du widget
         $('#iamWidgetNameSave').on('click', iamWidget.widget.editName);
+        $('#iamWidgetDescriptionInput').on('change', iamWidget.widget.editDescription);
         ////Evenements de modification des min-sizes
         //$('#iamWidgetMinWidth').on('change', iamWidget.widget.editWidth);
         //$('#iamWidgetMinHeight').on('change', iamWidget.widget.editHeight);
@@ -495,11 +497,12 @@ var iamWidget = {
         item: {
             id: iamShared.utils.guidString(),
             name: "New Widget",
+            description:"blabla",
             entityId: null,
-            minSize: {
-                height: "100%",
-                width: "100%",
-            },
+            //minSize: {
+            //    height: "100%",
+            //    width: "100%",
+            //},
             attributes: [
                 {
                     Name: "id",
@@ -717,15 +720,15 @@ var iamWidget = {
         },
         //Modifier les proprietes de activeWidget a partir des codeEditor
         localSave: function () {
-            let myWidget = iamWidget.activeItem;
             let edi = iamWidget.codeEditor;
-            myWidget.name = $('#iamWidgetName').text().trim() || "New Widget";
+            iamWidget.activeItem.name = $('#iamWidgetName').text().trim() || "New Widget";
+            iamWidget.activeItem.description = $('#iamWidgetDescriptionInput').val().trim();
 
-            myWidget.template.html = edi.html.getValue();
-            myWidget.template.css = edi.css.getValue();
-            myWidget.template.customJs = edi.customJs.getValue();
-            //myWidget.template.onContentReady = edi.onContentReady.getValue();
-            //myWidget.template.beforeContentReady = edi.beforeContentReady.getValue();
+            iamWidget.activeItem.template.html = edi.html.getValue();
+            iamWidget.activeItem.template.css = edi.css.getValue();
+            iamWidget.activeItem.template.customJs = edi.customJs.getValue();
+            //iamWidget.activeItem.template.onContentReady = edi.onContentReady.getValue();
+            //iamWidget.activeItem.template.beforeContentReady = edi.beforeContentReady.getValue();
         },
         //Modifier le nom du widget
         editName: function () {
@@ -735,6 +738,10 @@ var iamWidget = {
                 iamWidget.widget.localSave();
             }
 
+        },
+        //Modifier la description
+        editDescription: function () {
+            iamWidget.activeItem.description = this.value;
         },
         ////Modifier le min-width du widget
         //editWidth: function () {
@@ -750,9 +757,11 @@ var iamWidget = {
             iamWidget.activeItem = widget || { ...iamWidget.widget.item };
             //Initialisation du nom
             $('#iamWidgetName').text(iamWidget.activeItem.name || "New Widget");
-            //Initialisation des min sizes
-            $('#iamWidgetMinWidth').val(iamWidget.activeItem.minSize.width);
-            $('#iamWidgetMinHeight').val(iamWidget.activeItem.minSize.height);
+            //Initialisation de la description
+            $('#iamWidgetDescriptionInput').val(iamWidget.activeItem.description);
+            ////Initialisation des min sizes
+            //$('#iamWidgetMinWidth').val(iamWidget.activeItem.minSize.width);
+            //$('#iamWidgetMinHeight').val(iamWidget.activeItem.minSize.height);
 
             //Liste des attributs
             iamWidget.attributes.list();

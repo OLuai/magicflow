@@ -100,6 +100,23 @@
             -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
             transition: all 0.4s ease 0s;
         }
+        #iamWidgetEditDescription input {
+            margin-right: 10px;
+            font-weight: 100;
+            color: #7E8299;
+            font-size: medium;
+            width: 400px;
+            margin-bottom: 10px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #7E8299;
+        }
+
+            #iamWidgetEditDescription input:focus {
+                outline: none;
+                color: black;
+                border-bottom: 2px solid #7E8299;
+            }
     </style>
     @await RenderSectionAsync("Styles", false)
 }
@@ -164,6 +181,11 @@
                 </div>
             </div>
             <!--end::Modifier le nom de la page-->
+            <div class="subheader-separator subheader-separator-ver bg-gray-200">
+            </div>
+            <div id="iamWidgetEditDescription">
+                <input id="iamWidgetDescriptionInput" placeholder="Widget description" class="my-0 mx-5" type="text">
+            </div>
         </div>
 
 
