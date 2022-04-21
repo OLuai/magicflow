@@ -30,13 +30,14 @@
 
         this.#containerId = containerId;
         this.#model = model;
+        this.#id = attributes['id'] || new Date().getTime();
+        attributes['id'] = this.#id;
 
         let attributesVal = {};
         for (let attr of model.attributes) {
             attributesVal[attr.Name] = attributes[attr.Name] || attr.Default;
         }
         this.#attributes = attributesVal;
-        this.#id = this.#attributes['id'] || new Date().getTime();
 
         if (showAttributesEditor) {
             
