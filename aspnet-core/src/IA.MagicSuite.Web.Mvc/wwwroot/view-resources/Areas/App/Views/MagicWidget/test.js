@@ -15,7 +15,7 @@
         return this.#model.name;
     }
     get modelId() {
-        return this.#model.Id;
+        return this.#model.id;
     }
 
     static fromJsonObject(widget, modelList) {
