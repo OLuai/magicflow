@@ -727,10 +727,7 @@ var iamGridStack = {
         $("#"+this.id).html(this.ui.initContainer());
         this.portal.options.editMode = $("#ia-gridstack-editmode").prop("checked");
 
-        //Ajout de la 1ere page par défaut
-        //iamGridStack.events.addNewPage("Page 1");
-
-
+        //Initialisation des evenements
         this.initEvent();
         //Initialisation du rightPannel
         iamShared.ui.rightPanelCreate(null, false, null);
@@ -740,34 +737,8 @@ var iamGridStack = {
     //initialisation des Evenemmnts du projet
     initEvent: function () {
         const that = this;
-        const addNewpage = (e) => {
-            const name = $("#PageRenameInput").val();
-            that.events.addNewPage(name);
-            $("#PageRenameInput").val("");
-        };
-        const addNewWidget = (e) => {
-            that.events.addNewWidget(null);
-        };
-        const toggleMoreSetting = (e) => {
-            that.events.showMoreSetting(e);
-        };
-        const renamePage = (e) => {
-            that.events.renamePage(e);
-        }
-        const deletePage = (e) => {
-            that.events.deletePage(e);
-        }
-        const importWidget = (e) => {
-            that.events.importWidget(e);
-        }
         const editmode = (e) => {
             that.events.portal.activeEditMode(e);
-        };
-        const exportGrid = (e) => {
-            iamGridStack.exportGrids();
-        };
-        const importGrid = (e) => {
-            iamGridStack.events.importGrid(e);
         };
 
         $('[data-toggle="tooltip"]').tooltip();
@@ -776,50 +747,22 @@ var iamGridStack = {
         
 
         const _portal = JSON.parse(localStorage.getItem("portal"));
+        const _widgetModels = JSON.parse(localStorage.getItem("widgets"));
+
         if (!_portal) {
             iamGridStack.events.page.add("Page 1");
         } else {
             this.load(_portal);
         }
-        
+        iamGridStack.portal.models.widgets = _widgetModels;
 
-        ////Ajouter une nouvelle page
-        //this.createEvent($("#ia-gridstack-add-page"), {
-        //    "click": addNewpage,
-        //});
-        ////Supprimer page
-        //this.createEvent($(".btn-delete-page"), {
-        //    "click": deletePage,
-        //});
-        ////Ajouter une nouveau widget
-        //this.createEvent($("#ia-gridstack-add-widget"), {
-        //    "click": addNewWidget,
-        //});
-        ////Afficher ou masque les options
-        //this.createEvent($(".btn-show-more-setting"), {
-        //    "click": toggleMoreSetting,
-        //});
-        ////Renommer page
-        //this.createEvent($("#ia-gridstack-rename-page"), {
-        //    "click": renamePage,
-        //});
-        ////Importer widget
-        //this.createEvent($("#ia-gridstack-import-widget"), {
-        //    "click": importWidget,
-        //});
+       
         //Activer mode edition de widget
         this.createEvent($("#ia-gridstack-editmode"), {
             "ready":editmode,
             "change": editmode,
         });
-        ////Exporter le projet
-        //this.createEvent($("#ia-gridstack-export"), {
-        //    "click": exportGrid,
-        //});
-        ////Importer le projet
-        //this.createEvent($("#ia-gridstack-import"), {
-        //    "click": importGrid,
-        //});
+        
 
 
     },
@@ -840,6 +783,9 @@ var iamGridStack = {
             float: false,
             resizeable: false,
             moveable:false,
+        },
+        models: {
+            widgets: [],
         },
         pages: [],
     },
@@ -933,6 +879,9 @@ var iamGridStack = {
                 const addWidget = (e) => {
                     iamGridStack.events.widget.add({});
                 };
+                const openModal = (e) => {
+                    iamGridStack.events.widget.showModal(e);
+                };
                 const compact = (e) => {
                     iamGridStack.events.widget.compact();
                 };
@@ -961,6 +910,10 @@ var iamGridStack = {
                 that.createEvent($(`#ia-gridstack-import-widget`), {
                     "click": importWidget,
                 });
+                //afficher modal de widget
+                that.createEvent($(`#ia-gridstack-add-model`), {
+                    "click":openModal,
+                });
                 //importer portal
                 that.createEvent($(`#ia-gridstack-import`), {
                     "click": importPortal,
@@ -974,7 +927,22 @@ var iamGridStack = {
                     "click": savePortal,
                 });
 
+
                 break;
+            case "modal":
+
+                if (obj.for == "widget") {
+                    console.log('rrrr')
+                    const previewWidget = (e) => {
+                        that.events.widget.preview(e);
+                    }
+
+                    //Previsualiser widget
+                    this.createEvent($(`[data-id="preview-id"]`), {
+                        "click": previewWidget,
+                    });
+                }
+
             default:
         }
     },
@@ -1043,7 +1011,29 @@ var iamGridStack = {
 
         </div>
 
-
+<div class="modal fade" id="ia-modal" tabindex="-1" role="dialog" aria-labelledby="ia-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document" data-container-id="modal-id">
+        {modal-content}
+    </div>
+</div>
+<div class="modal fade" id="preview-eye" tabindex="-1" role="dialog" aria-labelledby="preview-eye" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="preview-eye-content">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -1107,6 +1097,12 @@ var iamGridStack = {
 
 
                                             <div class="d-flex align-items-center">                    
+                                                <div class="alert-icon" data-toggle="modal" id="ia-gridstack-add-model" data-target="#ia-modal">                        
+                                                        <a href="#" class="font-weight-bold ml-2 mr-3" id="" >
+                                                              <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
+                                                        </a>									
+                                                </div>
+
                                                 <div class="alert-icon" data-toggle="tooltip" title="Ajouter widget" style="display:none;">                        
                                                         <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-add-widget" >
                                                               <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
@@ -1169,8 +1165,45 @@ var iamGridStack = {
                     </div>
 `;
         },
+        widgetModal: function () {
+            return `
+
+                                                            <div class="modal-content" style="height: 700px;">
+																	<div class="modal-header">
+																		<h5 class="modal-title" id="exampleModalLabel">Modèle de widget</h5>
+																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																			<i aria-hidden="true" class="ki ki-close"></i>
+																		</button>
+																	</div>
+																	<div class="modal-body row">
+																		<div class="col-6" style="height:500px" data-id="widget-list-container-id">
+                                                                        
+                                                                        </div>
+                                                                        <div style="min-height:500px" class="col-6 " data-id="preview-container-id">
+                                                                            <div class=" d-flex align-items-center justify-content-between" style="height:15%">
+                                                                                <span class="font-size-h2 font-weight-boldest" data-id="preview-title-id"></span>
+                                                                                <a href="#" data-id="preview-id" style="display:none;" data-toggle="modal" data-target="#preview-eye"><i class="fa fa-eye text-dark icon-xl"></i></a>
+                                                                            </div>
+                                                                            
+                                                                            <div class=" text-wrap" data-id="preview-description-id" style="height:25%"></div>
+                                                                        </div>
+																	</div>
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Annuler</button>
+																		<button type="button" class="btn btn-primary font-weight-bold" data-id="add-new-widget">Ajouter</button>
+																	</div>
+																</div>
+
+`
+        },
+        widgetPreview: function () {
+            return `
+                
+`
+        }
 
     },
+    // /*<div class="m-5" id="preview-content-id" style="height:60%;overflow: auto;" data-id="preview-content-id"></div>*/
     //Liste des actions (methodes specifiques)
     actions: {
         page: {
@@ -1318,7 +1351,21 @@ var iamGridStack = {
                 //$(`#widget_${id}`).css("height", "100%");
                 iamGridStack.refresh();
                 return id;
-            }
+            },
+            _toDataGridSource: function (properties,arr) {
+                let widgets = arr || iamGridStack.portal.models.widgets;
+                let propertyToShow = properties || {};
+                console.log(widgets,propertyToShow);
+                let dataGridSource = [];
+                widgets.forEach((widget) => {
+                    dataGridSource.push({});
+
+                    for (var i in propertyToShow) {
+                        dataGridSource[dataGridSource.length - 1][propertyToShow[i]] = widget[i];
+                    }
+                });
+                return dataGridSource;
+            },
         },
         portal: {
             export: function () {
@@ -1463,7 +1510,7 @@ var iamGridStack = {
             add: function (obj)     {
                 const contentHtml = obj.content || "";
                 const id = obj.id || new Date().getTime() + "";
-                const content = `<span data-w-id="${id}"></span>` + iamGridStack.ui.widgetOptionBar() + `<div style="height:100%" class="d-flex flex-column align-items-center justify-content-center" data-container-id=${id}>${contentHtml}</div>`;
+                const content = `<span data-w-id="${id}"></span>` + iamGridStack.ui.widgetOptionBar() + `<div style="height:100%" id="${id}" class="d-flex flex-column align-items-center justify-content-center" data-container-id=${id}>${contentHtml}</div>`;
                 const widget = {
                     id: id,
                     pageId: iamGridStack.portal.pages[iamGridStack.activePagePositionId].id,
@@ -1492,8 +1539,17 @@ var iamGridStack = {
             },
             //Importer Widget
             import: function (e) {
+                
+                
                 const buildWidget = (widget) => {
-                    iamGridStack.actions.widget.build(widget);
+                    const widgetModels = JSON.parse(localStorage.getItem("widgets")) || [];
+                    //iamGridStack.actions.widget.build(widget);
+                    
+                    delete widget.attributesVal;
+                    widgetModels.push(widget);
+                    iamGridStack.portal.models.widgets = widgetModels;
+                    const _widgets = JSON.stringify(iamGridStack.portal.models.widgets);
+                    localStorage.setItem("widgets", _widgets);
                 }
                 iamGridStack.actions.importFromJSON(buildWidget);
             },
@@ -1513,6 +1569,85 @@ var iamGridStack = {
             //Compacter les widgets
             compact: function (e) {
                 iamGridStack.grids[iamGridStack.activePagePositionId].compact();
+            },
+            showModal: function (e) {
+                let src = iamGridStack.actions.widget._toDataGridSource({
+                    "id": "Id",
+                    "name": "Name",
+                    "entityId": "Date",
+                });
+                let modal = iamGridStack.ui.widgetModal();
+                let selectedWidget;
+                $(`[data-container-id="modal-id"]`).html(modal);
+                $(`[data-id="widget-list-container-id"]`).dxDataGrid(
+                    {
+                        dataSource:src,
+                        showBorders: true,
+                        columns: [
+                            {
+                                dataField: "Id",
+                                caption: app.localize("Id"),
+                                visible:false,
+                            },
+                            {
+                                dataField: "Name",
+                                caption: app.localize("Name"),
+                            },
+                            {
+                                dataField: "Date",
+                                caption: app.localize("Date"),
+                            },
+                        ],
+                        hoverStateEnabled: true,
+                        keyExpr: "Id",
+                        columnFixing: { enabled: false },
+                        focusedRowEnabled: true,
+                        focusedRowKey: -1,
+                        onFocusedRowChanged: function (e) {
+                            const id = e.row.key;
+                            const widgetModel = iamGridStack.portal.models.widgets.find((widget) => widget.id == id);
+                            selectedWidget = widgetModel;
+                            let customObj = {};
+                            let html = widgetModel.template.html;
+                            //console.log("widgetModel", widgetModel)
+                            let wid = new Widget("preview-content-id", widgetModel);
+                            selectedRowData = e.data;
+
+                            widgetModel.attributes.forEach((attribute) => {
+                                const attr = attribute.Name;
+                                html.replaceAll(`<%=${attr}%>`, attr);
+                            });
+                             
+                            //$(`[data-id="preview-content-id"]`).html(html);
+
+
+
+                            $(`[data-id="preview-id"]`).attr("data-model-id", id).show();
+
+                            $(`[data-id="preview-content-id"]`).children().addClass("shadow-lg");
+                            $(`[data-id="preview-title-id"]`).html(widgetModel.name);
+                            $(`[data-id="preview-description-id"]`).html(widgetModel.description);
+                        },
+                        rowAlternationEnabled: true,
+                        showBorders: true,
+                        showColumnHeaders: true,
+                        showRowLines: true,
+                    }
+                );
+
+                
+
+                iamGridStack.bindTo({
+                    type: "modal",
+                    for:"widget",
+                })
+            },
+            preview: function (e) {
+                const id = $(e.currentTarget).attr("data-model-id");
+                
+                const widgetModel = iamGridStack.portal.models.widgets.find((widget) => widget.id == id);
+                let wid = new Widget("preview-eye-content", widgetModel);
+                
             }
         },
         portal: {
