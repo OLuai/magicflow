@@ -932,15 +932,23 @@ var iamGridStack = {
             case "modal":
 
                 if (obj.for == "widget") {
-                    console.log('rrrr')
                     const previewWidget = (e) => {
                         that.events.widget.preview(e);
                     }
+                    const addWidget = (e) => {
+                        console.log("mmmmmmmmmmm");
+                        //iamGridStack.events.widget.add({});
+                    };
 
+                    //ajouter nouveau widget
+                    that.createEvent($(`[data-id="add-new-widget"]`), {
+                        "click": addWidget,
+                    });
                     //Previsualiser widget
                     this.createEvent($(`[data-id="preview-id"]`), {
                         "click": previewWidget,
                     });
+
                 }
 
             default:
@@ -1190,7 +1198,7 @@ var iamGridStack = {
 																	</div>
 																	<div class="modal-footer">
 																		<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Annuler</button>
-																		<button type="button" class="btn btn-primary font-weight-bold" data-id="add-new-widget">Ajouter</button>
+																		<button type="button" class="btn btn-primary font-weight-bold" data-dismiss="modal" data-id="add-new-widget">Ajouter</button>
 																	</div>
 																</div>
 
