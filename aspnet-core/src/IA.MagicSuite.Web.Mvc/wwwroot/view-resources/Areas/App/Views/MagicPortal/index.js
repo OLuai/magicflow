@@ -1524,7 +1524,6 @@ var iamGridStack = {
                     pageId: iamGridStack.portal.pages[iamGridStack.activePagePositionId].id,
                     content: content,
                     type: "widget",
-                    objectQF: obj.objectQF || null,
                     skeleton: obj.skeleton || null,
                     x: obj.x || null,
                     y: obj.y || null,
