@@ -1581,12 +1581,10 @@ var iamGridStack = {
                 
                 const buildWidget = (widget) => {
                     iamGridStack.portal.models.widgets = iamGridStack.portal.models.widgets || JSON.parse(localStorage.getItem("widgets")) || [];
-                    //iamGridStack.actions.widget.build(widget);
                     
                     delete widget.attributesVal;
                     iamGridStack.actions.model.add(widget);
-                    //widgetModels.push(widget);
-                    //iamGridStack.portal.models.widgets = widgetModels;
+                    
                     const _widgets = JSON.stringify(iamGridStack.portal.models.widgets);
                     localStorage.setItem("widgets", _widgets);
 
