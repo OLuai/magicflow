@@ -747,14 +747,14 @@ var iamGridStack = {
         
 
         const _portal = JSON.parse(localStorage.getItem("portal"));
-        const _widgetModels = JSON.parse(localStorage.getItem("widgets"));
+        const _widgetModels = JSON.parse(localStorage.getItem("widgets")) ;
 
         if (!_portal) {
             iamGridStack.events.page.add("Page 1");
         } else {
             this.load(_portal);
         }
-        iamGridStack.portal.models.widgets = _widgetModels;
+        iamGridStack.portal.models.widgets = _widgetModels || [];
 
        
         //Activer mode edition de widget
@@ -809,7 +809,14 @@ var iamGridStack = {
                     //iamGridStack.events.widget.showRightPanel(e);
                     const id = $(e.currentTarget).parent().parent().siblings(`[data-w-id]`).attr("data-w-id");
                     let widget = iamGridStack.actions.widget.get(id);
-                    iamWidget.widget.attributes.setAttributes(widget.skeleton, id, `[data-container-id="${id}"]`);
+                    let pagePosition = iamGridStack.actions.page._getPosition(widget.pageId);
+                    //iamWidget.widget.attributes.setAttributes(widget.skeleton, id, `[data-container-id="${id}"]`);
+                    iamGridStack.portal.pages[pagePosition].widgets.forEach((widget) => {
+                        if (widget.id==id) {
+                            widget.data.showAttributesForm();
+                            return;
+                        }
+                    });
                 }
 
                 //Afficher toolbar widget
@@ -937,7 +944,8 @@ var iamGridStack = {
                     }
                     const addWidget = (e) => {
                         console.log("mmmmmmmmmmm");
-                        //iamGridStack.events.widget.add({});
+                        const id = iamGridStack.events.widget.add({});
+                        
                     };
 
                     //ajouter nouveau widget
@@ -958,23 +966,17 @@ var iamGridStack = {
     load: function (portal) {
         if (!portal) return;
         const that = this;
-        iamGridStack.portal ={
+        iamGridStack.portal = {
+            ...portal,
             id: iamShared.utils.guidString(),
-                name: "",
-                options: {...iamGridStack.portal.options},
-                pages: [],
+            options: {...iamGridStack.portal.options},
+            pages: [],
     },
         console.log(portal)
         portal.pages.forEach((page, i) => {
             that.events.page.add(page.name);
             page.widgets.forEach((widget) => {
-                const position = {
-                    x:widget.x,
-                    y:widget.y,
-                    h:widget.h,
-                    w:widget.w,
-                }
-                iamGridStack.actions.widget.build({ ...widget.skeleton,...position},false);
+                iamGridStack.actions.widget.build(widget,false);
             });
         });
         iamGridStack.actions.portal._binOptions();
@@ -1198,7 +1200,7 @@ var iamGridStack = {
 																	</div>
 																	<div class="modal-footer">
 																		<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Annuler</button>
-																		<button type="button" class="btn btn-primary font-weight-bold" data-dismiss="modal" data-id="add-new-widget">Ajouter</button>
+																		<button type="button" class="btn btn-primary font-weight-bold" data-dismiss="modal" style="display:none" data-id="add-new-widget">Ajouter</button>
 																	</div>
 																</div>
 
@@ -1278,14 +1280,16 @@ var iamGridStack = {
         widget: {
             set: function (id,obj) {
                 let widget = iamGridStack.actions.widget.get(id);
-                const i = iamGridStack.actions.page._getPosition(widget.id);
+                const i = iamGridStack.actions.page._getPosition(widget.pageId);
+                const j = iamGridStack.actions.widget._getPosition(widget.id);
+                iamGridStack.portal.pages[i].widgets[j] = { ...iamGridStack.portal.pages[i].widgets[j], ...obj };
                 //iamGridStack.portal.pages[i] = { ...iamGridStack.portal.pages[i], ...obj };
-                iamGridStack.portal.pages[i].widgets.forEach((el,j) => {
-                    if (el.id==id) {
-                        iamGridStack.portal.pages[i].widgets[j] = { ...el, ...obj };
-                        return;
-                    }
-                });
+                //iamGridStack.portal.pages[i].widgets.forEach((el,j) => {
+                //    if (el.id==id) {
+                //        iamGridStack.portal.pages[i].widgets[j] = { ...el, ...obj };
+                //        return;
+                //    }
+                //});
             },
             getAll: function () {
                 let widgets = [];
@@ -1304,6 +1308,13 @@ var iamGridStack = {
                 const widget = widgets.find(el => el.id == id);
                 return widget.pageId;
             },
+            getModel: function (id) {
+                const models = iamGridStack.portal.models.widgets
+                console.log("modelID",models);
+                const modelID = models.find((widget) => widget.id == id);
+                //console.log("modelID", modelID);
+                return modelID;
+            },
             delete: function (id) {
                 const pageId = iamGridStack.actions.widget.getPageId(id);
                 const i = iamGridStack.actions.page._getPosition(pageId);
@@ -1318,45 +1329,15 @@ var iamGridStack = {
                 })
             },
             build: function (widget,isCreation=true) {
-                const id = new Date().getTime() + "";
-                const callback = () => {
-                    let el = $(`[data-w-id="${id}"]`).parent().parent();
-                    let deleteBtn = el.find(".btn-delete-widget");
-                    let position = {
-                        x: el.attr("gs-x"),
-                        y: el.attr("gs-y"),
-                        h: el.attr("gs-h"),
-                        w: el.attr("gs-w"),
-                    }
-                    let widg = iamGridStack.actions.widget.get(id);                   
-                    let newId = iamGridStack.actions.widget.build({ ...widg.skeleton,...position});
-                    deleteBtn.trigger("click");
-                   
-
-                }
-                //const content = iamWidget.render(id, widget);
-                
+                const id = new Date().getTime() + "";               
                 const obj = {
                     id,
-                    skeleton: widget,
-                   // objectQF: iamWidget.getWidgetQFObject(widget, callback),
-                    x: widget.x,
-                    y: widget.y,
-                    h: widget.h,
-                    w: widget.w,
+                    ...widget,
+                    isCreation:true,
                 }
 
                 iamGridStack.events.widget.add(obj);
-                //$(`[data-widget-id="${id}"]`).find(".grid-stack-item-content").append(content);
-                //iamWidget.widget.create(widget, id, `[data-widget-id="${id}"] > .grid-stack-item-content`);
-                if (isCreation) {
-                    iamWidget.widget.create(widget, id, `[data-container-id="${id}"]`);
-
-                } else {
-                    iamWidget.widget.render(widget, id, `[data-container-id="${id}"]`);
-
-                }
-                //$(`#widget_${id}`).css("height", "100%");
+                
                 iamGridStack.refresh();
                 return id;
             },
@@ -1374,6 +1355,12 @@ var iamGridStack = {
                 });
                 return dataGridSource;
             },
+            //Obtenir la position du widget dans sa page
+            _getPosition: function (id) {
+                let widget = iamGridStack.actions.widget.get(id);
+                let pagePosition = iamGridStack.actions.page._getPosition(widget.pageId);
+                return iamGridStack.portal.pages[pagePosition].widgets.findIndex(el => el.id === id)
+            },
         },
         portal: {
             export: function () {
@@ -1387,6 +1374,7 @@ var iamGridStack = {
                             w: el.attr("gs-w"),
                         }
                         iamGridStack.portal.pages[i].widgets[j] = { ...widget, ...position };
+                        iamGridStack.portal.pages[i].widgets[j].data = widget.data.toJsonObject();
                     });
                 });
                 iamShared.files.stringToFileDownload("Portal_" + iamGridStack.portal.id + ".json", JSON.stringify(iamGridStack.portal));
@@ -1412,6 +1400,20 @@ var iamGridStack = {
                     iamGridStack.grids[i].float(iamGridStack.portal.options.float);
                 });
             }
+        },
+        model: {
+            set: function (id,obj) {
+
+            },
+            get: function (id) {
+
+            },
+            remove: function (id) {
+
+            },
+            add: function (obj) {
+
+            },
         },
         //Fonction d'import de JSON
         importFromJSON: function (resolve, reject) {
@@ -1524,24 +1526,37 @@ var iamGridStack = {
                     pageId: iamGridStack.portal.pages[iamGridStack.activePagePositionId].id,
                     content: content,
                     type: "widget",
-                    skeleton: obj.skeleton || null,
+                    data: obj.data || null,
                     x: obj.x || null,
                     y: obj.y || null,
                     w: obj.w || 3,
                     h: obj.h || 3,
                 };
 
+                
                 iamGridStack.grids[iamGridStack.activePagePositionId].addWidget({
                     h: widget.h,
                     w: widget.w,
                     x: widget.x,
-                    y: widget.y,
-                    content: widget.content,
+                    y: widget.y,    
+
+
+                    content: widget.content || "",
                 });
-               
+
+
+                
                 iamGridStack.actions.widget.add(widget);
                 $(`.grid-stack-item:has([data-w-id="${id}"])`).attr("data-widget-id", id);
                 iamGridStack.bindTo(widget);
+                let modelId = $(`[data-id="preview-id"]`).attr("data-model-id") || widget.data.modelId;
+                if (obj.isCreation) {
+                    iamGridStack.actions.widget.set(widget.id, {
+                        data: Widget.fromJsonObject(obj.data, modelList),
+                    })
+                } else {
+                    widget.data = new Widget(id, iamGridStack.actions.widget.getModel(modelId), { id });
+                }
                 return id;
             },
             //Importer Widget
@@ -1584,7 +1599,7 @@ var iamGridStack = {
                     "entityId": "Date",
                 });
                 let modal = iamGridStack.ui.widgetModal();
-                let selectedWidget;
+                
                 $(`[data-container-id="modal-id"]`).html(modal);
                 $(`[data-id="widget-list-container-id"]`).dxDataGrid(
                     {
@@ -1604,6 +1619,39 @@ var iamGridStack = {
                                 dataField: "Date",
                                 caption: app.localize("Date"),
                             },
+                            {
+                                caption: app.localize("Actions"),
+                                type: 'buttons',
+                                buttons: [
+                                    {
+                                        hint: 'Edit',
+                                        icon: 'edit',
+                                        visible(e) {
+
+                                            //return !(['id', 'minHeight', 'minWidth', 'beforeContentReady', 'onContentReady'].includes(e.row.data.Name));
+                                        },
+                                        //disabled(e) {
+                                        //return !(['id', 'minHeight', 'minWidth', 'beforeContentReady', 'onContentReady'].includes(e.row.data.Name));
+                                        //},
+                                        onClick(e) {
+                                            //iamWidget.attributes.edit(e.row.data);
+                                        },
+                                    },
+                                    {
+                                        hint: 'Remove',
+                                        icon: 'remove',
+                                        visible(e) {
+                                            //return !(['id', 'minHeight', 'minWidth', 'beforeContentReady', 'onContentReady'].includes(e.row.data.Name));
+                                        },
+                                        //disabled(e) {
+                                        //    return !(['id', 'minHeight', 'minWidth', 'beforeContentReady', 'onContentReady'].includes(e.row.data.Name));
+                                        //},
+                                        onClick(e) {
+                                            //iamWidget.attributes.delete(e.row.data);
+                                        },
+                                    }
+                                ],
+                            },
                         ],
                         hoverStateEnabled: true,
                         keyExpr: "Id",
@@ -1613,24 +1661,11 @@ var iamGridStack = {
                         onFocusedRowChanged: function (e) {
                             const id = e.row.key;
                             const widgetModel = iamGridStack.portal.models.widgets.find((widget) => widget.id == id);
-                            selectedWidget = widgetModel;
-                            let customObj = {};
                             let html = widgetModel.template.html;
-                            //console.log("widgetModel", widgetModel)
-                            let wid = new Widget("preview-content-id", widgetModel);
                             selectedRowData = e.data;
 
-                            widgetModel.attributes.forEach((attribute) => {
-                                const attr = attribute.Name;
-                                html.replaceAll(`<%=${attr}%>`, attr);
-                            });
-                             
-                            //$(`[data-id="preview-content-id"]`).html(html);
-
-
-
                             $(`[data-id="preview-id"]`).attr("data-model-id", id).show();
-
+                            $(`[data-id="add-new-widget"]`).show();
                             $(`[data-id="preview-content-id"]`).children().addClass("shadow-lg");
                             $(`[data-id="preview-title-id"]`).html(widgetModel.name);
                             $(`[data-id="preview-description-id"]`).html(widgetModel.description);
