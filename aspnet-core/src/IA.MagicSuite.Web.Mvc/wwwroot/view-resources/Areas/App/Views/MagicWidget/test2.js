@@ -21,7 +21,9 @@
     static fromJsonObject(widget, modelList) {
         let model = modelList.find(e => e.id == widget.modelId);
         if (model) {
-            return new Widget(widget.containerId, model, { ...(widget.attributes || {}), id: widget.id });
+            return new Widget(widget.containerId, model, { ...(widget.attributes || {}), id: widget.id })
+
+
         }
         throw 'the model of the widget is unknow';
         

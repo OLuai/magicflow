@@ -1,0 +1,180 @@
+﻿@using System.Threading.Tasks
+@using IA.MagicSuite.Web.Areas.App.Startup;
+
+@{
+    Layout = "~/Areas/App/Views/Layout/_iamMagicWidgetLayout.cshtml";
+    ViewBag.CurrentPageName = AppPageNames.Common.DashboardMagicFlow;
+}
+
+@section Styles{
+    <link href="~/lib/codemirror/lib/codemirror.css" rel="stylesheet" />
+    <link href="~/lib/codemirror/theme/dracula.css" rel="stylesheet" />
+    <style type="text/css" media="screen">
+    </style>
+
+    <style>
+
+        .min-width-property-grid {
+            /*min-width: 350px;*/
+            height: 100%;
+        }
+        /*        .heigth-100 {
+            height: 100%;
+        }*/
+        .width-100 {
+            width: 100%;
+        }
+
+        #widgetAttributesGridList {
+            max-width: 600px;
+        }
+        /*        .CodeMirror {
+            height: 100%;
+        }*/
+    </style>
+
+}
+
+@section Scripts{
+    <script src="~/lib/codemirror/lib/codemirror.js"></script>
+    <script src="~/lib/codemirror/mode/xml/xml.js"></script>
+    <script src="~/lib/codemirror/mode/javascript/javascript.js"></script>
+    <script src="~/lib/codemirror/mode/css/css.js"></script>
+    <script src="~/lib/codemirror/mode/htmlembedded/htmlembedded.js"></script>
+    <script src="~/lib/codemirror/addon/mode/multiplex.js"></script>
+    <script src="~/lib/ejs.js"></script>
+    <script src="~/view-resources/Areas/App/Views/MagicWidget/iamWidget.js"></script>
+    <script src="~/view-resources/Areas/App/Views/MagicWidget/index.js"></script>
+}
+
+
+<style id="iamCustomWidgetCSS"></style>
+
+<!-- Div de génération des éléments dynamiques du designer devant être présentés à l'utilisateur en popup-->
+<div id="iamToolsDynamicContentPopup">
+    <!-- Div conteneur dans lequel seront insérés les éléments dynamiques-->
+    <div id="iamToolsDynamicContent"></div>
+</div>
+
+<div class="content d-flex flex-column flex-column-fluid">
+
+    <div class="@(await GetContainerClass())  heigth-100">
+        <div class="row heigth-100">
+            <div class="col-8 heigth-100">
+                <div class="row heigth-100">
+                    <div class="col-4 min-width-property-grid">
+                        <div class="card card-custom gutter-b heigth-100">
+                            <div class="card-body heigth-100">
+                                <div id="iamWidgetAttributesPropertyGrid" class="heigth-100"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-8 heigth-100">
+                        <div class="card card-custom heigth-100">
+                            <div class="card-header">
+                                <div class="card-toolbar">
+                                    <ul class="nav nav-light-danger nav-bold nav-pills">
+                                        <li class="nav-item" id="html-btn">
+                                            <a class="nav-link active" data-toggle="tab" href="#iamWidgetCustomHTML">
+                                                <span class="nav-text">HTML</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" id="css-btn">
+                                            <a class="nav-link" data-toggle="tab" href="#iamWidgetCustomCSS">
+                                                <span class="nav-text">CSS</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" id="js-btn">
+                                            <a class="nav-link" data-toggle="tab" href="#iamWidgetCustomJS">
+                                                <span class="nav-text">JavaScript</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#iamWidgetSettingAttributes">
+                                                <span class="nav-icon"><i class="flaticon2-gear"></i></span>
+                                                <span class="nav-text">Attributes</span>
+                                            </a>
+                                        </li>
+                                        <!-- <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                                <span class="nav-icon"><i class="flaticon2-gear"></i></span>
+                                                <span class="nav-text">Year</span>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" data-toggle="tab" href="#kt_tab_pane_5_3">Action</a>
+                                                <a class="dropdown-item" data-toggle="tab" href="#kt_tab_pane_5_3">Another action</a>
+                                                <a class="dropdown-item" data-toggle="tab" href="#kt_tab_pane_5_3">Something else here</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" data-toggle="tab" href="#kt_tab_pane_5_3">Separated link</a>
+                                            </div>
+                                        </li> -->
+                                    </ul>
+                                </div>
+                                <!-- <div class="card-toolbar">
+                                    <div class="dropdown dropdown-inline">
+                                        <button type="button" class="btn btn-hover-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="ki ki-bold-more-hor "></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Separated link</a>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="tab-content heigth-100">
+                                    <div class="tab-pane fade show active heigth-100" id="iamWidgetCustomHTML" role="tabpanel">
+                                    </div>
+                                    <div class="tab-pane fade show active heigth-100" id="iamWidgetCustomCSS" role="tabpanel">
+
+                                    </div>
+                                    <div class="tab-pane fade show active heigth-100" id="iamWidgetCustomJS" role="tabpanel">
+
+                                    </div>
+                                    <div class="tab-pane fade show active heigth-100" id="iamWidgetSettingAttributes" role="tabpanel">
+                                        <div class="d-flex flex-column flex-column-fluid m-5">
+                                            <div class="d-flex flex-row justify-content-end align-items-center">
+                                                <div id="Add-attribute-btn">
+                                                    <button id="CreateNewWidgetAttributeButton" class="btn btn-primary blue mb-4"><i class="fa fa-plus"></i> @L("CreateNewWidgetAttribute")</button>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <div id="widgetAttributesGridList">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 heigth-100">
+                <div class="card card-custom card-border heigth-100">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="card-label">
+                                <a class="btn btn-sm btn-light-success font-weight-bold" id="iamWidgetPreviewButton">
+                                    <i class="fas fa-play"></i> Preview
+                                </a>
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="card-body p-2 heigth-100">
+                        <div class="width-100 heigth-100 border-0" id="iamWidgetPreviewWindow"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script id="iamCustomWidgetJS"></script>
+
