@@ -1749,6 +1749,7 @@ var iamGridStack = {
                             w: el.attr("gs-w"),
                         }
                         iamGridStack.portal.pages[i].widgets[j] = { ...widget, ...position };
+                        iamGridStack.portal.pages[i].widgets[j].data = widget.data.toJsonObject();
                     });
                 });
                 iamGridStack.portal.options.editMode = false;
