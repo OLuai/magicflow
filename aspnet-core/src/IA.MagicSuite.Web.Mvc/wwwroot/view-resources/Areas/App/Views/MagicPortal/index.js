@@ -1,7 +1,7 @@
 ﻿//const { GridStack } = require("../../../../../gridstack/dist/gridstack");
 
 //import('../../../../../view-resources/Areas/App/Views/_Bundles/gridstack.min.js');
-alert('test2 !!!!!!!!!!');
+///alert('test2 !!!!!!!!!!');
 var test;
 $(function () {
     
