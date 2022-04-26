@@ -27,7 +27,7 @@ const Widget = class {
 
         }
         throw 'the model of the widget is unknow';
-        
+
     }
     //Constructeur de notre Objet
     constructor(containerId, model, attributes = {}, showAttributesEditor = false) {
@@ -44,12 +44,12 @@ const Widget = class {
         this.#attributes = attributesVal;
 
         if (showAttributesEditor) {
-            
+
             this.showAttributesForm();
         } else {
             this.render();
         }
-        
+
 
     }
     //Retoune un objet qui contient les proprietes qui permetront de reconstruire notre objet
@@ -142,7 +142,7 @@ ${this.#model.template.css}
         $('#' + this.#containerId).html("");
     }
     //Retourne l'objet de creation du Quick Form des attributs de notre Widget
-    #attributesQFObject(callback,positionId) {
+    #attributesQFObject(callback, positionId) {
         let that = this;
         return {
             AutoCreateEditors: false,
@@ -279,6 +279,8 @@ var iamWidget = {
         //beforeContentReady:null,
     },
     attributes: {
+
+        //Creation ou modification d'un Attribut
         QFObject: (attributeName) => {
             let Id = "iamQFAttributeCreate";
             let Name = "Create Attribute";
@@ -299,7 +301,7 @@ var iamWidget = {
                         let insertIndex = iamWidget.activeItem.attributes.findIndex(at => at.Name == data.Name);
                         insertIndex = insertIndex == -1 ? iamWidget.activeItem.attributes.length : insertIndex;
 
-                        iamWidget.activeItem.attributes.splice(insertIndex, 1, { ...data });
+                        iamWidget.activeItem.attributes.splice(insertIndex, 1, { ...data, Default: null });
 
                         abp.notify.info(app.localize('SavedSuccessfully'));
                         iamWidget.attributes.list();
@@ -353,21 +355,22 @@ var iamWidget = {
                         StepId: "0001",
                         OrderNumber: null,
                         DataField: "Type",
-                        DisplayName: "Type",
+                        DisplayName: "Attribute Type",
                         DefaultValue: "String",
                         IsRequired: true,
-                        EditorType: "dxTextBox",
+                        EditorType: "dxSelectBox",
+                        ListDataSource: ['Array', 'Boolean', 'EntityRequestObject', 'Function', 'Number', 'String'],
                     },
-                    {
-                        Id: "item_AttributeDefaultValue",
-                        StepId: "0001",
-                        OrderNumber: null,
-                        DataField: "Default",
-                        DisplayName: "Default",
-                        DefaultValue: null,
-                        IsRequired: false,
-                        EditorType: "dxTextBox",
-                    },
+                    //{
+                    //    Id: "item_AttributeDefaultValue",
+                    //    StepId: "0001",
+                    //    OrderNumber: null,
+                    //    DataField: "Default",
+                    //    DisplayName: "Default Value",
+                    //    DefaultValue: null,
+                    //    IsRequired: false,
+                    //    EditorType: "dxTextBox",
+                    //},
                     //{
                     //    Id: "item_AttributeVisible",
                     //    StepId: "0001",
@@ -378,16 +381,16 @@ var iamWidget = {
                     //    EditorType: "dxCheckBox",
                     //    DefaultValue: false
                     //},
-                    //{
-                    //    Id: "item_AttributeRequired",
-                    //    StepId: "0001",
-                    //    OrderNumber: null,
-                    //    DataField: "Required",
-                    //    DisplayName: "Required",
-                    //    IsRequired: false,
-                    //    EditorType: "dxCheckBox",
-                    //    DefaultValue: false
-                    //},
+                    {
+                        Id: "item_AttributeRequired",
+                        StepId: "0001",
+                        OrderNumber: null,
+                        DataField: "IsRequired",
+                        DisplayName: "Is Required",
+                        IsRequired: false,
+                        EditorType: "dxCheckBox",
+                        DefaultValue: true
+                    },
                 ]
             }
         },
@@ -410,12 +413,78 @@ var iamWidget = {
             let deleteIndex = iamWidget.activeItem.attributes.findIndex(at => at.Name == data.Name);
             if (deleteIndex != -1) {
                 iamWidget.activeItem.attributes.splice(deleteIndex, 1);
-                delete iamWidget.activeItem.attributesVal[data.Name];
             }
             //
             abp.notify.info(app.localize('DeletedSuccessfully'));
             iamWidget.attributes.list();
             abp.ui.clearBusy('body');
+        },
+        //Defenir la valeur par defaut
+        defaultValueQFObject: function (attribute) {
+            let Id = "iamQFAttributeDefault_" + attribute.Name.replaceAll(' ', '');
+            let Name = `Default Value Of *${attribute.Name}*`;
+
+            let EditorType;
+            let ListDataSource;
+            let ValidationRules;
+
+            if (attribute.Type == "Boolean") {
+                EditorType = "dxSelectBox";
+                ListDataSource = [true, false];
+
+            }
+            else if (attribute.Type == "Number") {
+                ValidationRules =[{
+                    type: 'pattern', //require, email,compare,range,stringLength
+                        pattern: '^[0-9]+$',
+                            message: app.localize("InvalidDataInput")
+                }];
+                EditorType = "dxTextBox";
+            }
+            else {
+                EditorType = "dxTextBox";
+            }
+
+            return {
+                AutoCreateEditors: false,
+                Id,
+                Name,
+                DisplayName: null,
+                PositionId: "rightpanel",
+                OnValidated: function (data) {
+                    abp.ui.setBusy('body');
+                    let myAttribute = iamWidget.activeItem.attributes.find(e => e.Name == attribute.Name);
+                    myAttribute = myAttribute.Default = data.Default;
+                    iamWidget.attributes.list();
+                    abp.ui.clearBusy('body');
+                },
+                Data: null,
+                IgnoreStepsOrderNumber: false, //Ignore le numéro d'ordre attribué et ordonne par ordre de position dans le tableau des steps
+                IgnoreItemsOrderNumber: true,
+                Steps: [
+                    {
+                        Id: "0001",
+                        Name: null,
+                        DisplayName: null,
+                        DenyBack: false,
+                        OrderNumber: 1
+                    }
+                ],
+                Items: [
+                    {
+                        Id: "item_Default",
+                        StepId: "0001",
+                        OrderNumber: 1,
+                        Default: attribute.Default,
+                        DataField: "Default",
+                        DisplayName: "Default Value",
+                        IsRequired: true,
+                        ValidationRules,
+                        EditorType,
+                        ListDataSource
+                    },
+                ]
+            }
         },
         //Lister les attributs
         list: function () {
@@ -429,10 +498,12 @@ var iamWidget = {
                     {
                         dataField: "Name",
                         caption: app.localize("Name"),
+                        width: 200,
                     },
                     {
                         dataField: "Type",
                         caption: app.localize("Type"),
+                        width: 150,
                     },
                     {
                         dataField: "Default",
@@ -443,12 +514,14 @@ var iamWidget = {
                     //    caption: "Visible",
                     //    dataType: "boolean",
                     //},
-                    //{
-                    //    dataField: "Required",
-                    //    caption: "Required",
-                    //    dataType: "boolean",
-                    //},
                     {
+                        width: 85,
+                        dataField: "IsRequired",
+                        caption: "Required",
+                        dataType: "boolean",
+                    },
+                    {
+                        width: 80,
                         caption: app.localize("Actions"),
                         type: 'buttons',
                         buttons: [
@@ -488,7 +561,13 @@ var iamWidget = {
                     selectedRowData = e.data;
                 },
                 rowAlternationEnabled: true,
+                onRowClick: function (e) {
+                    if (!(['id', 'minHeight', 'minWidth', 'beforeContentReady', 'onContentReady'].includes(e.data.Name))) {
+                        iamShared.ui.rightPanelShow();
+                        iamQF.createForm(iamWidget.attributes.defaultValueQFObject(e.data), null, false, null, true, app, abp.services.app.magicData, true, true, null);
+                    }
 
+                },
                 showBorders: true,
                 showColumnHeaders: true,
                 showRowLines: true,
@@ -501,47 +580,38 @@ var iamWidget = {
         item: {
             id: iamShared.utils.guidString(),
             name: "New Widget",
-            description:"blabla",
+            description: "",
             entityId: null,
-            //minSize: {
-            //    height: "100%",
-            //    width: "100%",
-            //},
             attributes: [
                 {
                     Name: "id",
                     Type: "String",
                     Default: '[GUID]',
-                    //Visible: true,
-                    //Required: true,
+                    IsRequired: true,
                 },
                 {
                     Name: "minHeight",
                     Type: "String",
                     Default: '100%',
-                    //Visible: true,
-                    //Required: true,
+                    IsRequired: false,
                 },
                 {
                     Name: "minWidth",
                     Type: "String",
                     Default: '100%',
-                    //Visible: true,
-                    //Required: true,
+                    IsRequired: false,
                 },
                 {
                     Name: "beforeContentReady",
                     Type: "Function",
                     Default: '',
-                    //Visible: true,
-                    //Required: true,
+                    IsRequired: false,
                 },
                 {
                     Name: "onContentReady",
                     Type: "Function",
                     Default: '',
-                    //Visible: true,
-                    //Required: true,
+                    IsRequired: false,
                 },
             ],
             template: {
