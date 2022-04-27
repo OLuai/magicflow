@@ -1,5 +1,5 @@
 ﻿//Objet widget
-const Widget = class {
+const iamWidgetObject = class {
     #id;
     #attributes;
     #model;
@@ -22,7 +22,7 @@ const Widget = class {
     static fromJsonObject(widget, modelList) {
         let model = modelList.find(e => e.id == widget.modelId);
         if (model) {
-            return new Widget(widget.containerId, model, { ...(widget.attributes || {}), id: widget.id })
+            return new iamWidgetObject(widget.containerId, model, { ...(widget.attributes || {}), id: widget.id })
 
 
         }
@@ -670,7 +670,7 @@ var iamWidget = {
             w.localSave();
             let prevWidget = JSON.parse(JSON.stringify(iamWidget.activeItem));
             $("#iamWidgetPreviewContent").html("");
-            let myWidget = new Widget("iamWidgetPreviewContent", prevWidget, null, true);
+            let myWidget = new iamWidgetObject("iamWidgetPreviewContent", prevWidget, null, true);
             test = myWidget;
         },
     },
