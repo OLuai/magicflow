@@ -354,7 +354,7 @@ var iamGridStack = {
                             <div class="d-flex align-items-center" data-id="gridstackTabsRight">
                                 
                                 
-                                <div class="dropdown dropdown-inline mr-1">
+                                <div class="dropdown dropdown-inline mr-1" data-toggle="tooltip" title="Renommer la page">
                                                         <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn">
                                                         <i class="flaticon2-pen" style="font-size: 1.7rem;"></i>
                                                         </button>
@@ -369,7 +369,7 @@ var iamGridStack = {
                                                             </div>
                                     </div>
                                 </div>
-                                <div class="dropdown dropdown-inline mr-1">
+                                <div class="dropdown dropdown-inline mr-1" data-toggle="tooltip" title="Créer nouvelle page">
                                                         <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn">
                                                         <i class="flaticon2-plus" style="font-size: 1.7rem;"></i>
                                                         </button>
@@ -384,7 +384,7 @@ var iamGridStack = {
                                                             </div>
                                     </div>
                                 </div>
-                                <a href="#" class="btn btn-icon btn-light-danger btn-delete-page ml-2 mr-2" data-toggle="tooltip" title=Supprimer la page">
+                                <a href="#" class="btn btn-icon btn-light-danger btn-delete-page ml-2 mr-2" data-toggle="tooltip" title="Supprimer la page">
                                     <i class="flaticon2-rubbish-bin-delete-button icon-lg"></i>
                                 </a>
                                 <span class="mr-5 ml-5"></span>
@@ -484,6 +484,16 @@ var iamGridStack = {
                             <a href="#" class="btn-setting-widget mr-5" >
                                   <i class="flaticon2-settings text-dark"></i>
                             </a>
+                            <div class="dropdown dropdown-inline mr-4">
+                                <a href="#" class="btn-appearance-widget mr-5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-paint-brush text-dark"></i>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <input class="form-control" type="color" value="#563d7c" id="color-input"/>
+                                    <input class="form-control" type="range"  id="range-input"/>
+                                </div>
+                            </div>
+
                        </div>
                     </div>
 `;
