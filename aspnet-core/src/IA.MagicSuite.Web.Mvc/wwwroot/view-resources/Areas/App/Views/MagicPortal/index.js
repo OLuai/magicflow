@@ -111,6 +111,12 @@ var iamGridStack = {
                         }
                     });
                 }
+                const setBackgroundColor = (e) => {
+                    iamGridStack.events.widget.setBackground(e);
+                }
+                const setOpacity = (e) => {
+                    iamGridStack.events.widget.setOpacity(e);
+                }
 
                 //Afficher toolbar widget
                 this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
@@ -125,6 +131,15 @@ var iamGridStack = {
                 this.createEvent($(`.btn-setting-widget`), {
                     "click": editWidget,
                 });
+                //Modifier le background du widget
+                this.createEvent($(`.color-input`), {
+                    "change": setBackgroundColor,
+                });
+                //Modifier l'opacité du widget
+                this.createEvent($(`.opacity-input`), {
+                    "change": setOpacity,
+                });
+
 
                 break;
             case "page":
@@ -474,7 +489,7 @@ var iamGridStack = {
                                         </li>
 `;
         },
-        widgetOptionBar: function () {
+        widgetOptionBar: function (obj) {
             return `
                     <div class="d-flex justify-content-end m-2 ia-widget-toolbar" style="height: 20px;z-index: 2;position: absolute;">
                         <div class="ia-widget-tb"  style="display:none">
@@ -484,13 +499,16 @@ var iamGridStack = {
                             <a href="#" class="btn-setting-widget mr-5" >
                                   <i class="flaticon2-settings text-dark"></i>
                             </a>
-                            <div class="dropdown dropdown-inline mr-4">
+                            <div class="dropdown dropdown-inline mr-4" style="width:200px">
                                 <a href="#" class="btn-appearance-widget mr-5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-paint-brush text-dark"></i>
                                 </a>
-                                <div class="dropdown-menu">
-                                    <input class="form-control" type="color" value="#563d7c" id="color-input"/>
-                                    <input class="form-control" type="range"  id="range-input"/>
+                                <div class="dropdown-menu p-2">
+                                    <span class="">Couleur</span>
+                                    <input class="form-control color-input" type="color" value="#563d7c"  data-color-id="${obj.id}"/>
+                                    <br/>
+                                    <span class="">Opacité</span>
+                                    <input class="form-control opacity-input" min="25" type="range" data-opacity-id="${obj.id}" />
                                 </div>
                             </div>
 
@@ -856,7 +874,7 @@ var iamGridStack = {
             add: function (obj)     {
                 const contentHtml = obj.content || "";
                 const id = obj.id || new Date().getTime() + "";
-                const content = `<span data-w-id="${id}"></span>` + iamGridStack.ui.widgetOptionBar() + `<div style="height:100%" id="${id}" class="d-flex flex-column align-items-center justify-content-center" data-container-id=${id}>${contentHtml}</div>`;
+                const content = `<span data-w-id="${id}"></span>` + iamGridStack.ui.widgetOptionBar({id}) + `<div style="height:100%" id="${id}" class="d-flex flex-column align-items-center justify-content-center" data-container-id=${id}>${contentHtml}</div>`;
                 const widget = {
                     id: id,
                     pageId: iamGridStack.portal.pages[iamGridStack.activePagePositionId].id,
@@ -867,6 +885,8 @@ var iamGridStack = {
                     y: obj.y || null,
                     w: obj.w || 3,
                     h: obj.h || 3,
+                    bg: obj.bg || "transparent",
+                    opacity:obj.opacity || "1"
                 };
 
                 
@@ -884,6 +904,10 @@ var iamGridStack = {
                 
                 iamGridStack.actions.widget.add(widget);
                 $(`.grid-stack-item:has([data-w-id="${id}"])`).attr("data-widget-id", id);
+
+                $(`[data-widget-id=${id}]`).find(".grid-stack-item-content").css("backgroundColor", widget.bg);
+                $(`[data-widget-id=${id}]`).find(".grid-stack-item-content").css("opacity", widget.opacity);
+
                 iamGridStack.bindTo(widget);
                 let modelId = $(`[data-id="preview-id"]`).attr("data-model-id") || widget.data.modelId;
                 const modelList = iamGridStack.portal.models.widgets;
@@ -1020,6 +1044,18 @@ var iamGridStack = {
                 const widgetModel = iamGridStack.portal.models.widgets.find((widget) => widget.id == id);
                 let wid = new iamWidgetObject("preview-eye-content", widgetModel);
                 
+            },
+            setBackground: function (e) {
+                const id = $(e.currentTarget).attr("data-color-id");
+                let color = $(e.currentTarget).val();
+                $(`[data-widget-id=${id}]`).find(".grid-stack-item-content").css("backgroundColor", color);
+                iamGridStack.actions.widget.set(id,{ "bg": color });
+            },
+            setOpacity: function (e) {
+                const id = $(e.currentTarget).attr("data-opacity-id");
+                let opacity = $(e.currentTarget).val();
+                $(`[data-widget-id=${id}]`).find(".grid-stack-item-content").css("opacity", opacity*0.01);
+                iamGridStack.actions.widget.set(id, { opacity });
             }
         },
         portal:  {
