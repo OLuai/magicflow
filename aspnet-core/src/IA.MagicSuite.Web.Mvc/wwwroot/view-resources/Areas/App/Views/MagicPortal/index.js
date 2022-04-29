@@ -446,6 +446,21 @@ var iamGridStack = {
                                                               <i class="flaticon2-plus-1" style="font-size: 1.7rem;"></i>
                                                         </a>									
                                                 </div>
+
+
+                                                
+                                                <div class="alert-icon" data-toggle="tooltip" title="Changer background de tous les widgets">                        
+                                                        <div class="dropdown dropdown-inline" >
+                                                                                <a href="#" class="btn-appearance-widget" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    <i class="fas fa-paint-brush text-dark" style="font-size: 1.7rem;"></i>
+                                                                                </a>
+                                                                                <div class="dropdown-menu p-2">
+                                                                                    <input class="form-control color-input" type="color" value="#563d7c"  data-color-id="all"/>
+                                                                                    <br/>
+                                                                                </div>
+                                                        </div>									
+                                                </div>
+
                                                 <div class="alert-icon" data-toggle="tooltip" title="Compacter">                        
                                                         <a href="#" class="font-weight-bold ml-2 mr-3" id="ia-gridstack-compact-widget" >
                                                               <i class="flaticon2-menu-2" style="font-size: 1.7rem;"></i>
@@ -1048,8 +1063,18 @@ var iamGridStack = {
             setBackground: function (e) {
                 const id = $(e.currentTarget).attr("data-color-id");
                 let color = $(e.currentTarget).val();
-                $(`[data-widget-id=${id}]`).find(".grid-stack-item-content").css("backgroundColor", color);
-                iamGridStack.actions.widget.set(id,{ "bg": color });
+                if (id == "all") {
+                    let widgets = iamGridStack.actions.widget.getAll();
+                    widgets.forEach((widget) => {
+                        $(`[data-widget-id=${widget.id}]`).find(".grid-stack-item-content").css("backgroundColor", color);
+                        iamGridStack.actions.widget.set(widget.id, { "bg": color });
+                    });
+                } else {
+                    
+                    $(`[data-widget-id=${id}]`).find(".grid-stack-item-content").css("backgroundColor", color);
+                    iamGridStack.actions.widget.set(id, { "bg": color });
+                }
+                
             },
             setOpacity: function (e) {
                 const id = $(e.currentTarget).attr("data-opacity-id");
@@ -1115,6 +1140,7 @@ var iamGridStack = {
                 });
                 iamGridStack.portal.options.editMode = false;
                 iamGridStack.actions.portal.save(iamGridStack.portal);
+                //iamGridStack.portal.options.editMode = true;
                 iamShared.messages.showSuccessMsg("Saved");
             },
         }
