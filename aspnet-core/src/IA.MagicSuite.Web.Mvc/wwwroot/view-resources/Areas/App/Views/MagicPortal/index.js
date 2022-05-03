@@ -117,6 +117,9 @@ var iamGridStack = {
                 const setOpacity = (e) => {
                     iamGridStack.events.widget.setOpacity(e);
                 }
+                const setDefaultWidgetBackgroundColor = (e) => {
+
+                }
 
                 //Afficher toolbar widget
                 this.createEvent($(`.grid-stack-item:has([data-w-id="${obj.id}"])`), {
@@ -139,7 +142,10 @@ var iamGridStack = {
                 this.createEvent($(`.opacity-input`), {
                     "change": setOpacity,
                 });
-
+                //Modifier l'apparence du widget
+                that.createEvent($(`.default-widget`), {
+                    "change": setDefaultWidgetBackgroundColor,
+                });
 
                 break;
             case "page":
@@ -211,6 +217,22 @@ var iamGridStack = {
                 const savePortal = (e) => {
                     iamGridStack.events.portal.save(e);
                 };
+                const setDefaultBackgroundColor = (e) => {
+                    const id = $(e.currentTarget).attr("data-color-id");
+                    let color = $(e.currentTarget).val();
+                    let widgets = iamGridStack.actions.widget.getAll();
+
+                    widgets.forEach((widget) => {
+                        $(`[data-widget-id=${widget.id}]`).find(".grid-stack-item-content").css({
+                            "backgroundColor": "transparent",
+                            "opacity": "1",
+                        });
+                        iamGridStack.actions.widget.set(widget.id, { "bg": "transparent", "opacity": "1", });
+                    });
+                }
+                const setAllWidgetBG = (e) => {
+                    iamGridStack.events.widget.setBackground(e);
+                }
 
                 //ajouter nouveau widget
                 that.createEvent($(`#ia-gridstack-add-widget`), {
@@ -239,6 +261,14 @@ var iamGridStack = {
                 //sauvegarder portal
                 that.createEvent($(`#ia-gridstack-save`), {
                     "click": savePortal,
+                });
+                //Apparence par defaut de tous les widgets
+                that.createEvent($(`[data-color-id="default"]`), {
+                    "click": setDefaultBackgroundColor,
+                });
+                //Modifier le background de tous les widgets
+                that.createEvent($(`[data-color-id="all"]`), {
+                    "change": setAllWidgetBG,
                 });
 
 
@@ -455,8 +485,9 @@ var iamGridStack = {
                                                                                     <i class="fas fa-paint-brush text-dark" style="font-size: 1.7rem;"></i>
                                                                                 </a>
                                                                                 <div class="dropdown-menu p-2">
-                                                                                    <input class="form-control color-input" type="color" value="#563d7c"  data-color-id="all"/>
+                                                                                    <input class="form-control" type="color" value="#563d7c"  data-color-id="all"/>
                                                                                     <br/>
+                                                                                    <button class="btn btn-block btn-sm btn-primary ml-0" data-color-id="default">Par défaut</button>
                                                                                 </div>
                                                         </div>									
                                                 </div>
@@ -523,7 +554,9 @@ var iamGridStack = {
                                     <input class="form-control color-input" type="color" value="#563d7c"  data-color-id="${obj.id}"/>
                                     <br/>
                                     <span class="">Opacité</span>
-                                    <input class="form-control opacity-input" min="25" type="range" data-opacity-id="${obj.id}" />
+                                    <input class="form-control opacity-input" min="30" type="range" data-opacity-id="${obj.id}" />
+                                    <button class="btn btn-block btn-sm btn-primary ml-0 default-widget" data-color-id="${obj.id}">Par défaut</button>
+
                                 </div>
                             </div>
 
