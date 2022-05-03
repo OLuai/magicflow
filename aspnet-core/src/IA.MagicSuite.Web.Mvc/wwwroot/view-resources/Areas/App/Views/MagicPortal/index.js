@@ -118,7 +118,16 @@ var iamGridStack = {
                     iamGridStack.events.widget.setOpacity(e);
                 }
                 const setDefaultWidgetBackgroundColor = (e) => {
-
+                    const id = $(e.currentTarget).attr("data-color-id");
+                    $(`[data-widget-id=${id}]`).find(".grid-stack-item-content").css({
+                        "backgroundColor": "transparent",
+                        "opacity": "1",
+                    });
+                    iamGridStack.actions.widget.set(id,
+                        {
+                        "bg": "transparent",
+                        "opacity": "1",
+                    });
                 }
 
                 //Afficher toolbar widget
@@ -144,7 +153,7 @@ var iamGridStack = {
                 });
                 //Modifier l'apparence du widget
                 that.createEvent($(`.default-widget`), {
-                    "change": setDefaultWidgetBackgroundColor,
+                    "click": setDefaultWidgetBackgroundColor,
                 });
 
                 break;
