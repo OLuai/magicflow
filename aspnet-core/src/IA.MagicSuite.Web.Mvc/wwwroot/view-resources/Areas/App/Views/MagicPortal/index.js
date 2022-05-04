@@ -34,8 +34,12 @@ var iamGridStack = {
             that.events.portal.activeEditMode(e);
         };
         const editname = (e) => {
-            let name = $("#iamWidgetNameInput").val();
-            that.events.portal.editName(name);
+            
+            if (iamGridStack.portal.options.editMode) {
+                let name = $("#iamWidgetNameInput").val();
+                that.events.portal.editName(name);
+            }
+            
         }
 
         $('[data-toggle="tooltip"]').tooltip();
@@ -1168,7 +1172,7 @@ var iamGridStack = {
                     $("#ia-gridstack-toolbar-more-setting").html("").hide();
                 }
             },
-            //
+            //Editer le nom de portal
             editName: function (name) {
                 
                 iamGridStack.actions.portal.set({ name });
@@ -1199,9 +1203,10 @@ var iamGridStack = {
                         iamGridStack.portal.pages[i].widgets[j].data = widget.data.toJsonObject();
                     });
                 });
-                iamGridStack.portal.options.editMode = false;
+                //iamGridStack.portal.options.editMode = false;
                 iamGridStack.actions.portal.save(iamGridStack.portal);
-                //iamGridStack.portal.options.editMode = true;
+                iamGridStack.portal.options.editMode = true;
+                iamGridStack.actions.portal._binOptions();
                 iamShared.messages.showSuccessMsg("Saved");
             },
         }
