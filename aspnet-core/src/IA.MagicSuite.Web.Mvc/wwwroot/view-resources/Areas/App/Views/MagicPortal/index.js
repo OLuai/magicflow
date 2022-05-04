@@ -20,6 +20,8 @@ var iamGridStack = {
         $("#"+this.id).html(this.ui.initContainer());
         this.portal.options.editMode = $("#ia-gridstack-editmode").prop("checked");
 
+        this.events.portal.editName(this.portal.name);
+
         //Initialisation des evenements
         this.initEvent();
         //Initialisation du rightPannel
@@ -81,7 +83,7 @@ var iamGridStack = {
     //Les proprietes d'un portal
     portal: {
         id: iamShared.utils.guidString(),
-        name:"",
+        name:"Portal",
         //Les options d'un portal
         options: {
             editMode: false,
