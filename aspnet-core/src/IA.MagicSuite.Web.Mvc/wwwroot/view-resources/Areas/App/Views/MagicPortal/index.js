@@ -33,6 +33,10 @@ var iamGridStack = {
         const editmode = (e) => {
             that.events.portal.activeEditMode(e);
         };
+        const editname = (e) => {
+            let name = $("#iamWidgetNameInput").val();
+            that.events.portal.editName(name);
+        }
 
         $('[data-toggle="tooltip"]').tooltip();
         $("#ia-gridstack-editmode").prop("checked", false);
@@ -54,6 +58,10 @@ var iamGridStack = {
         this.createEvent($("#ia-gridstack-editmode"), {
             "ready":editmode,
             "change": editmode,
+        });
+        //Editer le nom du widget
+        this.createEvent($("#iamWidgetNameSave"), {
+            "click":editname,
         });
         
 
@@ -333,6 +341,7 @@ var iamGridStack = {
             });
         });
         iamGridStack.actions.portal._binOptions();
+        iamGridStack.events.portal.editName(portal.name);
     },
     //Créer l'evenement d'un element || selector : l'element sur lequel doit se declencher l'event, eventObj: l'ensemble des events qui seront lié à l'element
     createEvent: function (selector, eventObj) {
@@ -800,6 +809,9 @@ var iamGridStack = {
                 const _portal = JSON.stringify(portal);
                 localStorage.setItem("portal", _portal);
             },
+            set: function (obj) {
+                iamGridStack.portal = { ...iamGridStack.portal, ...obj };
+            },
             _binOptions: function () {
                 iamGridStack.portal.options.editMode ? $("#iamWidgetBtnEditWidgetName").show() : $("#iamWidgetBtnEditWidgetName").hide() ;
                 iamGridStack.portal.pages.forEach((el, i) => {
@@ -1155,6 +1167,12 @@ var iamGridStack = {
                 else {
                     $("#ia-gridstack-toolbar-more-setting").html("").hide();
                 }
+            },
+            //
+            editName: function (name) {
+                
+                iamGridStack.actions.portal.set({ name });
+                $("#iamWidgetName").html(name);
             },
             //Importer le portal
             import: function (e) {
