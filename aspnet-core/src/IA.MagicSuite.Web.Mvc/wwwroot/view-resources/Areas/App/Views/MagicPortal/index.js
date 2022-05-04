@@ -801,6 +801,7 @@ var iamGridStack = {
                 localStorage.setItem("portal", _portal);
             },
             _binOptions: function () {
+                iamGridStack.portal.options.editMode ? $("#iamWidgetBtnEditWidgetName").show() : $("#iamWidgetBtnEditWidgetName").hide() ;
                 iamGridStack.portal.pages.forEach((el, i) => {
                     iamGridStack.grids[i].enableMove(iamGridStack.portal.options.editMode);
                     iamGridStack.grids[i].enableResize(iamGridStack.portal.options.editMode);
