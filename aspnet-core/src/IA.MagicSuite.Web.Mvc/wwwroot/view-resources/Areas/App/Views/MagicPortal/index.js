@@ -1190,7 +1190,8 @@ var iamGridStack = {
             },
             //Sauvegarder le portal
             save: function (e) {
-                iamGridStack.portal.pages.forEach((page, i) => {
+                let portal = iamGridStack.portal;
+                portal.pages.forEach((page, i) => {
                     page.widgets.forEach((widget, j) => {
                         const el = $(`[data-w-id="${widget.id}"]`).parent().parent();
                         const position = {
@@ -1199,12 +1200,12 @@ var iamGridStack = {
                             h: el.attr("gs-h"),
                             w: el.attr("gs-w"),
                         }
-                        iamGridStack.portal.pages[i].widgets[j] = { ...widget, ...position };
-                        iamGridStack.portal.pages[i].widgets[j].data = widget.data.toJsonObject();
+                        portal.pages[i].widgets[j] = { ...widget, ...position };
+                        portal.pages[i].widgets[j].data = widget.data.toJsonObject();
                     });
                 });
                 //iamGridStack.portal.options.editMode = false;
-                iamGridStack.actions.portal.save(iamGridStack.portal);
+                iamGridStack.actions.portal.save(portal);
                 iamGridStack.portal.options.editMode = true;
                 iamGridStack.actions.portal._binOptions();
                 iamShared.messages.showSuccessMsg("Saved");
